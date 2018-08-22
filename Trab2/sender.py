@@ -4,11 +4,12 @@ import threading
 import socket
 
 class Sender(threading.Thread):
-	def __init__(self, sckt):
+	def __init__(self, sckt, multicastGroup):
 		self.sckt = sckt
+		self.multicastGroup = multicastGroup
 		super().__init__()
 
 	def run(self):
 		while True:
-			message = bytes(input())
-			self.sckt.send(message)
+			message = str.encode(input())
+			self.sckt.sendto(message, self.multicastGroup)
