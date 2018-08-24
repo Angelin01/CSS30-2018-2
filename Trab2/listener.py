@@ -4,8 +4,9 @@ import threading
 import socket
 
 class Listener(threading.Thread):
-	def __init__(self, sckt):
+	def __init__(self, sckt, resources):
 		self.sckt = sckt
+		self.resources = resources
 		super().__init__()
 
 	def run(self):
