@@ -12,7 +12,8 @@ def main(address, port):
 	
 	sockterino.setsockopt(socket.IPPROTO_IP, 
 	                      socket.IP_ADD_MEMBERSHIP, 
-						  pack('4sL', socket.inet_aton(address), socket.INADDR_ANY))
+	                      pack('4sL', socket.inet_aton(address), socket.INADDR_ANY))
+	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
 	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 1))
 
 	threadListener = Listener(sockterino)
