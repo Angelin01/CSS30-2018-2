@@ -6,7 +6,8 @@ import queue
 
 
 class Sender(threading.Thread):
-	def __init__(self, sckt, multicastGroup, resources, peerList, peerMutex, keyPair, commandQueue):
+	def __init__(self, uid, sckt, multicastGroup, resources, peerList, peerMutex, keyPair, commandQueue):
+		self.uid = uid.encode('ascii')
 		self.sckt = sckt
 		self.multicastGroup = multicastGroup
 		self.resources = resources
@@ -17,7 +18,7 @@ class Sender(threading.Thread):
 		super().__init__()
 
 	def run(self):
-		self.sckt.sendto(b'JOIN:' + self.keyPair['public'].exportKey(), self.multicastGroup)
+		self.sckt.sendto(self.uid + b',JOIN,' + self.keyPair['public'].exportKey(), self.multicastGroup)
 		peerCount = 0
 		while True:
 			# Check new commands
@@ -34,6 +35,7 @@ class Sender(threading.Thread):
 			with self.peerMutex:
 				if peerCount != len(self.peerList):
 					# New peer detected, send own public key for him
-					self.sckt.sendto(b'ADDLIST:' + self.keyPair['public'].exportKey(), self.multicastGroup)
+					self.sckt.sendto(self.uid + b',ADDLIST,' + self.keyPair['public'].exportKey(), self.multicastGroup)
+					peerCount = len(self.peerList)
 					
 			

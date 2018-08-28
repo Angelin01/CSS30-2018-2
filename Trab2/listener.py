@@ -5,7 +5,8 @@ import socket
 from Crypto.PublicKey import RSA
 
 class Listener(threading.Thread):
-	def __init__(self, sckt, resources, peerList, peerMutex, keyPair):
+	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair):
+		self.uid = uid.encode('ascii')
 		self.sckt = sckt
 		self.resources = resources
 		self.peerList = peerList
@@ -16,16 +17,19 @@ class Listener(threading.Thread):
 	def run(self):
 		while True:
 			data, address = self.sckt.recvfrom(1024)
-			if data.split(b':')[1] != self.keyPair['public'].exportKey(): # Check if it isn't myself
+			cid, cmd, *args = data.split(b',')
+			if cid != self.uid: # Check if it isn't myself
 				# Check if the message is a new join
-				if data.startswith(b'JOIN:'):
-					print("New Peer {}, adding to peer list".format(address))
+				if cmd == b'JOIN':
+					print("New Peer '{}'{}, adding to peer list".format(cid.decode('ascii'), address))
 					with self.peerMutex:
-						self.peerList.append(RSA.importKey(data[5:]))
+						self.peerList.append((cid, RSA.importKey(args[0])))
 			
 				# Check for messages from existing peers
-				elif data.startswith(b'ADDLIST:'):
+				elif cmd == b'ADDLIST':
 					# Check if I don't already have the peer
-					if data[8:] not in [x.exportKey() for x in self.peerList]:
-						print("Existing Peer {} sent key, adding to peer list".format(address))
-						self.peerList.append(RSA.importKey(data[8:]))
+					if cid not in [x for x,__ in self.peerList]:
+						print("New existing Peer '{}'{}, adding to peer list".format(cid.decode('ascii'), address))
+						with self.peerMutex:
+							self.peerList.append((cid, RSA.importKey(args[0])))
+						

@@ -13,7 +13,7 @@ from resource import Resource
 from input import Input
 from queue import Queue
 
-def main(address, port, privateKey, publicKey):
+def main(address, port, privateKey, publicKey, name):
 	# Importing assimetrics keys
 	priv = RSA.importKey(privateKey.read())
 	pub = RSA.importKey(publicKey.read())
@@ -37,8 +37,8 @@ def main(address, port, privateKey, publicKey):
 	peerMutex = threading.Semaphore()
 	peerList = []
 	resources = [Resource(), Resource()]
-	threadListener = Listener(sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub})
-	threadSender = Sender(sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
+	threadListener = Listener(name, sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub})
+	threadSender = Sender(name, sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
 	threadInput = Input(commandQueue)
 
 	# Iniciando e aguardando threads
@@ -56,8 +56,9 @@ if __name__ == "__main__":
 	parser.add_argument('-p', '--port', action='store', type=int, help='Multicast port to connect to', required=True)
 	parser.add_argument('-i', '--privateKey', type=argparse.FileType('r'), help='Private key file. See ssh-keygen', required=True)
 	parser.add_argument('-u', '--publicKey', type=argparse.FileType('r'), help='Public key file. See ssh-keygen', required=True)
+	parser.add_argument('-n', '--name', action='store', help='Unique identifier number. Must be an int.', required=True)
 
 	args = parser.parse_args()
 	
-	main(args.address, args.port, args.privateKey, args.publicKey)
+	main(args.address, args.port, args.privateKey, args.publicKey, args.name)
 	
