@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-# Bibliotecas externas ou padrao
+# Standard or external libraries
 import sys
 import threading
 import socket
 import argparse
 from struct import pack
 from Crypto.PublicKey import RSA
-# Interno
+# Internal stuffs
 from listener import Listener
 from sender import Sender
 from resource import Resource
@@ -14,26 +14,27 @@ from input import Input
 from queue import Queue
 
 def main(address, port, privateKey, publicKey, name):
-	# Importing assimetrics keys
+	# Importing assimetric keys
 	priv = RSA.importKey(privateKey.read())
 	pub = RSA.importKey(publicKey.read())
 	
 	sockterino = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sockterino.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sockterino.bind(('', port))
+	sockterino.settimeout(0.5) # Not the same as settimeout(None)!!!
 
 	# Create a queue for sharing data between threads
 	commandQueue = Queue()
 	
-	# Dar join no grupo multicast
+	# Join the multicast group
 	sockterino.setsockopt(socket.IPPROTO_IP, 
 	                      socket.IP_ADD_MEMBERSHIP, 
 	                      pack('4sL', socket.inet_aton(address), socket.INADDR_ANY))                
 	                      
-	# Settando Time To Live para 1 para nao sair da rede local
+	# Setting Time To Live to 1 so the packets don't leave the local network
 	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 1))
 
-	# Instanciando recursos e threads
+	# Instantiating resources e threads
 	peerMutex = threading.Semaphore()
 	peerList = []
 	resources = [Resource(), Resource()]
@@ -41,13 +42,16 @@ def main(address, port, privateKey, publicKey, name):
 	threadSender = Sender(name, sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
 	threadInput = Input(commandQueue)
 
-	# Iniciando e aguardando threads
+	# Starting and joining threads
 	threadListener.start()
 	threadSender.start()
 	threadInput.start()
-	threadListener.join()
 	threadSender.join()
+	# Sender asked to quit
+	threadListener.stop()
+	threadListener.join()
 	threadInput.join()
+	#sys.exit(0)
 	
 
 if __name__ == "__main__":

@@ -25,17 +25,19 @@ class Sender(threading.Thread):
 			try: 
 				cmd = self.commandQueue.get(block=False)
 				# Execute the command
-#				if cmd.startswith("GET"):
-#					if cmd[3] == "1":
-#						self.sckt.sendto(b'Galera, o recurso 1 eh meu', self.multicastGroup)
+				if cmd.startswith("QUIT"):
+					self.sckt.sendto(self.uid + b',LEAVE', self.multicastGroup)
+					break;
 			except queue.Empty:
 				pass
 
 			# Check new peers
 			with self.peerMutex:
-				if peerCount != len(self.peerList):
+				if peerCount < len(self.peerList):
 					# New peer detected, send own public key for him
 					self.sckt.sendto(self.uid + b',ADDLIST,' + self.keyPair['public'].exportKey(), self.multicastGroup)
+				if peerCount != len(self.peerList):
+					# Peer count is wrong, update it. If it was lower, should have sent pub key
 					peerCount = len(self.peerList)
 					
 			
