@@ -10,16 +10,20 @@ from Crypto.PublicKey import RSA
 from listener import Listener
 from sender import Sender
 from resource import Resource
-
+from input import Input
+from queue import Queue
 
 def main(address, port, privateKey, publicKey):
-	# Importando chaves assimetricas
+	# Importing assimetrics keys
 	priv = RSA.importKey(privateKey.read())
 	pub = RSA.importKey(publicKey.read())
 	
 	sockterino = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sockterino.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sockterino.bind(('', port))
+
+	# Create a queue for sharing data between threads
+	commandQueue = Queue()
 	
 	# Dar join no grupo multicast
 	sockterino.setsockopt(socket.IPPROTO_IP, 
@@ -34,13 +38,16 @@ def main(address, port, privateKey, publicKey):
 	peerList = []
 	resources = [Resource(), Resource()]
 	threadListener = Listener(sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub})
-	threadSender = Sender(sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub})
+	threadSender = Sender(sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
+	threadInput = Input(commandQueue)
 
 	# Iniciando e aguardando threads
 	threadListener.start()
 	threadSender.start()
+	threadInput.start()
 	threadListener.join()
 	threadSender.join()
+	threadInput.join()
 	
 
 if __name__ == "__main__":
