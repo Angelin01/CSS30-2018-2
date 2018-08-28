@@ -10,7 +10,6 @@ class Status(Enum):
 
 
 class Resource():
-    def __init__(self, atributo=5, status=Status.RELEASED):
-    	self.atributo = atributo
+    def __init__(self, status=Status.RELEASED):
     	self.status = status
 
