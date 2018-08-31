@@ -3,7 +3,9 @@
 import threading
 import socket
 import queue
-
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+from Crypto.Hash import SHA256
 
 class Sender(threading.Thread):
 	def __init__(self, uid, sckt, multicastGroup, resources, peerList, peerMutex, keyPair, commandQueue):
@@ -15,7 +17,11 @@ class Sender(threading.Thread):
 		self.keyPair = keyPair
 		self.peerMutex = peerMutex
 		self.commandQueue = commandQueue
+		self.signer = PKCS1_v1_5.new(self.keyPair['private'])
 		super().__init__()
+		
+	def sendMessage(self, message):
+		self.sckt.sendto(self.uid + ',' + signer.sign(SHA256.new(message)) + message, self.multicastGroup)
 
 	def run(self):
 		self.sckt.sendto(self.uid + b',JOIN,' + self.keyPair['public'].exportKey(), self.multicastGroup)
@@ -26,7 +32,7 @@ class Sender(threading.Thread):
 				cmd = self.commandQueue.get(block=False)
 				# Execute the command
 				if cmd.startswith("QUIT"):
-					self.sckt.sendto(self.uid + b',LEAVE', self.multicastGroup)
+					self.sendMessage("LEAVE")
 					break;
 			except queue.Empty:
 				pass
@@ -40,4 +46,4 @@ class Sender(threading.Thread):
 					# Peer count is wrong, update it. If it was lower, should have sent pub key
 					peerCount = len(self.peerList)
 					
-			
+	
