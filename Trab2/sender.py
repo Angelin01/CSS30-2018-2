@@ -3,6 +3,7 @@
 import threading
 import socket
 import queue
+from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
@@ -34,6 +35,14 @@ class Sender(threading.Thread):
 				if cmd.startswith("QUIT"):
 					self.sendMessage(b"LEAVE")
 					break;
+				elif cmd.startswith("WANT")
+					rid = cmd[4]
+					if (int(rid) >= len(peerList) or !rid.isdigit())
+						print("Error. Resource does not exist.")
+					else
+						self.sendMessage(b'WANT,' + rid.encode('ascii'))
+						self.resource(rid).status = Status.WANTED
+						
 			except queue.Empty:
 				pass
 

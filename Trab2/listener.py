@@ -7,7 +7,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 class Listener(threading.Thread):
-	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair):
+	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair, commandQueue):
 		self.uid = uid.encode('ascii')
 		self.sckt = sckt
 		self.resources = resources
@@ -15,6 +15,7 @@ class Listener(threading.Thread):
 		self.keyPair = keyPair
 		self.peerMutex = peerMutex
 		self.shouldRun = True
+		self.commandQueue = commandQueue
 		super().__init__()
 		
 	def verifyMessage(self, peerVerifier, message, signature):
@@ -65,6 +66,15 @@ class Listener(threading.Thread):
 						for peer in self.peerList:
 							if peer[0] == cid:
 								self.peerList.remove(peer)
+
+					# Check for resource messages
+					elif (cmd == b'WANT' or cmd == b'RELEASE'):
+						if cmd == b'WANT':
+							pass
+						elif cmd == b'RELEASE':
+							if cid in self.resources[int(args[0])].wantedQueue:
+                           	 self.resources[int(args[0])].wantedQueue.get()
+							
 			except socket.timeout:
 				pass
 							
