@@ -2,9 +2,11 @@
 
 import threading
 import socket
+from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
+from time import time
 
 class Listener(threading.Thread):
 	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair, commandQueue):
@@ -69,12 +71,30 @@ class Listener(threading.Thread):
 
 					# Check for resource messages
 					elif cmd == b'WANT':
-							pass
+						# Verify if it's myself who is asking
+						print("Peer '{}' requesting resource".format(cid.decode('ascii')))
+						if cid == self.uid:
+							print("Peer '{}' requesting resource {}".format(cid.decode('ascii'), args[0]))
+							# self.resources[int(args[0])].hold()
+							# Wait everyone to answer OK and get the resource
+							while (True):
+								pass
+						# If it's not, answer
+						else:
+							if self.resources[int(args[0])].requested(cid, int(time())):
+								self.commandQueue.put(str(self.uid) + 'OK' + args[0])
+							else:
+								self.commandQueue.put(str(self.uid) + 'NO' + args[0])
 
 					elif cmd == b'RELEASE':
-						if cid in self.resources[int(args[0])].wantedQueue:
-							self.resources[int(args[0])].wantedQueue.get()
-							
+						# if cid in self.resources[int(args[0])].wantedQueue:
+						if cid == self.uid:
+							self.resources[int(args[0])].release()
+						else:
+							# If other peer release and I want, ask it again
+							if self.resources[args[0]].status == Status.WANTED:
+								self.commandQueue.put(str(self.uid) + 'WANT' + args[0])
+
 			except socket.timeout:
 				pass
 							

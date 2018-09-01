@@ -38,7 +38,7 @@ def main(address, port, privateKey, publicKey, name):
 	peerMutex = threading.Semaphore()
 	peerList = []
 	resources = [Resource(), Resource()]
-	threadListener = Listener(name, sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub})
+	threadListener = Listener(name, sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub}, commandQueue)
 	threadSender = Sender(name, sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
 	threadInput = Input(commandQueue)
 

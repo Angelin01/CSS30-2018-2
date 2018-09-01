@@ -27,28 +27,19 @@ class Resource():
 	def hold(self, answers):
 		self.status = Status.WANTED
 		# Send the request via multicast
-		self.commandQueue(str(self.cid) + "WANT Resource #" + str(self.rid))
 		# Wait for all online peers to answer
-		if(len(answers) != len(self.peerList)):
-			return
-		for answer in answers:
-			if (answer == "NO"):
-				return
 		self.status = Status.HELD
 		return
 		
 	def release(self):
 		self.status = Status.RELEASED
-		# Send the release message to everyone
-		self.commandQueue.put(str(self.cid) + "RELEASED Resource #" + str(self.rid))
 		return
 		
 	def requested(self, cid, timestamp):
-		if(self.status == Status.HELD or (self.status == Status.WANTED and self.timestamp < timestamp))
-			wantedQueue.put(Request(timestamp, cid))
+		if self.status == Status.HELD or (self.status == Status.WANTED and self.timestamp < timestamp):
+			self.wantedQueue.put(Request(timestamp, cid))
 			# Answer NO
 			return(False)
 		else:
 			# Answer OK
 			return(True)
-	return

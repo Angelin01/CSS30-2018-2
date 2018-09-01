@@ -38,11 +38,10 @@ class Sender(threading.Thread):
 				elif cmd.startswith("WANT"):
 					rid = cmd[4]
 					if int(rid) >= len(self.peerList) or not rid.isdigit():
-						print("Error. Resource does not exist.")
+						print("Error: resource requested does not exist.")
 					else:
 						self.sendMessage(b'WANT,' + rid.encode('ascii'))
-						self.resources[rid].status = Status.WANTED
-						
+						break
 			except queue.Empty:
 				pass
 
