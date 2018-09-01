@@ -4,7 +4,7 @@ import threading
 import socket
 import queue
 from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 class Sender(threading.Thread):
@@ -17,11 +17,11 @@ class Sender(threading.Thread):
 		self.keyPair = keyPair
 		self.peerMutex = peerMutex
 		self.commandQueue = commandQueue
-		self.signer = PKCS1_v1_5.new(self.keyPair['private'])
+		self.signer = pkcs1_15.PKCS115_SigScheme(self.keyPair['private'])
 		super().__init__()
 		
 	def sendMessage(self, message):
-		self.sckt.sendto(self.uid + ',' + signer.sign(SHA256.new(message)) + message, self.multicastGroup)
+		self.sckt.sendto(self.uid + b',' + self.signer.sign(SHA256.new(message)) + message, self.multicastGroup)
 
 	def run(self):
 		self.sckt.sendto(self.uid + b',JOIN,' + self.keyPair['public'].exportKey(), self.multicastGroup)
@@ -32,7 +32,7 @@ class Sender(threading.Thread):
 				cmd = self.commandQueue.get(block=False)
 				# Execute the command
 				if cmd.startswith("QUIT"):
-					self.sendMessage("LEAVE")
+					self.sendMessage(b"LEAVE")
 					break;
 			except queue.Empty:
 				pass
