@@ -68,12 +68,12 @@ class Listener(threading.Thread):
 								self.peerList.remove(peer)
 
 					# Check for resource messages
-					elif (cmd == b'WANT' or cmd == b'RELEASE'):
-						if cmd == b'WANT':
+					elif cmd == b'WANT':
 							pass
-						elif cmd == b'RELEASE':
-							if cid in self.resources[int(args[0])].wantedQueue:
-                           	 self.resources[int(args[0])].wantedQueue.get()
+
+					elif cmd == b'RELEASE':
+						if cid in self.resources[int(args[0])].wantedQueue:
+							self.resources[int(args[0])].wantedQueue.get()
 							
 			except socket.timeout:
 				pass

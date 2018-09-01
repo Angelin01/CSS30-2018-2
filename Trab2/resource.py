@@ -19,12 +19,9 @@ class Status(Enum):
 	HELD = 2
 
 class Resource():
-    def __init__(self, status=Status.RELEASED, rid, peerList, commandQueue):
-    	self.status = status
-    	self.rid = rid
+	def __init__(self, status=Status.RELEASED):
+		self.status = status
 		self.wantedQueue = PriorityQueue()
-		self.peerList = peerList
-		self.commandQueue = commandQueue
 		return
 		
 	def hold(self, answers):

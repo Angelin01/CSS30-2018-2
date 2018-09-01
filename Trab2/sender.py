@@ -34,14 +34,14 @@ class Sender(threading.Thread):
 				# Execute the command
 				if cmd.startswith("QUIT"):
 					self.sendMessage(b"LEAVE")
-					break;
-				elif cmd.startswith("WANT")
+					break
+				elif cmd.startswith("WANT"):
 					rid = cmd[4]
-					if (int(rid) >= len(peerList) or !rid.isdigit())
+					if int(rid) >= len(self.peerList) or not rid.isdigit():
 						print("Error. Resource does not exist.")
-					else
+					else:
 						self.sendMessage(b'WANT,' + rid.encode('ascii'))
-						self.resource(rid).status = Status.WANTED
+						self.resources[rid].status = Status.WANTED
 						
 			except queue.Empty:
 				pass
