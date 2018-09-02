@@ -15,3 +15,4 @@ class Input(threading.Thread):
 			if command.startswith('QUIT'):
 				self.commandQueue.put(command)
 				break
+			self.commandQueue.put(command)

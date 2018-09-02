@@ -71,20 +71,11 @@ class Listener(threading.Thread):
 
 					# Check for resource messages
 					elif cmd == b'WANT':
-						# Verify if it's myself who is asking
 						print("Peer '{}' requesting resource".format(cid.decode('ascii')))
-						if cid == self.uid:
-							print("Peer '{}' requesting resource {}".format(cid.decode('ascii'), args[0]))
-							# self.resources[int(args[0])].hold()
-							# Wait everyone to answer OK and get the resource
-							while (True):
-								pass
-						# If it's not, answer
+						if self.resources[int(args[0])].requested(cid, int(time())):
+							self.commandQueue.put('OK,' + args[0])
 						else:
-							if self.resources[int(args[0])].requested(cid, int(time())):
-								self.commandQueue.put(str(self.uid) + 'OK' + args[0])
-							else:
-								self.commandQueue.put(str(self.uid) + 'NO' + args[0])
+							self.commandQueue.put('NO,' + args[0])
 
 					elif cmd == b'RELEASE':
 						# if cid in self.resources[int(args[0])].wantedQueue:
@@ -97,6 +88,11 @@ class Listener(threading.Thread):
 
 			except socket.timeout:
 				pass
+
+		# Out of while loop, release and quit
+		for resource in self.resources:
+			if resource.release():
+				self.commandQueue.put()
 							
 	def stop(self):
 		self.shouldRun = False

@@ -46,11 +46,14 @@ def main(address, port, privateKey, publicKey, name):
 	threadListener.start()
 	threadSender.start()
 	threadInput.start()
-	threadSender.join()
-	# Sender asked to quit
+	threadInput.join()
+
+	# Input asked to quit
 	threadListener.stop()
 	threadListener.join()
-	threadInput.join()
+	threadSender.stop()
+	threadSender.join()
+
 	#sys.exit(0)
 	
 
