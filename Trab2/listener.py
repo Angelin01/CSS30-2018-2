@@ -90,10 +90,9 @@ class Listener(threading.Thread):
 				pass
 
 		# Out of while loop, release and quit
-		for resource in self.resources:
-			if resource.release():
-				self.commandQueue.put()
+		for i in range(len(self.resources)):
+			if self.resources[i].release():
+				self.commandQueue.put("RELEASE,{}".format(i))
 							
 	def stop(self):
 		self.shouldRun = False
-						
