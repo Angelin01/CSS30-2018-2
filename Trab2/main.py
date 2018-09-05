@@ -21,7 +21,7 @@ def main(address, port, privateKey, publicKey, name):
 	sockterino = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sockterino.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sockterino.bind(('', port))
-	sockterino.settimeout(0.5) # Not the same as settimeout(None)!!!
+	sockterino.settimeout(0.2) # Not the same as settimeout(None)!!!
 
 	# Create a queue for sharing data between threads
 	commandQueue = Queue()
