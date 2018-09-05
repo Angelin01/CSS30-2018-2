@@ -77,7 +77,6 @@ class Resource():
 		if self.status == Status.HELD or (self.status == Status.WANTED and self.timestamp < timestamp):
 			self.wantedQueue.put(Request(timestamp, cid))
 			# Answer NO
-			return False, self.timestamp
-		else:
-			# Answer OK
-			return True, None
+			return False
+			# Else answer OK
+		return True
