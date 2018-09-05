@@ -6,7 +6,6 @@ from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
-from time import time
 
 class Listener(threading.Thread):
 	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair, commandQueue):
@@ -44,7 +43,7 @@ class Listener(threading.Thread):
 					if toVerify.startswith(b'JOIN') or toVerify.startswith(b'ADDLIST'):
 						cmd, *args = toVerify.split(b',')
 					elif not self.verifyMessage(peer[1], toVerify[256:], toVerify[:256]):
-						print("Could not verify command from {}, someone is doing something fishy".format(cid.encode('ascii')))
+						print("Could not verify command from {}, someone is doing something fishy".format(cid.decode('ascii')))
 						continue
 					else:
 						cmd, *args = toVerify[256:].split(b',')
@@ -82,9 +81,9 @@ class Listener(threading.Thread):
 					# [CID],[SIGNATURE]WANT,[RESOURCE_ID],[TIMESTAMP]
 						print("Peer '{}' requesting resource".format(cid.decode('ascii')))
 						if self.resources[int(args[0])].answerRequest(cid, int(args[1])):
-							self.commandQueue.put('OK,' + args[0])
+							self.commandQueue.put('OK,' + str(args[0]))
 						else:
-							self.commandQueue.put('NO,' + args[0])
+							self.commandQueue.put('NO,' + str(args[0]))
 
 					elif cmd == b'RELEASE':
 					# @todo Get resource if it's my turn else just remove the guy from the queue if I want it
@@ -95,7 +94,8 @@ class Listener(threading.Thread):
 					elif cmd == b'ANSWER':
 					# Answer commands have the following structure:
 					# [CID],[SIGNATURE]ANSWER,[RESOURCE_ID],[OK OR NO]
-						# Check if I want the resource, if so add the responde
+						print("Peer '{}' answering '{}'".format(cid.decode('ascii'), args[-1].decode('ascii')))
+						# Check if I want the resource, if so add the response
 						if self.resources[int(args[0])].status == Status.WANTED:
 							# Put False as the strict check with "NO", everything else is True
 							self.resources[int(args[0])].addAnswer(cid, False if args[1] == b'NO' else True)

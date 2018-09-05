@@ -3,6 +3,7 @@
 import threading
 import socket
 import queue
+from time import time
 from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -38,14 +39,32 @@ class Sender(threading.Thread):
 
 				elif cmd.startswith("WANT"):
 					rid = cmd[4]
-					if int(rid) >= len(self.peerList) or not rid.isdigit():
+					if not rid.isdigit() or int(rid) > len(self.peerList):
 						print("Error: resource requested does not exist.")
 					else:
-						self.sendMessage(b'WANT,' + rid.encode('ascii'))
+						self.sendMessage(b'WANT,' + rid.encode('ascii') + b',' + str(int(time())).encode('ascii'))
 
 				elif cmd.startswith("RELEASE"):
 					pass
 					# @todo send release message
+
+				# Answer OK to WANT
+				elif cmd.startswith("OK"):
+					rid = cmd[5]
+					if not rid.isdigit() or int(rid) > len(self.peerList):
+						print("Error: resource requested does not exist.")
+					else:
+						print("Sending OK")
+						self.sendMessage(b'ANSWER,' + rid.encode('ascii') + b',' + b'OK')
+
+				# Answer NO to WANT
+				elif cmd.startswith("NO"):
+					rid = cmd[5]
+					if not rid.isdigit() or int(rid) > len(self.peerList):
+						print("Error: resource requested does not exist.")
+					else:
+						print("Sending NO")
+						self.sendMessage(b'ANSWER,' + rid.encode('ascii') + b',' + b'NO')
 
 			except queue.Empty:
 				pass
