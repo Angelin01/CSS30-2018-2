@@ -20,7 +20,7 @@ class Status(Enum):
 	HELD = 2
 
 class Resource():
-	def __init__(self, status=Status.RELEASED, answerTimeout=5):
+	def __init__(self, status=Status.RELEASED, answerTimeout=10):
 		self.status = status
 		self.wantedQueue = PriorityQueue()
 		self.timestamp = None

@@ -42,6 +42,7 @@ class Sender(threading.Thread):
 					if not rid.isdigit() or int(rid) > len(self.peerList):
 						print("Error: resource requested does not exist.")
 					else:
+						self.resources[int(rid)].want([cid for cid, __ in self.peerList])
 						self.sendMessage(b'WANT,' + rid.encode('ascii') + b',' + str(int(time())).encode('ascii'))
 
 				elif cmd.startswith("RELEASE"):
@@ -50,7 +51,7 @@ class Sender(threading.Thread):
 
 				# Answer OK to WANT
 				elif cmd.startswith("OK"):
-					rid = cmd[5]
+					rid = cmd.split(',')[1]
 					if not rid.isdigit() or int(rid) > len(self.peerList):
 						print("Error: resource requested does not exist.")
 					else:
@@ -59,7 +60,7 @@ class Sender(threading.Thread):
 
 				# Answer NO to WANT
 				elif cmd.startswith("NO"):
-					rid = cmd[5]
+					rid = cmd.split(',')[1]
 					if not rid.isdigit() or int(rid) > len(self.peerList):
 						print("Error: resource requested does not exist.")
 					else:
