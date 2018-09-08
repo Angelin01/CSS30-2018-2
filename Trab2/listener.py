@@ -93,7 +93,11 @@ class Listener(threading.Thread):
 					# @todo Get resource if it's my turn else just remove the guy from the queue if I want it
 					# Release commands have the following structure:
 					# [CID],[SIGNATURE]RELEASE,[RESOURCE_ID],[NEXT_CID OR EMPTY]
-						pass
+						print("Peer {} released resource {}, next holder is {}".format(cid.decode('ascii'), args[0].decode('ascii'), args[1].decode('ascii')))
+						if self.resources[int(args[0])].status == Status.WANTED and self.resources[int(args[0])].gotNo:
+							if self.uid == args[1]:
+								print("I am the next holder for resource {}, holding".format(args[0].decode('ascii')))
+								self.resources[int(args[0])].hold()	
 
 					elif cmd == b'ANSWER':
 					# Answer commands have the following structure:
@@ -103,6 +107,7 @@ class Listener(threading.Thread):
 							print("Peer '{}' answered '{}' for resource {}".format(cid.decode('ascii'), args[1].decode('ascii'), int(args[0])))
 							# Put False as the strict check with "NO", everything else is True
 							self.resources[int(args[0])].addAnswer(cid, False if args[1] == b'NO' else True)
+							
 			except socket.timeout:
 				pass
 			except UnboundLocalError:

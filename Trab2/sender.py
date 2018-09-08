@@ -32,21 +32,29 @@ class Sender(threading.Thread):
 		while self.shouldRun or not self.commandQueue.empty():
 			# Check new commands
 			try: 
-				cmd = self.commandQueue.get(block=False)
+				cmd = self.commandQueue.get(block=False).strip('\n')
 				# Execute the command
 				if cmd.startswith("QUIT"):
 					self.sendMessage(b"LEAVE")
 
 				elif cmd.startswith("WANT"):
-					rid = cmd[4]
+					rid = cmd[4:]
 					if not rid.isdigit() or int(rid) > len(self.peerList):
 						print("Error: resource requested does not exist.")
+					elif self.resources[int(rid)].status == Status.HELD:
+						print("Error: I already hold that resource, release it first before asking again")
 					else:
 						self.resources[int(rid)].want([cid for cid, __ in self.peerList])
 						self.sendMessage(b'WANT,' + rid.encode('ascii') + b',' + str(int(time())).encode('ascii'))
 
 				elif cmd.startswith("RELEASE"):
-					pass
+					rid = cmd[7:]
+					if not rid.isdigit() or int(rid) > len(self.peerList):
+						print("Error: resource requested does not exist.")
+					else:
+						if self.resources[int(rid)].status == Status.HELD:
+							nextPeer = self.resources[int(rid)].release()
+							self.sendMessage(b'RELEASE,' + nextPeer)
 					# @todo send release message
 
 				# Answer OK to WANT
