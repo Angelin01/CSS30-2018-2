@@ -45,17 +45,17 @@ class Resource():
 		self.status = Status.RELEASED
 		self.timestamp = None
 		self.peersToWait = None
-		self.wantedQueue = PriorityQueue()
 		self.gotResponse = []
 		self.gotNo = False
 		self.ticksPassed = 0
-
 		try:
 			# If there's someone waiting in the queue, return them
-			return self.wantedQueue.get(False).cid
+			peerToReturn = self.wantedQueue.get(False).cid
 		except Empty:
 			# Else return empty
-			return b''
+			peerToReturn = b''
+		self.wantedQueue = PriorityQueue()
+		return peerToReturn
 
 	def addAnswer(self, cid, answer):
 		if self.status != Status.WANTED:

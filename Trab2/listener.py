@@ -8,13 +8,12 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 class Listener(threading.Thread):
-	def __init__(self, uid, sckt, resources, peerList, peerMutex, keyPair, commandQueue):
+	def __init__(self, uid, sckt, resources, peerList, keyPair, commandQueue):
 		self.uid = uid.encode('ascii')
 		self.sckt = sckt
 		self.resources = resources
 		self.peerList = peerList
 		self.keyPair = keyPair
-		self.peerMutex = peerMutex
 		self.shouldRun = True
 		self.commandQueue = commandQueue
 		super().__init__()
@@ -38,14 +37,13 @@ class Listener(threading.Thread):
 					for p in self.peerList:
 						if p[0] == cid:
 							peer = p
-							
-					# If I could not identify the peer, ignore
-					if peer == None:
-						raise UnboundLocalError('Unidentified peer. Someone is doing something fishy')
 
 					# Do not check signature in JOINS and ADDLISTS
 					if toVerify.startswith(b'JOIN') or toVerify.startswith(b'ADDLIST'):
 						cmd, *args = toVerify.split(b',')
+					# If I could not identify the peer, ignore
+					elif peer == None:
+						raise UnboundLocalError('Unidentified peer. Someone is doing something fishy')
 					elif not self.verifyMessage(peer[1], toVerify[256:], toVerify[:256]):
 						print("Could not verify command from {}, someone is doing something fishy".format(cid.decode('ascii')))
 						continue
@@ -57,8 +55,8 @@ class Listener(threading.Thread):
 					# Join commands have the following structure:
 					# [CID],JOIN,[PUBLIC_KEY]
 						print("New Peer '{}'{}, adding to peer list".format(cid.decode('ascii'), address))
-						with self.peerMutex:
-							self.peerList.append((cid, pkcs1_15.PKCS115_SigScheme(RSA.importKey(args[0]))))
+						self.peerList.append((cid, pkcs1_15.PKCS115_SigScheme(RSA.importKey(args[0]))))
+						self.commandQueue.put("ADDLIST")  # Send my own key to new peer
 			
 					# Check for messages from existing peers
 					elif cmd == b'ADDLIST':
@@ -67,8 +65,7 @@ class Listener(threading.Thread):
 						# Check if I don't already have the peer
 						if cid not in [x for x,__ in self.peerList]:
 							print("New existing Peer '{}'{}, adding to peer list".format(cid.decode('ascii'), address))
-							with self.peerMutex:
-								self.peerList.append((cid, pkcs1_15.PKCS115_SigScheme(RSA.importKey(args[0]))))
+							self.peerList.append((cid, pkcs1_15.PKCS115_SigScheme(RSA.importKey(args[0]))))
 				
 					# Check for leavers
 					elif cmd == b'LEAVE':
@@ -93,7 +90,8 @@ class Listener(threading.Thread):
 					# @todo Get resource if it's my turn else just remove the guy from the queue if I want it
 					# Release commands have the following structure:
 					# [CID],[SIGNATURE]RELEASE,[RESOURCE_ID],[NEXT_CID OR EMPTY]
-						print("Peer {} released resource {}, next holder is {}".format(cid.decode('ascii'), args[0].decode('ascii'), args[1].decode('ascii')))
+						print(args)
+						print("Peer {} released resource {}, next holder is {}".format(cid.decode('ascii'), args[0].decode('ascii'), args[1].decode('ascii') if args[1].decode('ascii') else "no one"))
 						if self.resources[int(args[0])].status == Status.WANTED and self.resources[int(args[0])].gotNo:
 							if self.uid == args[1]:
 								print("I am the next holder for resource {}, holding".format(args[0].decode('ascii')))
@@ -122,6 +120,7 @@ class Listener(threading.Thread):
 						remainingPeers = resource.remainingPeers()
 						for peer in self.peerList:
 							if peer[0] in remainingPeers:
+								print("Peer {} appears dead, removing from list".format(peer[0].decode('ascii')))
 								self.peerList.remove(peer)
 					# Check if I got all responses and there was no negative
 					if len(self.peerList) == len(resource.gotResponse) and resource.gotNo == False:

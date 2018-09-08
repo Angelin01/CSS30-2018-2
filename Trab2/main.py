@@ -36,11 +36,10 @@ def main(address, port, privateKey, publicKey, name):
 	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 1))
 
 	# Instantiating resources e threads
-	peerMutex = threading.Semaphore()
 	peerList = []
 	resources = [Resource(), Resource()]
-	threadListener = Listener(name, sockterino, resources, peerList, peerMutex, {'private':priv, 'public':pub}, commandQueue)
-	threadSender = Sender(name, sockterino, (address, port), resources, peerList,  peerMutex, {'private':priv, 'public':pub}, commandQueue)
+	threadListener = Listener(name, sockterino, resources, peerList, {'private':priv, 'public':pub}, commandQueue)
+	threadSender = Sender(name, sockterino, (address, port), resources, peerList, {'private':priv, 'public':pub}, commandQueue)
 	threadInput = Input(commandQueue)
 
 	# Starting and joining threads

@@ -10,14 +10,13 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 class Sender(threading.Thread):
-	def __init__(self, uid, sckt, multicastGroup, resources, peerList, peerMutex, keyPair, commandQueue):
+	def __init__(self, uid, sckt, multicastGroup, resources, peerList, keyPair, commandQueue):
 		self.uid = uid.encode('ascii')
 		self.sckt = sckt
 		self.multicastGroup = multicastGroup
 		self.resources = resources
 		self.peerList = peerList
 		self.keyPair = keyPair
-		self.peerMutex = peerMutex
 		self.commandQueue = commandQueue
 		self.signer = pkcs1_15.PKCS115_SigScheme(self.keyPair['private'])
 		self.shouldRun = True
@@ -54,7 +53,7 @@ class Sender(threading.Thread):
 					else:
 						if self.resources[int(rid)].status == Status.HELD:
 							nextPeer = self.resources[int(rid)].release()
-							self.sendMessage(b'RELEASE,' + nextPeer)
+							self.sendMessage(b'RELEASE,' + rid.encode('ascii') + b',' + nextPeer)
 					# @todo send release message
 
 				# Answer OK to WANT
@@ -74,18 +73,13 @@ class Sender(threading.Thread):
 					else:
 						print("Sending NO")
 						self.sendMessage(b'ANSWER,' + rid.encode('ascii') + b',' + b'NO')
-
+				
+				# Send stuff to new peers
+				elif cmd.startswith("ADDLIST"):
+					self.sckt.sendto(self.uid + b',ADDLIST,' + self.keyPair['public'].exportKey(), self.multicastGroup)
+					
 			except queue.Empty:
 				pass
-
-			# Check new peers
-			with self.peerMutex:
-				if peerCount < len(self.peerList):
-					# New peer detected, send own public key for him
-					self.sckt.sendto(self.uid + b',ADDLIST,' + self.keyPair['public'].exportKey(), self.multicastGroup)
-				if peerCount != len(self.peerList):
-					# Peer count is wrong, update it. If it was lower, should have sent pub key
-					peerCount = len(self.peerList)
 					
 	def stop(self):
 		self.shouldRun = False
