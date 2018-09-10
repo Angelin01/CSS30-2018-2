@@ -90,7 +90,6 @@ class Listener(threading.Thread):
 					# @todo Get resource if it's my turn else just remove the guy from the queue if I want it
 					# Release commands have the following structure:
 					# [CID],[SIGNATURE]RELEASE,[RESOURCE_ID],[NEXT_CID OR EMPTY]
-						print(args)
 						print("Peer {} released resource {}, next holder is {}".format(cid.decode('ascii'), args[0].decode('ascii'), args[1].decode('ascii') if args[1].decode('ascii') else "no one"))
 						if self.resources[int(args[0])].status == Status.WANTED and self.resources[int(args[0])].gotNo:
 							if self.uid == args[1]:
