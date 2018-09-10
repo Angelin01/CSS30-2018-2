@@ -39,7 +39,7 @@ class Sender(threading.Thread):
 				elif cmd.startswith("WANT"):
 					rid = cmd[4:]
 					if not rid.isdigit() or int(rid) > len(self.resources):
-						print("Error: requested resource does not exist.")
+						print("Error: requested resource {} does not exist.".format(rid))
 					elif self.resources[int(rid)].status == Status.HELD:
 						print("Error: I already hold that resource, release it first before asking again")
 					else:
