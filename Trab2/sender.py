@@ -38,8 +38,8 @@ class Sender(threading.Thread):
 
 				elif cmd.startswith("WANT"):
 					rid = cmd[4:]
-					if not rid.isdigit() or int(rid) > len(self.peerList):
-						print("Error: resource requested does not exist.")
+					if not rid.isdigit() or int(rid) > len(self.resources):
+						print("Error: requested resource does not exist.")
 					elif self.resources[int(rid)].status == Status.HELD:
 						print("Error: I already hold that resource, release it first before asking again")
 					else:
@@ -48,8 +48,8 @@ class Sender(threading.Thread):
 
 				elif cmd.startswith("RELEASE"):
 					rid = cmd[7:]
-					if not rid.isdigit() or int(rid) > len(self.peerList):
-						print("Error: resource requested does not exist.")
+					if not rid.isdigit() or int(rid) > len(self.resources):
+						print("Error: requested resource {} does not exist.".format(rid))
 					else:
 						if self.resources[int(rid)].status == Status.HELD:
 							nextPeer = self.resources[int(rid)].release()

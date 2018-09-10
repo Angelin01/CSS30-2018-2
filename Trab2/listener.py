@@ -132,7 +132,7 @@ class Listener(threading.Thread):
 		for i in range(len(self.resources)):
 			if self.resources[i].status == Status.HELD:
 				self.resources[i].release()
-				self.commandQueue.put("RELEASE,{}".format(i))
+				self.commandQueue.put("RELEASE{}".format(i))
 							
 	def stop(self):
 		self.shouldRun = False

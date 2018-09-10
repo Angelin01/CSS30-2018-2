@@ -33,7 +33,7 @@ def main(address, port, privateKey, publicKey, name):
 	                      pack('4sL', socket.inet_aton(address), socket.INADDR_ANY))                
 	                      
 	# Setting Time To Live to 1 so the packets don't leave the local network
-	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 1))
+	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 2))
 
 	# Instantiating resources e threads
 	peerList = []
