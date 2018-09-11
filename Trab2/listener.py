@@ -27,7 +27,9 @@ class Listener(threading.Thread):
 		return True
 
 	def run(self):
+		noMessage = False
 		while self.shouldRun:
+			noMessage = False
 			try:
 				data, address = self.sckt.recvfrom(1024)
 				cid, toVerify = data.split(b',', 1)
@@ -107,14 +109,14 @@ class Listener(threading.Thread):
 							self.resources[int(args[0])].addAnswer(cid, False if args[1] == b'NO' else True)
 							
 			except socket.timeout:
-				pass
+				noMessage = True
 			except UnboundLocalError:
 				pass
 			
 			# Checking each resource if I got answers
 			for resource in self.resources:
 				if resource.status == Status.WANTED:
-					resource.ticksPassed += 1
+					resource.ticksPassed += 1 if noMessage else 0
 					if resource.ticksPassed > resource.answerTimeout and len(self.peerList) > len(resource.gotResponse):
 						# Remove from peer list everyone that didn't answer
 						remainingPeers = resource.remainingPeers()
