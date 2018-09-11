@@ -47,9 +47,11 @@ class Listener(threading.Thread):
 					# If I could not identify the peer, ignore
 					elif peer == None:
 						raise UnboundLocalError('Unidentified peer. Someone is doing something fishy')
+
 					elif not self.verifyMessage(peer[1], toVerify[256:], toVerify[:256]):
 						print("Could not verify command from {}, someone is doing something fishy".format(cid.decode('ascii')))
 						continue
+
 					else:
 						cmd, *args = toVerify[256:].split(b',')
 
@@ -90,7 +92,6 @@ class Listener(threading.Thread):
 							self.commandQueue.put('NO,' + args[0].decode('ascii'))
 
 					elif cmd == b'RELEASE':
-					# @todo Get resource if it's my turn else just remove the guy from the queue if I want it
 					# Release commands have the following structure:
 					# [CID],[SIGNATURE]RELEASE,[RESOURCE_ID],[NEXT_CID OR EMPTY]
 						print("Peer {} released resource {}, next holder is {}".format(cid.decode('ascii'), args[0].decode('ascii'), args[1].decode('ascii') if args[1].decode('ascii') else "no one"))

@@ -35,6 +35,12 @@ def main(address, port, privateKey, publicKey, name):
 	# Setting Time To Live to 1 so the packets don't leave the local network
 	sockterino.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, pack('b', 1))
 
+	print("""Commands:
+	WANT[id]: asks for resource [id]
+	RELEASE[id]: releases resource [id]
+	STATUS[id]: prints the status of resource [id]
+	QUIT: quits the program
+Two resources were instanced, IDs '0' and '1'""")
 	# Instantiating resources e threads
 	peerList = []
 	resources = [Resource(), Resource()]
