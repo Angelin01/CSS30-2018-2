@@ -2,6 +2,7 @@
 
 import threading
 import socket
+from time import sleep
 from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -127,11 +128,12 @@ class Listener(threading.Thread):
 						resource.hold()
 					# If I got a no, have to wait for my release
 
+		print("Releasing remaining held resources")
 		# Out of while loop, release and quit
 		for i in range(len(self.resources)):
 			if self.resources[i].status == Status.HELD:
-				self.resources[i].release()
 				self.commandQueue.put("RELEASE{}".format(i))
+		self.commandQueue.put("QUIT")
 							
 	def stop(self):
 		self.shouldRun = False

@@ -4,6 +4,7 @@ import threading
 import socket
 import queue
 from time import time
+from time import sleep
 from resource import Status
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -33,12 +34,9 @@ class Sender(threading.Thread):
 			try: 
 				cmd = self.commandQueue.get(block=False).strip('\n')
 				# Execute the command
-				if cmd.startswith("QUIT"):
-					self.sendMessage(b"LEAVE")
-
-				elif cmd.startswith("WANT"):
+				if cmd.startswith("WANT"):
 					rid = cmd[4:]
-					if not rid.isdigit() or int(rid) > len(self.resources):
+					if not rid.isdigit() or int(rid) >= len(self.resources):
 						print("Error: requested resource {} does not exist.".format(rid))
 					elif self.resources[int(rid)].status == Status.HELD:
 						print("Error: I already hold that resource, release it first before asking again")
@@ -48,18 +46,25 @@ class Sender(threading.Thread):
 
 				elif cmd.startswith("RELEASE"):
 					rid = cmd[7:]
-					if not rid.isdigit() or int(rid) > len(self.resources):
+					if not rid.isdigit() or int(rid) >= len(self.resources):
+						print("Error: requested resource {} does not exist.".format(rid))
+					elif self.resources[int(rid)].status == Status.HELD:
+						nextPeer = self.resources[int(rid)].release()
+						self.sendMessage(b'RELEASE,' + rid.encode('ascii') + b',' + nextPeer)
+					else:
+						print("Error: I don't hold resource {}, so I can't release it".format(rid))
+						
+				elif cmd.startswith("STATUS"):
+					rid = cmd[6:]
+					if not rid.isdigit() or int(rid) >= len(self.resources):
 						print("Error: requested resource {} does not exist.".format(rid))
 					else:
-						if self.resources[int(rid)].status == Status.HELD:
-							nextPeer = self.resources[int(rid)].release()
-							self.sendMessage(b'RELEASE,' + rid.encode('ascii') + b',' + nextPeer)
-					# @todo send release message
-
+						print("Resource {} status: {}".format(rid,  self.resources[int(rid)].status))
+					
 				# Answer OK to WANT
 				elif cmd.startswith("OK"):
 					rid = cmd.split(',')[1]
-					if not rid.isdigit() or int(rid) > len(self.peerList):
+					if not rid.isdigit() or int(rid) >= len(self.resources):
 						print("Error: resource requested does not exist.")
 					else:
 						print("Sending OK")
@@ -68,7 +73,7 @@ class Sender(threading.Thread):
 				# Answer NO to WANT
 				elif cmd.startswith("NO"):
 					rid = cmd.split(',')[1]
-					if not rid.isdigit() or int(rid) > len(self.peerList):
+					if not rid.isdigit() or int(rid) >= len(self.resources):
 						print("Error: resource requested does not exist.")
 					else:
 						print("Sending NO")
@@ -78,8 +83,15 @@ class Sender(threading.Thread):
 				elif cmd.startswith("ADDLIST"):
 					self.sckt.sendto(self.uid + b',ADDLIST,' + self.keyPair['public'].exportKey(), self.multicastGroup)
 					
+				elif cmd.startswith("QUIT"):
+					sleep(0.2)  # Wait at least one cycle as to not interrupt an incoming/outgoing message
+					self.shouldRun = False
+					
 			except queue.Empty:
 				pass
+			
+		# Left loop, leaving
+		self.sendMessage(b"LEAVE")
 					
 	def stop(self):
 		self.shouldRun = False

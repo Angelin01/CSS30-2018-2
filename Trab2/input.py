@@ -13,6 +13,5 @@ class Input(threading.Thread):
 		while True:
 			command = input()
 			if command.startswith('QUIT'):
-				self.commandQueue.put(command)
 				break
 			self.commandQueue.put(command)

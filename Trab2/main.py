@@ -51,7 +51,6 @@ def main(address, port, privateKey, publicKey, name):
 	# Input asked to quit
 	threadListener.stop()
 	threadListener.join()
-	threadSender.stop()
 	threadSender.join()
 
 	#sys.exit(0)
