@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class PlaneTicket implements Serializable {
 	private String destiny;
 	private String origin;
@@ -184,6 +183,7 @@ public class PlaneTicket implements Serializable {
 	public void setReturnDate(String returnDate) throws java.text.ParseException{
 		if (returnDate == null) {
 			this.returnDate = null;
+			return;
 		}
 		this.returnDate = format.parse(returnDate);
 	}
