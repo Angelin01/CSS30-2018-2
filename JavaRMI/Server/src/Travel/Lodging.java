@@ -80,7 +80,7 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Simple setter for location
-	 * @param location
+	 * @param location String for location
 	 * @throws NullPointerException if location is null
 	 */
 	public void setLocation(String location) {
@@ -114,7 +114,7 @@ public class Lodging implements Serializable {
 	/**
 	 * Simple setter for checkIn with String object
 	 * @param checkIn the String object for checkIn
-	 * @throws java.text.ParseException
+	 * @throws java.text.ParseException if cannot parse the String for the date
 	 */
 	public void setCheckIn(String checkIn) throws java.text.ParseException {
 		this.checkIn = format.parse(checkIn);
@@ -143,7 +143,7 @@ public class Lodging implements Serializable {
 	/**
 	 * Simple setter for checkOut with String object
 	 * @param checkOut the String object for checkOut
-	 * @throws java.text.ParseException
+	 * @throws java.text.ParseException if cannot parse the String for the date
 	 */
 	public void setCheckOut(String checkOut) throws java.text.ParseException {
 		this.checkOut = format.parse(checkOut);
@@ -159,7 +159,7 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Simple setter for price
-	 * @param price
+	 * @param price price for the stay in CENTS
 	 */
 	public void setPrice(int price) {
 		if (price < 0) {
