@@ -6,24 +6,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PlaneTicket implements Serializable {
-	private String destiny;
-	private String origin;
+	private Location destiny;
+	private Location origin;
 	private Date departureDate;
 	private Date returnDate;
 	private int price;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
-	 * Constructor for a PlaneTicket object using Date objects
-	 * @param destiny String with the name of the destiny location
-	 * @param origin String with the name of the origin location
+	 * Constructor for a PlaneTicket object using Date objects and Location enum
+	 * @param destiny Location of destiny location
+	 * @param origin Location of origin location
 	 * @param departureDate Date object of departure
 	 * @param returnDate Date object of return. If null, ticket is one way
 	 * @param price price in CENTS for the ticket
 	 * @throws NullPointerException if null is passed to destiny, origin or departure date
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public PlaneTicket(String destiny, String origin, Date departureDate, Date returnDate, int price) {
+	public PlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int price) {
 		if(destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
 		}
@@ -48,9 +48,9 @@ public class PlaneTicket implements Serializable {
 	}
 	
 	/**
-	 * Constructor for a PlaneTicket object using Strings for dates
-	 * @param destiny String with the name of the destiny location
-	 * @param origin String with the name of the origin location
+	 * Constructor for a PlaneTicket object using Strings for dates and the Location enum
+	 * @param destiny Location of destiny location
+	 * @param origin Location of origin location
 	 * @param departureDate String date of departure
 	 * @param returnDate String date of return. If null, ticket is one way
 	 * @param price price in CENTS for the ticket
@@ -58,7 +58,7 @@ public class PlaneTicket implements Serializable {
 	 * @throws NullPointerException if null is passed to destiny, origin or departure date
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public PlaneTicket(String destiny, String origin, String departureDate, String returnDate, int price)
+	public PlaneTicket(Location destiny, Location origin, String departureDate, String returnDate, int price)
 			throws java.text.ParseException {
 		if(destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
@@ -90,9 +90,9 @@ public class PlaneTicket implements Serializable {
 	
 	/**
 	 * Simple getter for destiny
-	 * @return the destiny String
+	 * @return the destiny Location
 	 */
-	public String getDestiny() {
+	public Location getDestiny() {
 		return destiny;
 	}
 	
@@ -101,7 +101,7 @@ public class PlaneTicket implements Serializable {
 	 * @param destiny Sets destiny. Must be a valid location or will fail
 	 * @throws NullPointerException if destiny is null
 	 */
-	public void setDestiny(String destiny) {
+	public void setDestiny(Location destiny) {
 		if (destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
 		}
@@ -111,9 +111,9 @@ public class PlaneTicket implements Serializable {
 	
 	/**
 	 * Simple getter for origin
-	 * @return the origin String
+	 * @return the origin Location
 	 */
-	public String getOrigin() {
+	public Location getOrigin() {
 		return origin;
 	}
 	
@@ -122,7 +122,7 @@ public class PlaneTicket implements Serializable {
 	 * @param origin Sets destiny. Must be a valid location or will fail
 	 * @throws NullPointerException if origin is null
 	 */
-	public void setOrigin(String origin) {
+	public void setOrigin(Location origin) {
 		if (origin == null) {
 			throw new NullPointerException("Parameter origin cannot be null");
 		}

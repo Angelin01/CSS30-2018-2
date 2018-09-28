@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Lodging implements Serializable {
-	private String location;
+	private Location location;
 	private Date checkIn;
 	private Date checkOut;
 	private int price;
@@ -14,14 +14,14 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Constructor for a Lodging object using Date objects
-	 * @param location the String location
+	 * @param location Location enum for the location
 	 * @param price the price in CENTS
 	 * @param checkIn the Date object for checking in
 	 * @param checkOut the Date object for checking out
 	 * @throws NullPointerException if location, checkIn or checkOut are null
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public Lodging(String location, Date checkIn, Date checkOut, int price) {
+	public Lodging(Location location, Date checkIn, Date checkOut, int price) {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
@@ -46,7 +46,7 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Constructor for a Lodging object using Strings objects
-	 * @param location the String location
+	 * @param location Location enum for the location
 	 * @param price the price in CENTS
 	 * @param checkIn the String object for checking in
 	 * @param checkOut the String object for checking out
@@ -54,7 +54,7 @@ public class Lodging implements Serializable {
 	 * @throws IllegalArgumentException if price is negative
 	 * @throws java.text.ParseException if cannot parse date Strings
 	 */
-	public Lodging(String location, String checkIn, String checkOut, int price) throws java.text.ParseException {
+	public Lodging(Location location, String checkIn, String checkOut, int price) throws java.text.ParseException {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
@@ -72,18 +72,18 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Simple getter for location
-	 * @return location String
+	 * @return location Location
 	 */
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 	
 	/**
 	 * Simple setter for location
-	 * @param location String for location
+	 * @param location Location for location
 	 * @throws NullPointerException if location is null
 	 */
-	public void setLocation(String location) {
+	public void setLocation(Location location) {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
