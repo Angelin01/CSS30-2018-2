@@ -91,4 +91,16 @@ public class Package implements Serializable {
 		}
 		this.price = price;
 	}
+
+	/**
+	 * A simple to string method to visualize both the PlaneTicket and Lodging objects of the package
+	 * @return a string visualization of the Package
+	 */
+	@Override
+	public String toString() {
+		return("Package:\n" +
+		       planeTicket.toString() + "\n" +
+		       lodging.toString() + "\n" +
+		       "Package price: $" + price/100 + "." + price%100);
+	}
 }

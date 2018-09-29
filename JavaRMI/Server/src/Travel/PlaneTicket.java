@@ -206,4 +206,19 @@ public class PlaneTicket implements Serializable {
 		}
 		this.price = price;
 	}
+
+	/**
+	 * A simple to string method for using with print to visualize a PlaneTicket object
+	 * @return a string visualization of the PlaneTicket
+	 */
+	@Override
+	public String toString() {
+		return("Ticket:\n" +
+		       "Type: " + (returnDate == null ? "One way" : "Round-trip") + "\n" +
+		       "Destiny: " + destiny + "\n" +
+		       "Oririn: " + origin + "\n" +
+		       "Departure Date: " + departureDate + "\n" +
+			   (returnDate != null ? ("Return date: " + returnDate + "\n") : "") +
+		       "Price: $" + price/100 + "." + price%100);
+	}
 }

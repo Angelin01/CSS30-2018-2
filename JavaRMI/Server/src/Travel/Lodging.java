@@ -167,4 +167,17 @@ public class Lodging implements Serializable {
 		}
 		this.price = price;
 	}
+
+	/**
+	 * A simple to string method for using with print to visualize a Lodging object
+	 * @return a string visualization of the Lodging
+	 */
+	@Override
+	public String toString() {
+		return("Lodging:\n" +
+		       "Location: " + location + "\n" +
+		       "Check in date: " + checkIn + "\n" +
+		       "Check out date=" + checkOut + "\n" +
+		       "Price: $" + price/100 + "." + price%100);
+	}
 }
