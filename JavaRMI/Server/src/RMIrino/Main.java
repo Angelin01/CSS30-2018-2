@@ -13,7 +13,7 @@ public class Main {
 		referenciaServicoNomes.rebind("servico", servico);*/
 
 		PlaneTicket testP = new PlaneTicket(Location.ARACAJU, Location.CURITIBA, "2018-09-30 00:00:00", "2018-10-07 00:00:00", 75000);
-		Lodging testL = new Lodging(Location.CURITIBA, "2018-09-30 00:00:00", "2018-10-07 00:00:00", 25000);
+		Lodging testL = new Lodging(Location.CURITIBA, 25000);
 		TravelPackage testPkg = new TravelPackage(testP, testL, 80000);
 		System.out.println(testL);
 		System.out.println(testP);
