@@ -177,7 +177,7 @@ public class Lodging implements Serializable {
 		return("Lodging:\n" +
 		       "Location: " + location + "\n" +
 		       "Check in date: " + checkIn + "\n" +
-		       "Check out date=" + checkOut + "\n" +
+		       "Check out date: " + checkOut + "\n" +
 		       "Price: $" + price/100 + "." + price%100);
 	}
 }

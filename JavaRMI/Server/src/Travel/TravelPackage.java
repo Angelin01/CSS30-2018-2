@@ -2,20 +2,20 @@ package Travel;
 
 import java.io.Serializable;
 
-public class Package implements Serializable {
+public class TravelPackage implements Serializable {
 	private PlaneTicket planeTicket;
 	private Lodging lodging;
 	private int price;
 	
 	/**
-	 * Simple constructor for a Package of a ticker and lodging
+	 * Simple constructor for a TravelPackage of a ticker and lodging
 	 * @param planeTicket Ticket for the package
 	 * @param lodging Lodging for the package
 	 * @param price The price in CENTS for the package
 	 * @throws NullPointerException if either planeTicket or lodging is null
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public Package(PlaneTicket planeTicket, Lodging lodging, int price) {
+	public TravelPackage(PlaneTicket planeTicket, Lodging lodging, int price) {
 		if (planeTicket == null) {
 			throw new NullPointerException("Parameter planeTicket cannot be null");
 		}
@@ -94,13 +94,13 @@ public class Package implements Serializable {
 
 	/**
 	 * A simple to string method to visualize both the PlaneTicket and Lodging objects of the package
-	 * @return a string visualization of the Package
+	 * @return a string visualization of the TravelPackage
 	 */
 	@Override
 	public String toString() {
-		return("Package:\n" +
+		return("TravelPackage:\n" +
 		       planeTicket.toString() + "\n" +
 		       lodging.toString() + "\n" +
-		       "Package price: $" + price/100 + "." + price%100);
+		       "TravelPackage price: $" + price/100 + "." + price%100);
 	}
 }

@@ -1,18 +1,22 @@
 package RMIrino;
 
 import java.rmi.RemoteException;
+import java.text.ParseException;
 
-import Travel.Location;
+import Travel.*;
 
 public class Main {
-	public static void main (String[] args) throws RemoteException {
+	public static void main (String[] args) throws RemoteException, ParseException {
 		/*final int PORT = 1337;
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
 		ServImpl servico = new ServImpl();
 		referenciaServicoNomes.rebind("servico", servico);*/
 
-		for (Location l : Location.values()) {
-			System.out.println(l);
-		}
+		PlaneTicket testP = new PlaneTicket(Location.ARACAJU, Location.CURITIBA, "2018-09-30 00:00:00", "2018-10-07 00:00:00", 75000);
+		Lodging testL = new Lodging(Location.CURITIBA, "2018-09-30 00:00:00", "2018-10-07 00:00:00", 25000);
+		TravelPackage testPkg = new TravelPackage(testP, testL, 80000);
+		System.out.println(testL);
+		System.out.println(testP);
+		System.out.println(testPkg);
 	}
 }
