@@ -216,9 +216,9 @@ public class PlaneTicket implements Serializable {
 		return("Ticket:\n" +
 		       "Type: " + (returnDate == null ? "One way" : "Round-trip") + "\n" +
 		       "Destiny: " + destiny + "\n" +
-		       "Oririn: " + origin + "\n" +
+		       "Origin: " + origin + "\n" +
 		       "Departure Date: " + departureDate + "\n" +
-			   (returnDate != null ? ("Return date: " + returnDate + "\n") : "") +
+		       (returnDate != null ? ("Return date: " + returnDate + "\n") : "") +
 		       "Price: $" + price/100 + "." + price%100);
 	}
 }
