@@ -74,6 +74,10 @@ public class Lodging implements Serializable {
 		this.price = price;
 	}
 
+	/**
+	 * Simple getter for the id
+	 * @return the id for the Lodging
+	 */
 	public int getId() {
 		return id;
 	}

@@ -6,6 +6,8 @@ public class TravelPackage implements Serializable {
 	private PlaneTicket planeTicket;
 	private Lodging lodging;
 	private int price;
+	private int id;
+	private static int nextId = 0;
 	
 	/**
 	 * Simple constructor for a TravelPackage of a ticker and lodging
@@ -30,6 +32,8 @@ public class TravelPackage implements Serializable {
 			throw new IllegalArgumentException("Parameter price cannot be negative");
 		}
 		this.price = price;
+
+		this.id = nextId++;
 	}
 	
 	/**
@@ -90,6 +94,14 @@ public class TravelPackage implements Serializable {
 			throw new IllegalArgumentException("Parameter price cannot be negative");
 		}
 		this.price = price;
+	}
+
+	/**
+	 * Simple getter for the id
+	 * @return the id for the TravelPackage
+	 */
+	public int getId() {
+		return id;
 	}
 
 	/**
