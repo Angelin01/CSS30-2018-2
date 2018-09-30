@@ -22,21 +22,33 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 
 	protected ServImpl() throws RemoteException {}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public List<Lodging> getLodgings() throws RemoteException {
 		return listLodgings;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public List<PlaneTicket> getPlaneTickets() throws RemoteException {
 		return listPlaneTickets;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public List<TravelPackage> getTravelPackages() throws RemoteException {
 		return listTravelPackages;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID) throws RemoteException {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
@@ -49,6 +61,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms, Date checkIn, Date checkOut) throws RemoteException {
 		for (Lodging lodging : listLodgings) {
@@ -64,6 +79,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException {
 		Date checkIn = format.parse(scheckIn);
@@ -81,6 +99,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numRooms, Date checkIn, Date checkOut) throws RemoteException {
 		for (TravelPackage travelPackage : listTravelPackages) {
@@ -96,6 +117,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException {
 		Date checkIn = format.parse(scheckIn);
