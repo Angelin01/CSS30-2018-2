@@ -103,37 +103,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public boolean buyTravelPackage(int travelPackageID, int numRooms, Date checkIn, Date checkOut) throws RemoteException {
+	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
 		for (TravelPackage travelPackage : listTravelPackages) {
 			if (travelPackage.getId() == travelPackageID) {
 				System.out.println("Client just successfully bought:\n" +
 				                   travelPackage + "\n" +
-				                   "Number of rooms: " + numRooms + "\n" +
-				                   "Check In: " + checkIn + "\n" +
-				                   "Check Out: " + checkOut);
+				                   "Number of packages: " + numPackages
 				return true;
 			}
 		}
 		return false;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public boolean buyTravelPackage(int travelPackageID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException {
-		Date checkIn = format.parse(scheckIn);
-		Date checkOut = format.parse(scheckIn);
-		for (TravelPackage travelPackage : listTravelPackages) {
-			if (travelPackage.getId() == travelPackageID) {
-				System.out.println("Client just successfully bought:\n" +
-				                   travelPackage + "\n" +
-				                   "Number of rooms: " + numRooms + "\n" +
-				                   "Check In: " + checkIn + "\n" +
-				                   "Check Out: " + checkOut);
-				return true;
-			}
-		}
-		return false;
-	}
+
 }

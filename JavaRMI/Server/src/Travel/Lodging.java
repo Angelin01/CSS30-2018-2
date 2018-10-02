@@ -174,6 +174,7 @@ public class Lodging implements Serializable {
 		this.numRooms = numRooms;
 	}
 
+	// @todo update toString
 	/**
 	 * A simple to string method for using with print to visualize a Lodging object
 	 * @return a string visualization of the Lodging

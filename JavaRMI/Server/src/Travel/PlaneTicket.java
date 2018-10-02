@@ -252,6 +252,7 @@ public class PlaneTicket implements Serializable {
 		return id;
 	}
 
+	// @todo update toString
 	/**
 	 * A simple to string method for using with print to visualize a PlaneTicket object
 	 * @return a string visualization of the PlaneTicket
