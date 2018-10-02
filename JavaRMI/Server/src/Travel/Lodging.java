@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * A Lodging, with a Location Enum, price per room, a date and the number of available rooms for that date
+ */
 public class Lodging implements Serializable {
 	private Location location;
 	private int price;

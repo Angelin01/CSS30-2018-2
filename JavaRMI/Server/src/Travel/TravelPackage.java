@@ -2,6 +2,9 @@ package Travel;
 
 import java.io.Serializable;
 
+/**
+ * Travel package, with a PlaneTicket and Lodging and a new price
+ */
 public class TravelPackage implements Serializable {
 	private PlaneTicket planeTicket;
 	private Lodging lodging;

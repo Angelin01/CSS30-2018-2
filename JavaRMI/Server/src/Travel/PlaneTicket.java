@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * A PlaneTicket, with a origin and destination, departure date, optional return date, pricing and number of available seats
+ */
 public class PlaneTicket implements Serializable {
 	private Location destiny;
 	private Location origin;
