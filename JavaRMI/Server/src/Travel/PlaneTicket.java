@@ -11,6 +11,8 @@ public class PlaneTicket implements Serializable {
 	private Date departureDate;
 	private Date returnDate;
 	private int price;
+	private int id;
+	private static int nextId = 0;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
@@ -45,6 +47,8 @@ public class PlaneTicket implements Serializable {
 			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
+
+		this.id = nextId++;
 	}
 	
 	/**
@@ -86,6 +90,8 @@ public class PlaneTicket implements Serializable {
 			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
+
+		this.id = nextId++;
 	}
 	
 	/**
@@ -205,5 +211,28 @@ public class PlaneTicket implements Serializable {
 			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
+	}
+
+	/**
+	 * Simple getter for the id
+	 * @return the id for the PlaneTicket
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * A simple to string method for using with print to visualize a PlaneTicket object
+	 * @return a string visualization of the PlaneTicket
+	 */
+	@Override
+	public String toString() {
+		return("Ticket:\n" +
+		       "Type: " + (returnDate == null ? "One way" : "Round-trip") + "\n" +
+		       "Destiny: " + destiny + "\n" +
+		       "Origin: " + origin + "\n" +
+		       "Departure Date: " + departureDate + "\n" +
+		       (returnDate != null ? ("Return date: " + returnDate + "\n") : "") +
+		       "Price: $" + price/100 + "." + price%100);
 	}
 }

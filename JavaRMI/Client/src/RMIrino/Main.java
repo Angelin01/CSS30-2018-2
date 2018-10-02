@@ -1,11 +1,13 @@
 package RMIrino;
 
-import javax.swing.*;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class Main {
     public static void main (String[] args) throws RemoteException {
-        /*final int PORT = 1337;
+        final int PORT = 1337;
         Registry referenciaServicoNomes = LocateRegistry.getRegistry(PORT);
 
         InterfaceServ servidor = null;
@@ -15,10 +17,9 @@ public class Main {
             e.printStackTrace();
         }
         CliImpl client = new CliImpl(servidor);
-        client.vaca("Batatas sao boas");*/
 
         // GUI
 
-        JanelaCliente clientWindow = new JanelaCliente();
+        JanelaCliente clientWindow = new JanelaCliente(servidor);
     }
 }
