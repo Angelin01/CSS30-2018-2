@@ -9,27 +9,70 @@ public class Lodging implements Serializable {
 	private Location location;
 	private int price;
 	private int id;
+	private Date date;
+	private int numRooms;
 	private static int nextId = 0;
-	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 	
 	/**
-	 * Constructor for a Lodging object
+	 * Constructor for a Lodging object using a Date object
 	 * @param location Location enum for the location
 	 * @param price the price in CENTS per room per day
+	 * @param date the date object for the date
 	 * @throws NullPointerException if location is null
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public Lodging(Location location, int price) {
+	public Lodging(Location location, Date date, int price, int numRooms) {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
 		this.location = location;
+
+		if (date == null) {
+			throw new NullPointerException("Parameter date cannot be null");
+		}
+		this.date = date;
 		
 		if (price < 0) {
 			throw new IllegalArgumentException("Parameter price cannot be negative");
 		}
 		this.price = price;
+
+		if (numRooms < 0) {
+			throw new IllegalArgumentException("Parameter numRooms cannot be negative");
+		}
+		this.numRooms = numRooms;
+
+		this.id = nextId++;
+	}
+
+	/**
+	 * Constructor for a Lodging object using a String object
+	 * @param location Location enum for the location
+	 * @param price the price in CENTS per room per day
+	 * @param date the String object for the date
+	 * @throws NullPointerException if location is null
+	 * @throws IllegalArgumentException if price is negative
+	 */
+	public Lodging(Location location, String date, int price, int numRooms) throws java.text.ParseException {
+		if (location == null) {
+			throw new NullPointerException("Parameter location cannot be null");
+		}
+		this.location = location;
+
+		this.date = format.parse(date);
+
+		if (price < 0) {
+			throw new IllegalArgumentException("Parameter price cannot be negative");
+		}
+		this.price = price;
+
+		if (numRooms < 0) {
+			throw new IllegalArgumentException("Parameter numRooms cannot be negative");
+		}
+		this.numRooms = numRooms;
+
 		this.id = nextId++;
 	}
 
@@ -80,6 +123,52 @@ public class Lodging implements Serializable {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * Simple getter for the date object
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
+
+	/**
+	 * Simple setter for the date using a Date object
+	 * @param date the date
+	 */
+	public void setDate(Date date) {
+		if (date == null) {
+			throw new NullPointerException("Parameter date cannot be null");
+		}
+		this.date = date;
+	}
+
+	/**
+	 * Simple setter for the date using a String object
+	 * @param date the date
+	 */
+	public void setDate(String date) throws java.text.ParseException {
+		this.date = format.parse(date);
+	}
+
+	/**
+	 * Simple getter for the number of rooms
+	 * @return the number of available rooms
+	 */
+	public int getNumRooms() {
+		return numRooms;
+	}
+
+	/**
+	 * Simple setter for the number of rooms
+	 * @param numRooms the number of available rooms
+	 */
+	public void setNumRooms(int numRooms) {
+		if (numRooms < 0) {
+			throw new IllegalArgumentException("Parameter numRooms cannot be negative");
+		}
+		this.numRooms = numRooms;
 	}
 
 	/**
