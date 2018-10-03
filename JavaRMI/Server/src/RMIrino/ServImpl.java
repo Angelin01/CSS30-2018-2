@@ -115,8 +115,43 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return listTravelPackages;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable) throws RemoteException {
+		List<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
+		
+		for (TravelPackage travelPackage : listTravelPackages) {
+			// Check the origin filter
+			if (origin != null && travelPackage.getPlaneTicket().getOrigin() != origin) { continue; }
+			
+			// Check the destiny filter
+			if (destiny != null && travelPackage.getPlaneTicket().getDestiny() != destiny) { continue; }
+			
+			// Check the price filter
+			if (maxPrice > 0 && travelPackage.getPrice() > maxPrice) { continue; }
+			
+			// Check the departure date filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (departureDate != null && travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY != departureDate.getTime()/MILLIS_IN_DAY) { continue; }
+			
+			// Check the return date filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (returnDate != null && travelPackage.getPlaneTicket().getReturnDate().getTime()/MILLIS_IN_DAY != returnDate.getTime()/MILLIS_IN_DAY) { continue; }
+			
+			// Check the minimum available filter
+			// Needs to check both the plane and the lodging
+			if (minimumAvailable > 0 &&
+			    (travelPackage.getPlaneTicket().getNumSeats() < minimumAvailable || travelPackage.getLodging().getNumRooms() < minimumAvailable)) { continue; }
+			
+			// Passed all filters, add to return list
+			filteredTravelPackages.add(travelPackage);
+		}
+		
+		return filteredTravelPackages;
+	}
 	
-
 	/**
 	 * @inheritDoc
 	 */
