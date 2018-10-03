@@ -12,7 +12,7 @@ public interface InterfaceServ extends Remote {
 	/**
 	 * Simple getter for the list of available lodgings
 	 * @return a List of ALL Lodging objects
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<Lodging> getLodgings() throws RemoteException;
 
@@ -23,14 +23,14 @@ public interface InterfaceServ extends Remote {
 	 * @param date Date object of interest
 	 * @param minimumRooms number of minimum rooms available. <= 0 if doesn't matter
 	 * @return A list of Lodgings according to the filters
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<Lodging> getLodgings(Location location, int maxPrice, Date date, int minimumRooms) throws RemoteException;
 
 	/**
 	 * Simple getter for the list of available plane tickets
 	 * @return a List of ALL PlaneTickets objects
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<PlaneTicket> getPlaneTickets() throws RemoteException;
 
@@ -43,7 +43,7 @@ public interface InterfaceServ extends Remote {
 	 * @param returnDate the return date. null if doesn't matter. Note: having a return date implies a round-trip
 	 * @param minimumSeats the minimum number of available seats. <= 0 if doesn't matter
 	 * @return A list of PlaneTickets according to the filters
-	 * @throws RemoteException
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                  Date returnDate, int minimumSeats) throws RemoteException;
@@ -51,7 +51,7 @@ public interface InterfaceServ extends Remote {
 	/**
 	 * Simple getter for the list of available packages
 	 * @return a List of ALL TravelPackages objects
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<TravelPackage> getTravelPackages() throws RemoteException;
 
@@ -63,7 +63,7 @@ public interface InterfaceServ extends Remote {
 	 * @param departureDate the departure date. null if doesn't matter
 	 * @param returnDate the return date. null if doesn't matter
 	 * @return List of TravelPackages according to the filters
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                      Date returnDate) throws RemoteException;
@@ -73,7 +73,7 @@ public interface InterfaceServ extends Remote {
 	 * @param planeTicketID the id for the desired plane
 	 * @param numTickets the number of desired tickets
 	 * @return true if the ticket was successfully bought, false if there was a problem
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
 
@@ -84,7 +84,7 @@ public interface InterfaceServ extends Remote {
 	 * @param checkIn the Date object for the checkIn date
 	 * @param checkOut the Date object for the checkOut date
 	 * @return true if the lodging was successfully reserved, false if there was a problem
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyLodging(int lodgingID, int numRooms, Date checkIn, Date checkOut) throws RemoteException;
 
@@ -95,7 +95,7 @@ public interface InterfaceServ extends Remote {
 	 * @param scheckIn the String object for the checkIn date
 	 * @param scheckOut the String object for the checkOut date
 	 * @return true if the lodging was successfully reserved, false if there was a problem
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyLodging(int lodgingID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException;
 
@@ -104,7 +104,7 @@ public interface InterfaceServ extends Remote {
 	 * @param travelPackageID the id for the desired travel package
 	 * @param numPackets the number of rooms desired for the lodging
 	 * @return true if the travel package was successfully bought, false if there was a problem
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyTravelPackage(int travelPackageID, int numPackets) throws RemoteException;
 
@@ -116,7 +116,7 @@ public interface InterfaceServ extends Remote {
 	 * @param maximumPrice the maximum price for the tickets in CENTS
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	int interestPlaneTicket(Location destiny, Location origin, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
@@ -126,7 +126,7 @@ public interface InterfaceServ extends Remote {
 	 * @param maximumPrice the maximum price for the lodging in CENTS per day per room
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	int interestLodging(Location location, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
@@ -137,7 +137,7 @@ public interface InterfaceServ extends Remote {
 	 * @param maximumPrice the maximum price for the travel package in CENTS
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	int interestTravelPackage(Location destiny, Location origin, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
@@ -145,7 +145,7 @@ public interface InterfaceServ extends Remote {
 	 * Method for removing an interested added
 	 * @param id the id returned by the interest function
 	 * @return true if it was successfully removed, false otherwise
-	 * @throws RemoteException @todo
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean removeInterest(int id) throws RemoteException;
 }
