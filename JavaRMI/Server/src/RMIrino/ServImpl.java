@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public List<Lodging> listLodgings;
 	public List<TravelPackage> listTravelPackages;
 
-	protected ServImpl() throws RemoteException {}
+	protected ServImpl() throws RemoteException {
+		listPlaneTickets = new ArrayList<PlaneTicket>();
+		listLodgings = new ArrayList<Lodging>();
+		listTravelPackages = new ArrayList<TravelPackage>();
+	}
 
 	/**
 	 * @inheritDoc
