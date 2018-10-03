@@ -17,6 +17,7 @@ import java.util.List;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final int MILLIS_IN_DAY = 86400000;
 	public List<PlaneTicket> listPlaneTickets;
 	public List<Lodging> listLodgings;
 	public List<TravelPackage> listTravelPackages;
@@ -40,7 +41,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public List<Lodging> getLodgings(Location location, int maxPrice, Date date, int minimumRooms) throws RemoteException {
-		final int MILLIS_IN_DAY = 86400000;
 		List<Lodging> filteredLodgings = new ArrayList<Lodging>();
 		
 		for (Lodging lodging : listLodgings) {
@@ -71,7 +71,42 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public List<PlaneTicket> getPlaneTickets() throws RemoteException {
 		return listPlaneTickets;
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
+		List<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
+		
+		for (PlaneTicket planeTicket : listPlaneTickets) {
+			// Check the origin filter
+			if (origin != null && planeTicket.getOrigin() != origin) { continue; }
+			
+			// Check the destiny filter
+			if (destiny != null && planeTicket.getDestiny() != destiny) { continue; }
+			
+			// Check the price filter
+			if (maxPrice > 0 && planeTicket.getPrice() > maxPrice) { continue; }
+			
+			// Check the departure date filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (departureDate != null && planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY != departureDate.getTime()/MILLIS_IN_DAY) { continue; }
+			
+			// Check the return date filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (returnDate != null && planeTicket.getReturnDate().getTime()/MILLIS_IN_DAY != returnDate.getTime()/MILLIS_IN_DAY) { continue; }
+			
+			// Check the minimum available seats filter
+			if (minimumSeats > 0 && planeTicket.getNumSeats() < minimumSeats) { continue; }
+			
+			// Passed all filters, add to return list
+			filteredPlaneTickets.add(planeTicket);
+		}
+		
+		return filteredPlaneTickets;
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -79,6 +114,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public List<TravelPackage> getTravelPackages() throws RemoteException {
 		return listTravelPackages;
 	}
+	
+	
 
 	/**
 	 * @inheritDoc
