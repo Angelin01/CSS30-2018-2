@@ -2,6 +2,8 @@ package RMIrino;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import Travel.*;
 

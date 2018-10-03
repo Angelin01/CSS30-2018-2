@@ -1,10 +1,10 @@
 package RMIrino;
 
+import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
 
-import javax.swing.plaf.basic.BasicSliderUI;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
@@ -34,7 +34,36 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public List<Lodging> getLodgings() throws RemoteException {
 		return listLodgings;
 	}
-
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public List<Lodging> getLodgings(Location location, int maxPrice, Date date, int minimumRooms) throws RemoteException {
+		final int MILLIS_IN_DAY = 86400000;
+		List<Lodging> filteredLodgings = new ArrayList<Lodging>();
+		
+		for (Lodging lodging : listLodgings) {
+			// Check the location filter
+			if (location != null && lodging.getLocation() != location) { continue; }
+			
+			// Check the price filter
+			if (maxPrice > 0 && lodging.getPrice() > maxPrice) { continue; }
+			
+			// Check the date filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (date != null && lodging.getDate().getTime()/MILLIS_IN_DAY != date.getTime()/MILLIS_IN_DAY) { continue; }
+			
+			// Check the minimum available rooms filter
+			if (minimumRooms > 0 && lodging.getNumRooms() < minimumRooms) { continue; }
+			
+			// Passed all filters, add to return list
+			filteredLodgings.add(lodging);
+		}
+		
+		return filteredLodgings;
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -113,7 +142,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			if (travelPackage.getId() == travelPackageID) {
 				System.out.println("Client just successfully bought:\n" +
 				                   travelPackage + "\n" +
-				                   "Number of packages: " + numPackages
+				                   "Number of packages: " + numPackages;
 				return true;
 			}
 		}
