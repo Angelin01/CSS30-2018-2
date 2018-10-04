@@ -12,7 +12,8 @@ public class Lodging implements Serializable {
 	private Location location;
 	private int price;
 	private int id;
-	private Date date;
+	private Date checkIn;
+	private Date checkOut;
 	private int numRooms;
 	private static int nextId = 0;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -21,21 +22,27 @@ public class Lodging implements Serializable {
 	/**
 	 * Constructor for a Lodging object using a Date object
 	 * @param location Location enum for the location
-	 * @param price the price in CENTS per room per day
-	 * @param date the date object for the date
+	 * @param price the price in CENTS per room
+	 * @param checkIn the date object for the checkIn
+	 * @param checkOut the date object for the checkOut
 	 * @throws NullPointerException if location is null
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public Lodging(Location location, Date date, int price, int numRooms) {
+	public Lodging(Location location, Date checkIn, Date checkOut, int price, int numRooms) {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
 		this.location = location;
 
-		if (date == null) {
-			throw new NullPointerException("Parameter date cannot be null");
+		if (checkIn == null) {
+			throw new NullPointerException("Parameter checkIn cannot be null");
 		}
-		this.date = date;
+		this.checkIn = checkIn;
+
+		if (checkOut == null) {
+			throw new NullPointerException("Parameter checkOut cannot be null");
+		}
+		this.checkIn = checkOut;
 		
 		if (price < 0) {
 			throw new IllegalArgumentException("Parameter price cannot be negative");
@@ -53,18 +60,21 @@ public class Lodging implements Serializable {
 	/**
 	 * Constructor for a Lodging object using a String object
 	 * @param location Location enum for the location
-	 * @param price the price in CENTS per room per day
-	 * @param date the String object for the date
+	 * @param price the price in CENTS per room
+	 * @param checkIn the String object for the checkIn
+	 * @param checkOut the String object for the checkOut
 	 * @throws NullPointerException if location is null
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public Lodging(Location location, String date, int price, int numRooms) throws java.text.ParseException {
+	public Lodging(Location location, String checkIn, String checkOut, int price, int numRooms) throws java.text.ParseException {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
 		this.location = location;
 
-		this.date = format.parse(date);
+		this.checkIn = format.parse(checkIn);
+
+		this.checkOut = format.parse(checkOut);
 
 		if (price < 0) {
 			throw new IllegalArgumentException("Parameter price cannot be negative");
@@ -102,8 +112,8 @@ public class Lodging implements Serializable {
 	}
 	
 	/**
-	 * Simple getter for price per room per day
-	 * @return the price in CENTS per room per day
+	 * Simple getter for price per room
+	 * @return the price in CENTS per room
 	 */
 	public int getPrice() {
 		return price;
@@ -129,30 +139,57 @@ public class Lodging implements Serializable {
 	}
 
 	/**
-	 * Simple getter for the date object
-	 * @return the date
+	 * Simple getter for the checkIn object
+	 * @return the checkIn date
 	 */
-	public Date getDate() {
-		return date;
+	public Date getCheckIn() {
+		return checkIn;
 	}
 
 	/**
 	 * Simple setter for the date using a Date object
-	 * @param date the date
+	 * @param checkIn the date for checkIn
 	 */
-	public void setDate(Date date) {
-		if (date == null) {
+	public void setCheckIn(Date checkIn) {
+		if (checkIn == null) {
 			throw new NullPointerException("Parameter date cannot be null");
 		}
-		this.date = date;
+		this.checkIn = checkIn;
 	}
 
 	/**
-	 * Simple setter for the date using a String object
-	 * @param date the date
+	 * Simple setter for the checkIn using a String object
+	 * @param checkIn the date for checkIn
 	 */
-	public void setDate(String date) throws java.text.ParseException {
-		this.date = format.parse(date);
+	public void setcheckIn(String checkIn) throws java.text.ParseException {
+		this.checkIn = format.parse(checkIn);
+	}
+
+	/**
+	 * Simple getter for the checkOut object
+	 * @return the checkOut date
+	 */
+	public Date getcheckOut() {
+		return checkOut;
+	}
+
+	/**
+	 * Simple setter for the date using a Date object
+	 * @param checkOut the date for checkOut
+	 */
+	public void setcheckOut(Date checkOut) {
+		if (checkOut == null) {
+			throw new NullPointerException("Parameter date cannot be null");
+		}
+		this.checkOut = checkOut;
+	}
+
+	/**
+	 * Simple setter for the checkOut using a String object
+	 * @param checkOut the date for checkOut
+	 */
+	public void setcheckOut(String checkOut) throws java.text.ParseException {
+		this.checkOut = format.parse(checkOut);
 	}
 
 	/**
@@ -174,7 +211,6 @@ public class Lodging implements Serializable {
 		this.numRooms = numRooms;
 	}
 
-	// @todo update toString
 	/**
 	 * A simple to string method for using with print to visualize a Lodging object
 	 * @return a string visualization of the Lodging
@@ -183,6 +219,8 @@ public class Lodging implements Serializable {
 	public String toString() {
 		return("Lodging:\n" +
 		       "Location: " + location + "\n" +
-		       "Price per room per day: $" + price/100 + "." + price%100);
+		       "CheckIn: " + checkIn + "\n" +
+		       "CheckOut: " + checkOut + "\n" +
+		       "Price per room: $" + price/100 + "." + price%100);
 	}
 }
