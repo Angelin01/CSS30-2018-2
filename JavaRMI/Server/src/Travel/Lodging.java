@@ -161,7 +161,7 @@ public class Lodging implements Serializable {
 	 * Simple setter for the checkIn using a String object
 	 * @param checkIn the date for checkIn
 	 */
-	public void setcheckIn(String checkIn) throws java.text.ParseException {
+	public void setCheckIn(String checkIn) throws java.text.ParseException {
 		this.checkIn = format.parse(checkIn);
 	}
 
@@ -169,7 +169,7 @@ public class Lodging implements Serializable {
 	 * Simple getter for the checkOut object
 	 * @return the checkOut date
 	 */
-	public Date getcheckOut() {
+	public Date getCheckOut() {
 		return checkOut;
 	}
 

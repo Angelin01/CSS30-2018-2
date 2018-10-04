@@ -40,7 +40,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<Lodging> getLodgings(Location location, int maxPrice, Date date, int minimumRooms) throws RemoteException {
+	public List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
 		List<Lodging> filteredLodgings = new ArrayList<Lodging>();
 		
 		for (Lodging lodging : listLodgings) {
@@ -50,9 +50,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			// Check the price filter
 			if (maxPrice > 0 && lodging.getPrice() > maxPrice) { continue; }
 			
-			// Check the date filter
+			// Check the checkIn filter
 			// To check that it's the same day, calculates the Julian Day Number
-			if (date != null && lodging.getDate().getTime()/MILLIS_IN_DAY != date.getTime()/MILLIS_IN_DAY) { continue; }
+			if (checkIn != null && lodging.getCheckIn().getTime()/MILLIS_IN_DAY != checkIn.getTime()/MILLIS_IN_DAY) { continue; }
+
+			// Check the checkOut filter
+			// To check that it's the same day, calculates the Julian Day Number
+			if (checkOut != null && lodging.getCheckOut().getTime()/MILLIS_IN_DAY != checkOut.getTime()/MILLIS_IN_DAY) { continue; }
 			
 			// Check the minimum available rooms filter
 			if (minimumRooms > 0 && lodging.getNumRooms() < minimumRooms) { continue; }
@@ -156,11 +160,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public boolean buyPlaneTicket(int planeTicketID) throws RemoteException {
+	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			if (planeTicket.getId() == planeTicketID) {
-				System.out.println("Client just successfully bought:\n" +
+				if(planeTicket.getNumSeats() < numTickets) {
+					return false;
+				}
+
+				System.out.println("Client just successfully bought " + numTickets + " tickets:\n" +
 								   planeTicket);
+				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
 				return true;
 			}
 		}

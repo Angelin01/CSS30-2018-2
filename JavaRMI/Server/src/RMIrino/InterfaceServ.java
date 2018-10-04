@@ -20,12 +20,13 @@ public interface InterfaceServ extends Remote {
 	 * Getter for Lodgings with filters
 	 * @param location the desired location. null if doesn't matter
 	 * @param maxPrice the maximum price. <= 0 if doesn't matter
-	 * @param date Date object of interest
+	 * @param checkIn Date object for checkIn. null if doesn't matter
+	 * @param checkOut Date object for checkOut. null if doesn't matter
 	 * @param minimumRooms number of minimum rooms available. <= 0 if doesn't matter
 	 * @return A list of Lodgings according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	List<Lodging> getLodgings(Location location, int maxPrice, Date date, int minimumRooms) throws RemoteException;
+	List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException;
 
 	/**
 	 * Simple getter for the list of available plane tickets
