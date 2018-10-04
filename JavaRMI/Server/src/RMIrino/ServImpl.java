@@ -163,7 +163,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			if (planeTicket.getId() == planeTicketID) {
-				if(planeTicket.getNumSeats() < numTickets) {
+				if (planeTicket.getNumSeats() < numTickets) {
 					return false;
 				}
 
@@ -180,34 +180,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public boolean buyLodging(int lodgingID, int numRooms, Date checkIn, Date checkOut) throws RemoteException {
+	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
 		for (Lodging lodging : listLodgings) {
 			if (lodging.getId() == lodgingID) {
+				if (lodging.getNumRooms() < numRooms) {
+					return false;
+				}
+
 				System.out.println("Client just successfully bought:\n" +
 								   lodging + "\n" +
-								   "Number of rooms: " + numRooms + "\n" +
-								   "Check In: " + checkIn + "\n" +
-								   "Check Out: " + checkOut);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public boolean buyLodging(int lodgingID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException {
-		Date checkIn = format.parse(scheckIn);
-		Date checkOut = format.parse(scheckIn);
-		for (Lodging lodging : listLodgings) {
-			if (lodging.getId() == lodgingID) {
-				System.out.println("Client just successfully bought:\n" +
-				                   lodging + "\n" +
-				                   "Number of rooms: " + numRooms + "\n" +
-				                   "Check In: " + checkIn + "\n" +
-				                   "Check Out: " + checkOut);
+								   "Number of rooms: " + numRooms);
+				lodging.setNumRooms(lodging.getNumRooms() - numRooms);
 				return true;
 			}
 		}

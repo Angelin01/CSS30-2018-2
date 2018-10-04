@@ -83,23 +83,10 @@ public interface InterfaceServ extends Remote {
 	 * Method for buying a lodging using Date objects
 	 * @param lodgingID the id for the desired Lodging
 	 * @param numRooms the number of rooms desired
-	 * @param checkIn the Date object for the checkIn date
-	 * @param checkOut the Date object for the checkOut date
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyLodging(int lodgingID, int numRooms, Date checkIn, Date checkOut) throws RemoteException;
-
-	/**
-	 * Method for buying a lodging using String Objects
-	 * @param lodgingID the id for the desired Lodging
-	 * @param numRooms the number of rooms desired
-	 * @param scheckIn the String object for the checkIn date
-	 * @param scheckOut the String object for the checkOut date
-	 * @return true if the lodging was successfully reserved, false if there was a problem
-	 * @throws RemoteException if there's any problem with the remote connection
-	 */
-	boolean buyLodging(int lodgingID, int numRooms, String scheckIn, String scheckOut) throws RemoteException, ParseException;
+	boolean buyLodging(int lodgingID, int numRooms) throws RemoteException;
 
 	/**
 	 * Method for buying a Travel Package using Date objects
