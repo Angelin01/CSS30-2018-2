@@ -18,7 +18,7 @@ public class LodgingEvent extends TravelEvent {
 	 * @param checkOut the checkOut Date object. null if doesn't matter
 	 * @param maximumPrice the maximum price for the lodging. <= if doesn't matter
 	 * @param clientReference the client reference, cannot be null
-	 * @throws IllegalArgumentException if none of the filters matter   
+	 * @throws IllegalArgumentException if none of the filters matter
 	 */
 	public LodgingEvent(Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference) {
 		super(maximumPrice, clientReference);
