@@ -22,6 +22,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public List<Lodging> listLodgings;
 	public List<TravelPackage> listTravelPackages;
 
+	/**
+	 * Simple constructor for ServImpl with empty lists
+	 * @throws RemoteException if there's connection problems
+	 */
 	protected ServImpl() throws RemoteException {
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		listLodgings = new ArrayList<Lodging>();
@@ -204,9 +208,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
 		for (TravelPackage travelPackage : listTravelPackages) {
 			if (travelPackage.getId() == travelPackageID) {
-				System.out.println("Client just successfully bought:\n" +
-				                   travelPackage + "\n" +
-				                   "Number of packages: " + numPackages;
+				if (travelPackage.getAvailable() < numPackages) {
+					return false;
+				}
+
+				System.out.println("Client just successfully bought " + numPackages + " travel packages:\n" +
+				                   travelPackage);
+				travelPackage.decreaseAvailable(numPackages);
 				return true;
 			}
 		}
