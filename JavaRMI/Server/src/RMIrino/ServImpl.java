@@ -21,6 +21,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private List<PlaneTicket> listPlaneTickets;
 	private List<Lodging> listLodgings;
 	private List<TravelPackage> listTravelPackages;
+	
 
 	/**
 	 * Simple constructor for ServImpl with empty lists
@@ -190,14 +191,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			if (planeTicket.getId() == planeTicketID) {
-				if (planeTicket.getNumSeats() < numTickets) {
-					return false;
+				synchronized (planeTicket) {
+					if (planeTicket.getNumSeats() < numTickets) {
+						return false;
+					}
+					
+					System.out.println("Client just successfully bought " + numTickets + " tickets:\n" +
+											   planeTicket);
+					planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+					return true;
 				}
-
-				System.out.println("Client just successfully bought " + numTickets + " tickets:\n" +
-								   planeTicket);
-				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-				return true;
 			}
 		}
 		return false;
@@ -210,15 +213,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
 		for (Lodging lodging : listLodgings) {
 			if (lodging.getId() == lodgingID) {
-				if (lodging.getNumRooms() < numRooms) {
-					return false;
+				synchronized (lodging) {
+					if (lodging.getNumRooms() < numRooms) {
+						return false;
+					}
+					
+					System.out.println("Client just successfully bought:\n" +
+											   lodging + "\n" +
+											   "Number of rooms: " + numRooms);
+					lodging.setNumRooms(lodging.getNumRooms() - numRooms);
+					return true;
 				}
-
-				System.out.println("Client just successfully bought:\n" +
-								   lodging + "\n" +
-								   "Number of rooms: " + numRooms);
-				lodging.setNumRooms(lodging.getNumRooms() - numRooms);
-				return true;
 			}
 		}
 		return false;
@@ -231,14 +236,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
 		for (TravelPackage travelPackage : listTravelPackages) {
 			if (travelPackage.getId() == travelPackageID) {
-				if (travelPackage.getAvailable() < numPackages) {
-					return false;
+				synchronized (travelPackage) {
+					if (travelPackage.getAvailable() < numPackages) {
+						return false;
+					}
+					
+					System.out.println("Client just successfully bought " + numPackages + " travel packages:\n" +
+											   travelPackage);
+					travelPackage.decreaseAvailable(numPackages);
+					return true;
 				}
-
-				System.out.println("Client just successfully bought " + numPackages + " travel packages:\n" +
-				                   travelPackage);
-				travelPackage.decreaseAvailable(numPackages);
-				return true;
 			}
 		}
 		return false;

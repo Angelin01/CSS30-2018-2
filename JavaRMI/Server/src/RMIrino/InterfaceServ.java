@@ -97,7 +97,6 @@ public interface InterfaceServ extends Remote {
 	 */
 	boolean buyTravelPackage(int travelPackageID, int numPackets) throws RemoteException;
 
-
 	/**
 	 * Method for registering interest in new plane tickets
 	 * @param destiny the destiny location for the plane ticket. null if doesn't matter
