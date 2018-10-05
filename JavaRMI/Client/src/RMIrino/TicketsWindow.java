@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,9 +19,9 @@ public class TicketsWindow {
     private InterfaceServ server;
     private JPanel panelTickets;
     private JTable tableTickets;
-    private JButton btnBuy;
-    private JButton btnRegister;
+    private JButton button1;
     private JFrame frameTickets;
+
 
     public TicketsWindow(InterfaceServ server) throws RemoteException {
         int columnNumber = 8;
@@ -28,24 +29,8 @@ public class TicketsWindow {
         this.frameTickets = new JFrame("Janela Passagens");
         this.frameTickets.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.frameTickets.setContentPane(this.panelTickets);
-        this.frameTickets.pack();
+        this.frameTickets.setSize(800, 600);
         this.frameTickets.setVisible(true);
-
-        // @todo fix the buttons inside the table (maybe use button column? - https://tips4java.wordpress.com/2009/07/12/table-button-column/)
-        btnBuy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frameTickets.dispose();
-            }
-        });
-
-        btnRegister.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frameTickets.dispose();
-            }
-        });
-
 
         List<PlaneTicket> ticketList = server.getPlaneTickets();
 
@@ -62,8 +47,6 @@ public class TicketsWindow {
             content[i][3] = planeTicket.getDepartureDate();
             content[i][4] = planeTicket.getReturnDate();
             content[i][5] = planeTicket.getPrice();
-            content[i][6] = btnBuy.getIcon();
-            content[i][7] = btnRegister;
             i++;
         }
 
