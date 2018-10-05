@@ -136,10 +136,26 @@ public interface InterfaceServ extends Remote {
 	int interestTravelPackage(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
 	/**
-	 * Method for removing an interested added
+	 * Method for removing an planeTicket Interest
 	 * @param id the id returned by the interest function
 	 * @return true if it was successfully removed, false otherwise
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean removeInterest(int id) throws RemoteException;
+	boolean removeInterestPlaneTicket(int id) throws RemoteException;
+	
+	/**
+	 * Method for removing an Lodging Interest
+	 * @param id the id returned by the interest function
+	 * @return true if it was successfully removed, false otherwise
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	boolean removeInterestLodging(int id) throws RemoteException;
+	
+	/**
+	 * Method for removing an TravelPackage Interest
+	 * @param id the id returned by the interest function
+	 * @return true if it was successfully removed, false otherwise
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	boolean removeInterestTravelPackage(int id) throws RemoteException;
 }
