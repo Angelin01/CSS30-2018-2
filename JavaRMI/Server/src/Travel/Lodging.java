@@ -107,7 +107,6 @@ public class Lodging implements Serializable {
 		if (location == null) {
 			throw new NullPointerException("Parameter location cannot be null");
 		}
-		// @todo verify if location is valid
 		this.location = location;
 	}
 	
