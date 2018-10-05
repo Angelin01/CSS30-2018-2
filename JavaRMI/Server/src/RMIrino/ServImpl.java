@@ -4,6 +4,9 @@ import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
+import TravelEvent.LodgingEvent;
+import TravelEvent.PlaneTicketEvent;
+import TravelEvent.TravelPackageEvent;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -11,9 +14,7 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -21,7 +22,23 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private List<PlaneTicket> listPlaneTickets;
 	private List<Lodging> listLodgings;
 	private List<TravelPackage> listTravelPackages;
-	
+
+	Map<Location, Map<Date, List<PlaneTicketEvent>>> planeTicketEvents;
+	Map<Location, Map<Date, List<LodgingEvent>>> lodgingEvents;
+	Map<Location, Map<Date, List<TravelPackageEvent>>> travelPackageEvents;
+
+	/**
+	 * Instantiates the HashMaps for events
+	 * Will be cannot on the constructors for ServImpl,
+	 * there's no need to call it again unless you want to destroy the previous events
+	 */
+	private final void instantiateMaps() {
+		this.planeTicketEvents = new HashMap<Location, Map<Date, List<PlaneTicketEvent>>>();
+		this.lodgingEvents = new HashMap<Location, Map<Date, List<LodgingEvent>>>();
+		this.travelPackageEvents = new HashMap<Location, Map<Date, List<TravelPackageEvent>>>();
+	}
+
+
 
 	/**
 	 * Simple constructor for ServImpl with empty lists
@@ -31,6 +48,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		listLodgings = new ArrayList<Lodging>();
 		listTravelPackages = new ArrayList<TravelPackage>();
+
+		instantiateMaps();
 	}
 
 	/**
@@ -54,6 +73,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		this.listPlaneTickets = listPlaneTickets;
 		this.listLodgings = listLodgings;
 		this.listTravelPackages = listTravelPackages;
+
+		instantiateMaps();
 	}
 
 	/**
