@@ -13,6 +13,7 @@ public abstract class TravelEvent {
 	 * Simple constructor for the TravelEvent
 	 * @param maximumPrice the maximum price wanted. <= 0 if doesn't matter
 	 * @param clientReference the client reference to call, cannot be null
+	 * @throws NullPointerException if clientReference is null
 	 */
 	protected TravelEvent(int maximumPrice, InterfaceCli clientReference) {
 		this.maximumPrice = maximumPrice;

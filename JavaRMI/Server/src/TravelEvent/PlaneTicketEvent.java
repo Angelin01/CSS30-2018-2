@@ -10,10 +10,12 @@ public class PlaneTicketEvent extends TravelEvent {
 
 	/**
 	 * Simple constructor for a PlaneTicketEvent notifier
+	 * At least one of the filters must matter
 	 * @param origin the origin Location. null if doesn't matter
 	 * @param destiny the destiny Location. null if doesn't matter
 	 * @param maximumPrice the maximum price for the ticket. <= 0 if doesn't matter
-	 * @param clientReference the client reference
+	 * @param clientReference the client reference, cannot be null
+	 * @throws IllegalArgumentException if none of the filters matter
 	 */
 	public PlaneTicketEvent(Location origin, Location destiny, int maximumPrice, InterfaceCli clientReference) {
 		super(maximumPrice, clientReference);
