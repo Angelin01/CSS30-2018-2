@@ -104,7 +104,7 @@ public interface InterfaceServ extends Remote {
 	 * @param maximumPrice the maximum price for the tickets in CENTS. <= 0 if doesn't matter
 	 * @param departureDate the Date object for the departure date. null if doesn't matter
 	 * @param returnDate the Date object for the return date. null if doesn't matter
-	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyPlaneTicket(int id)" method
+	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyPlaneTicket(int id, PlaneTicket planeTicket)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -116,7 +116,7 @@ public interface InterfaceServ extends Remote {
 	 * @param checkIn the Date object for the check in date
 	 * @param checkOut the Date object for the check out date
 	 * @param maximumPrice the maximum price for the lodging in CENTS per room
-	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyLodging(int id)" method
+	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyLodging(int id, Lodging lodging)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -129,7 +129,7 @@ public interface InterfaceServ extends Remote {
 	 * @param departureDate the Date object for the departure date. null if doesn't matter
 	 * @param returnDate the Date object for the return date. null if doesn't matter
 	 * @param maximumPrice the maximum price for the travel package in CENTS
-	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyTravelPackage(int id)" method
+	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyTravelPackage(int id, TravelPackage travelPackage)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */

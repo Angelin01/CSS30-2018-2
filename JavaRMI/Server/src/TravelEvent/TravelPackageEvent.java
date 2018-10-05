@@ -4,6 +4,7 @@ import RMIrino.InterfaceCli;
 import Travel.Location;
 import Travel.TravelPackage;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 
 public class TravelPackageEvent extends TravelEvent {
@@ -23,5 +24,14 @@ public class TravelPackageEvent extends TravelEvent {
 		super(destiny, departureDate, maximumPrice, clientReference);
 		this.origin = origin;
 		this.returnDate = returnDate;
+	}
+
+	/**
+	 * Notifies the client that the event happened
+	 * @param travelPackage the TravelPackage that matches the interest
+	 * @throws RemoteException if there's any problems with the remote connection
+	 */
+	public void notifyClient(TravelPackage travelPackage) throws RemoteException {
+		this.clientReference.notifyTravelPackage(this.getId(), travelPackage);
 	}
 }

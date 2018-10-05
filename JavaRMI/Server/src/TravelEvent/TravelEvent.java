@@ -9,10 +9,10 @@ public abstract class TravelEvent {
 	static int nextId = 0;
 
 	private int id;
-	Location destinyLocation;
-	Date startDate;
-	private int maximumPrice;
-	private InterfaceCli clientReference;
+	protected Location destinyLocation;
+	protected Date startDate;
+	protected int maximumPrice;
+	protected InterfaceCli clientReference;
 
 	/**
 	 * Simple constructor for the

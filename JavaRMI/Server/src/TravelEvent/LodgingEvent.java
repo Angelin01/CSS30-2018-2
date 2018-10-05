@@ -2,7 +2,9 @@ package TravelEvent;
 
 import RMIrino.InterfaceCli;
 import Travel.Location;
+import Travel.Lodging;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 
 public class LodgingEvent extends TravelEvent {
@@ -20,5 +22,14 @@ public class LodgingEvent extends TravelEvent {
 	public LodgingEvent(Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference) {
 		super(location, checkIn, maximumPrice, clientReference);
 		this.checkOut = checkOut;
+	}
+
+	/**
+	 * Notifies the client that the event happene
+	 * @param lodging the Lodging that matches the interest
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	public void notifyClient(Lodging lodging) throws RemoteException {
+		this.clientReference.notifyLodging(this.getId(), lodging);
 	}
 }
