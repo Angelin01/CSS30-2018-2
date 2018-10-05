@@ -18,18 +18,41 @@ import java.util.List;
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final int MILLIS_IN_DAY = 86400000;
-	public List<PlaneTicket> listPlaneTickets;
-	public List<Lodging> listLodgings;
-	public List<TravelPackage> listTravelPackages;
+	private List<PlaneTicket> listPlaneTickets;
+	private List<Lodging> listLodgings;
+	private List<TravelPackage> listTravelPackages;
 
 	/**
 	 * Simple constructor for ServImpl with empty lists
-	 * @throws RemoteException if there's connection problems
+	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	protected ServImpl() throws RemoteException {
+	public ServImpl() throws RemoteException {
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		listLodgings = new ArrayList<Lodging>();
 		listTravelPackages = new ArrayList<TravelPackage>();
+	}
+
+	/**
+	 * Simple constructor for ServImpl with pre existing lists
+	 * @param listPlaneTickets list of plane tickets
+	 * @param listLodgings list of lodgings
+	 * @param listTravelPackages list of travel packages
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	public ServImpl(List<PlaneTicket> listPlaneTickets, List<Lodging> listLodgings, List<TravelPackage> listTravelPackages) throws RemoteException {
+		if (listPlaneTickets == null) {
+			throw new NullPointerException("Parameter listPlaneTickets cannot be null");
+		}
+		if (listLodgings == null) {
+			throw new NullPointerException("Parameter listLodgings cannot be null");
+		}
+		if (listTravelPackages == null) {
+			throw new NullPointerException("Parameter listTravelPackages cannot be null");
+		}
+
+		this.listPlaneTickets = listPlaneTickets;
+		this.listLodgings = listLodgings;
+		this.listTravelPackages = listTravelPackages;
 	}
 
 	/**

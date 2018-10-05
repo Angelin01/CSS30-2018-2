@@ -100,9 +100,9 @@ public interface InterfaceServ extends Remote {
 
 	/**
 	 * Method for registering interest in new plane tickets
-	 * @param destiny the destiny location for the plane ticket
-	 * @param origin the origin location for the plane ticket
-	 * @param maximumPrice the maximum price for the tickets in CENTS
+	 * @param destiny the destiny location for the plane ticket. null if doesn't matter
+	 * @param origin the origin location for the plane ticket. null if doesn't matter
+	 * @param maximumPrice the maximum price for the tickets in CENTS. <= 0 if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
@@ -112,7 +112,7 @@ public interface InterfaceServ extends Remote {
 	/**
 	 * Method for registering interest in new lodgings
 	 * @param location the location for the lodging
-	 * @param maximumPrice the maximum price for the lodging in CENTS per day per room
+	 * @param maximumPrice the maximum price for the lodging in CENTS per room
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
