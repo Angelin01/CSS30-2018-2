@@ -103,32 +103,38 @@ public interface InterfaceServ extends Remote {
 	 * @param destiny the destiny location for the plane ticket. null if doesn't matter
 	 * @param origin the origin location for the plane ticket. null if doesn't matter
 	 * @param maximumPrice the maximum price for the tickets in CENTS. <= 0 if doesn't matter
+	 * @param departureDate the Date object for the departure date. null if doesn't matter
+	 * @param returnDate the Date object for the return date. null if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	int interestPlaneTicket(Location destiny, Location origin, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
+	int interestPlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
 	/**
 	 * Method for registering interest in new lodgings
 	 * @param location the location for the lodging
+	 * @param checkIn the Date object for the check in date
+	 * @param checkOut the Date object for the check out date
 	 * @param maximumPrice the maximum price for the lodging in CENTS per room
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	int interestLodging(Location location, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
+	int interestLodging(Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
 	/**
 	 * Method for registering interest in new plane tickets
 	 * @param destiny the destiny location for the travel package
 	 * @param origin the origin location for the travel package
+	 * @param departureDate the Date object for the departure date. null if doesn't matter
+	 * @param returnDate the Date object for the return date. null if doesn't matter
 	 * @param maximumPrice the maximum price for the travel package in CENTS
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notify(int id)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	int interestTravelPackage(Location destiny, Location origin, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
+	int interestTravelPackage(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException;
 
 	/**
 	 * Method for removing an interested added
