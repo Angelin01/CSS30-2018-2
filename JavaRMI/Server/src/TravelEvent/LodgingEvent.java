@@ -25,6 +25,14 @@ public class LodgingEvent extends TravelEvent {
 	}
 
 	/**
+	 * Simple getter for the checkOut Date
+	 * @return the checkOut Date
+	 */
+	public Date getCheckOut() {
+		return checkOut;
+	}
+
+	/**
 	 * Notifies the client that the event happene
 	 * @param lodging the Lodging that matches the interest
 	 * @throws RemoteException if there's any problem with the remote connection

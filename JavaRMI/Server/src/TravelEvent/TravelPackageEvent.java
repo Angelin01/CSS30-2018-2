@@ -27,6 +27,22 @@ public class TravelPackageEvent extends TravelEvent {
 	}
 
 	/**
+	 * Simple getter for the origin Location
+	 * @return the origin Location
+	 */
+	public Location getOrigin() {
+		return origin;
+	}
+
+	/**
+	 * Simple getter for the return date
+	 * @return the returnDate
+	 */
+	public Date getReturnDate() {
+		return returnDate;
+	}
+
+	/**
 	 * Notifies the client that the event happened
 	 * @param travelPackage the TravelPackage that matches the interest
 	 * @throws RemoteException if there's any problems with the remote connection

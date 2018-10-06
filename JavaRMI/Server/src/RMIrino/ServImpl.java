@@ -82,14 +82,14 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public void addPlaneTicket(PlaneTicket planeTicket) {
 		listPlaneTickets.add(planeTicket);
 
-		// First check if there is a key pair that matches the desired location and departureDate
+		// First check if there is a key pair that matches the desired destiny and departureDate
 		if (planeTicketEvents.containsKey(planeTicket.getDestiny()) &&
 		    planeTicketEvents.get(planeTicket.getDestiny()).containsKey(planeTicket.getDepartureDate())) {
 			// Loop through the existing events and notify the ones that match
 			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get(planeTicket.getDepartureDate())) {
 				// destiny and departure date filters are checked
 				// check maximumPrice
-				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() > planeTicket.getPrice()) { continue; }
+				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < planeTicket.getPrice()) { continue; }
 
 				// check origin filter
 				if (event.getOrigin() != null && event.getOrigin() != planeTicket.getOrigin()) { continue; }
@@ -101,6 +101,69 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				// Passed all checks, notify client
 				try {
 					event.notifyClient(planeTicket);
+				} catch (RemoteException e) {
+					// Remove from interest list?
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adds a new lodging to the system and notifies any clients that registered interest and matched
+	 * @param lodging the Lodging to add
+	 */
+	public void addLodging(Lodging lodging) {
+		listLodgings.add(lodging);
+
+		// First check if there is a key pair that matches the desired location and checkIn
+		if (lodgingEvents.containsKey(lodging.getLocation()) &&
+		    lodgingEvents.get(lodging.getLocation()).containsKey(lodging.getCheckIn())) {
+			// Loop through the existing events and notify the ones that match
+			for (LodgingEvent event : lodgingEvents.get(lodging.getLocation()).get(lodging.getCheckIn())) {
+				// location and checkIn filters are checked
+				// check maximumPrice
+				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < lodging.getPrice()) { continue; }
+
+				// check the checkOut filter
+				// To check that it's the same day, calculates the Julian Day Number
+				if (event.getCheckOut() != null && lodging.getCheckOut().getTime()/MILLIS_IN_DAY != event.getCheckOut().getTime()/MILLIS_IN_DAY) { continue; }
+
+				// Passed all checks, notify client
+				try {
+					event.notifyClient(lodging);
+				} catch (RemoteException e) {
+					// Remove from interest list?
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adds a new travel package to the system and notifies any clients that registered interest and matched
+	 * @param travelPackage the TravelPackage to add
+	 */
+	public void addTravelPackage(TravelPackage travelPackage) {
+		listTravelPackages.add(travelPackage);
+
+		// First check if there is a key pair that matches the desired destiny and departureDate
+		if (travelPackageEvents.containsKey(travelPackage.getPlaneTicket().getDestiny()) &&
+				travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).containsKey(travelPackage.getPlaneTicket().getDepartureDate())) {
+			// Loop through the existing events and notify the ones that match
+			for (TravelPackageEvent event : travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).get(travelPackage.getPlaneTicket().getDepartureDate())) {
+				// destiny and departure date filters are checked
+				// check maximumPrice
+				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < travelPackage.getPrice()) { continue; }
+
+				// check origin filter
+				if (event.getOrigin() != null && event.getOrigin() != travelPackage.getPlaneTicket().getOrigin()) { continue; }
+
+				// check returnDate filter
+				// To check that it's the same day, calculates the Julian Day Number
+				if (event.getReturnDate() != null && travelPackage.getPlaneTicket().getReturnDate().getTime()/MILLIS_IN_DAY != event.getReturnDate().getTime()/MILLIS_IN_DAY) { continue; }
+
+				// Passed all checks, notify client
+				try {
+					event.notifyClient(travelPackage);
 				} catch (RemoteException e) {
 					// Remove from interest list?
 				}

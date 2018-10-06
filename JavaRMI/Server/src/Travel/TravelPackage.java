@@ -124,7 +124,6 @@ public class TravelPackage implements Serializable {
 		return id;
 	}
 
-	// @todo update toString
 	/**
 	 * A simple to string method to visualize both the PlaneTicket and Lodging objects of the package
 	 * @return a string visualization of the TravelPackage
