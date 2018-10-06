@@ -39,6 +39,14 @@ public abstract class TravelEvent {
 	}
 
 	/**
+	 * Simple getter for the maximum price
+	 * @return the maximum price in CENTS
+	 */
+	public int getMaximumPrice() {
+		return maximumPrice;
+	}
+
+	/**
 	 * Simple getter for the id
 	 * @return the id
 	 */

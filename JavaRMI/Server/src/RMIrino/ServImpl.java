@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
-	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final int MILLIS_IN_DAY = 86400000;
 	private ArrayList<PlaneTicket> listPlaneTickets;
 	private ArrayList<Lodging> listLodgings;
@@ -74,6 +73,30 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		this.listTravelPackages = listTravelPackages;
 
 		instantiateMaps();
+	}
+
+	/**
+	 * Adds a new plane ticket to the system and notifies any clients that registered interest and matched
+	 * @param planeTicket the PlaneTicket to add
+	 */
+	public void addPlaneTicket(PlaneTicket planeTicket) {
+		listPlaneTickets.add(planeTicket);
+
+		// First check if there is a key pair that matches the desired location and departureDate
+		if (planeTicketEvents.containsKey(planeTicket.getDestiny()) &&
+		    planeTicketEvents.get(planeTicket.getDestiny()).containsKey(planeTicket.getDepartureDate())) {
+			// Loop through the existing events and notify the ones that match
+			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get(planeTicket.getDepartureDate())) {
+				// destiny and departure date filters are checked
+				// check maximumPrice
+
+				try {
+					event.notifyClient(planeTicket);
+				} catch (RemoteException e) {
+					// Remove from interest list?
+				}
+			}
+		}
 	}
 
 	/**

@@ -164,4 +164,6 @@ public interface InterfaceServ extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException;
+
+
 }
