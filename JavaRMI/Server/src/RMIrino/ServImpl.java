@@ -77,7 +77,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<Lodging> getLodgings() throws RemoteException {
@@ -85,7 +85,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
@@ -117,7 +117,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
@@ -125,7 +125,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
@@ -160,7 +160,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<TravelPackage> getTravelPackages() throws RemoteException {
@@ -168,7 +168,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable) throws RemoteException {
@@ -205,7 +205,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
@@ -227,7 +227,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
@@ -250,7 +250,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
@@ -272,7 +272,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int interestPlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
@@ -302,7 +302,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int interestLodging(Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
@@ -332,7 +332,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int interestTravelPackage(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
@@ -362,7 +362,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeInterestPlaneTicket(int id, Location destiny, Date departureDate) throws RemoteException {
@@ -374,7 +374,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeInterestLodging(int id, Location location, Date checkIn) throws RemoteException {
@@ -386,7 +386,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	}
 
 	/**
-	* @inheritDoc
+	* {@inheritDoc}
 	*/
 	@Override
 	public boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException {

@@ -18,7 +18,7 @@ public class PlaneTicketEvent extends TravelEvent {
 	 * @param destiny the destiny Location, cannot be null
 	 * @param departureDate the departure Date, cannot be null
 	 * @param returnDate the Date object for the return date. null if doesn't matter
-	 * @param maximumPrice the maximum price for the ticket. <= 0 if doesn't matter
+	 * @param maximumPrice the maximum price for the ticket. &lt;= 0 if doesn't matter
 	 * @param clientReference the client reference, cannot be null
 	 * @throws IllegalArgumentException if none of the filters matter
 	 */

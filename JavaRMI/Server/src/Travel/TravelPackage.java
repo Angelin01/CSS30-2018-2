@@ -2,10 +2,6 @@ package Travel;
 
 import java.io.Serializable;
 
-/**
- * Travel package, with a PlaneTicket and Lodging and a new price
- * @todo Lodging is a list of lodgings
- */
 public class TravelPackage implements Serializable {
 	private PlaneTicket planeTicket;
 	private Lodging lodging;
@@ -114,7 +110,7 @@ public class TravelPackage implements Serializable {
 	 * Returns the number of available packages
 	 * Will always be the minimum between plane seats and lodging rooms
 	 * This travel agency specializes in 1 person rooms
-	 * @return
+	 * @return the number of available packages
 	 */
 	public int getAvailable() {
 		return (planeTicket.getNumSeats() < lodging.getNumRooms() ? planeTicket.getNumSeats()  : lodging.getNumRooms());

@@ -25,6 +25,7 @@ public class Lodging implements Serializable {
 	 * @param price the price in CENTS per room
 	 * @param checkIn the date object for the checkIn
 	 * @param checkOut the date object for the checkOut
+	 * @param numRooms the number of available rooms
 	 * @throws NullPointerException if location is null
 	 * @throws IllegalArgumentException if price is negative
 	 */
@@ -59,12 +60,15 @@ public class Lodging implements Serializable {
 
 	/**
 	 * Constructor for a Lodging object using a String object
+	 * Uses the yyyy-MM-dd format
 	 * @param location Location enum for the location
 	 * @param price the price in CENTS per room
 	 * @param checkIn the String object for the checkIn
 	 * @param checkOut the String object for the checkOut
+	 * @param numRooms the number of available rooms
 	 * @throws NullPointerException if location is null
 	 * @throws IllegalArgumentException if price is negative
+	 * @throws java.text.ParseException if it cannot parse the dates
 	 */
 	public Lodging(Location location, String checkIn, String checkOut, int price, int numRooms) throws java.text.ParseException {
 		if (location == null) {
@@ -158,7 +162,9 @@ public class Lodging implements Serializable {
 
 	/**
 	 * Simple setter for the checkIn using a String object
+	 * Uses the yyyy-MM-dd format
 	 * @param checkIn the date for checkIn
+	 * @throws java.text.ParseException if it cannot parse the date
 	 */
 	public void setCheckIn(String checkIn) throws java.text.ParseException {
 		this.checkIn = format.parse(checkIn);
@@ -185,7 +191,9 @@ public class Lodging implements Serializable {
 
 	/**
 	 * Simple setter for the checkOut using a String object
+	 * Uses the yyyy-MM-dd format
 	 * @param checkOut the date for checkOut
+	 * @throws java.text.ParseException if it cannot parse the date
 	 */
 	public void setcheckOut(String checkOut) throws java.text.ParseException {
 		this.checkOut = format.parse(checkOut);

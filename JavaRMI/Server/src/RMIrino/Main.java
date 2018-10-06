@@ -9,6 +9,7 @@ import Travel.*;
 
 public class Main {
 	public static void main (String[] args) throws RemoteException, ParseException {
+		int i = 0;
 		/*final int PORT = 1337;
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
 		ServImpl servico = new ServImpl();

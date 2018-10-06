@@ -18,7 +18,7 @@ public abstract class TravelEvent {
 	 * Simple constructor for the
 	 * @param destinyLocation the location that you're interested in, cannot be null
 	 * @param startDate the initial date of interest, probably departure date or check in date, null if doesn't matter
-	 * @param maximumPrice the maximum price wanted. <= 0 if doesn't matter
+	 * @param maximumPrice the maximum price wanted. &lt;= 0 if doesn't matter
 	 * @param clientReference the client reference to call, cannot be null
 	 * @throws NullPointerException if clientReference is null
 	 */

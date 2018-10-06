@@ -17,7 +17,7 @@ public class TravelPackageEvent extends TravelEvent {
 	 * @param destiny the destiny Location. null if doesn't matter
 	 * @param departureDate the Date object for the departure date. null if doesn't matter
 	 * @param returnDate the Date object for the return date. null if doesn't matter
-	 * @param maximumPrice the maximum price for the ticket. <= 0 if doesn't matter
+	 * @param maximumPrice the maximum price for the ticket. &lt;= 0 if doesn't matter
 	 * @param clientReference the client reference, cannot be null
 	 */
 	public TravelPackageEvent(Location origin, Location destiny, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) {

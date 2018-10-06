@@ -19,10 +19,10 @@ public interface InterfaceServ extends Remote {
 	/**
 	 * Getter for Lodgings with filters
 	 * @param location the desired location. null if doesn't matter
-	 * @param maxPrice the maximum price. <= 0 if doesn't matter
+	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
 	 * @param checkIn Date object for checkIn. null if doesn't matter
 	 * @param checkOut Date object for checkOut. null if doesn't matter
-	 * @param minimumRooms number of minimum rooms available. <= 0 if doesn't matter
+	 * @param minimumRooms number of minimum rooms available. &lt;= 0 if doesn't matter
 	 * @return A list of Lodgings according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -39,10 +39,10 @@ public interface InterfaceServ extends Remote {
 	 * Getter for PlaneTickets with filters
 	 * @param origin the origin location. null if doesn't matter
 	 * @param destiny the destiny location. null if doesn't matter
-	 * @param maxPrice the maximum price. <= 0 if doesn't matter
+	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
 	 * @param departureDate the departure date. null if doesn't matter
 	 * @param returnDate the return date. null if doesn't matter. Note: having a return date implies a round-trip
-	 * @param minimumSeats the minimum number of available seats. <= 0 if doesn't matter
+	 * @param minimumSeats the minimum number of available seats. &lt;= 0 if doesn't matter
 	 * @return A list of PlaneTickets according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -60,10 +60,10 @@ public interface InterfaceServ extends Remote {
 	 * Getter for TravelPackages with filters
 	 * @param origin the origin location. null if doesn't matter
 	 * @param destiny the destiny location. null if doesn't matter
-	 * @param maxPrice the maximum price. <= 0 if doesn't matter
+	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
 	 * @param departureDate the departure date. null if doesn't matter
 	 * @param returnDate the return date. null if doesn't matter
-	 * @param minimumAvailable the minimum number of available packages. <= 0 if doesn't matter
+	 * @param minimumAvailable the minimum number of available packages. &lt;= 0 if doesn't matter
 	 * @return List of TravelPackages according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -101,7 +101,7 @@ public interface InterfaceServ extends Remote {
 	 * Method for registering interest in new plane tickets
 	 * @param destiny the destiny location for the plane ticket. null if doesn't matter
 	 * @param origin the origin location for the plane ticket. null if doesn't matter
-	 * @param maximumPrice the maximum price for the tickets in CENTS. <= 0 if doesn't matter
+	 * @param maximumPrice the maximum price for the tickets in CENTS. &lt;= 0 if doesn't matter
 	 * @param departureDate the Date object for the departure date. null if doesn't matter
 	 * @param returnDate the Date object for the return date. null if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyPlaneTicket(int id, PlaneTicket planeTicket)" method
