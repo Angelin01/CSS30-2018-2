@@ -15,17 +15,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final int MILLIS_IN_DAY = 86400000;
-	private List<PlaneTicket> listPlaneTickets;
-	private List<Lodging> listLodgings;
-	private List<TravelPackage> listTravelPackages;
+	private ArrayList<PlaneTicket> listPlaneTickets;
+	private ArrayList<Lodging> listLodgings;
+	private ArrayList<TravelPackage> listTravelPackages;
 
-	Map<Location, Map<Date, List<PlaneTicketEvent>>> planeTicketEvents;
-	Map<Location, Map<Date, List<LodgingEvent>>> lodgingEvents;
-	Map<Location, Map<Date, List<TravelPackageEvent>>> travelPackageEvents;
+	Map<Location, Map<Date, ArrayList<PlaneTicketEvent>>> planeTicketEvents;
+	Map<Location, Map<Date, ArrayList<LodgingEvent>>> lodgingEvents;
+	Map<Location, Map<Date, ArrayList<TravelPackageEvent>>> travelPackageEvents;
 
 	/**
 	 * Instantiates the HashMaps for events
@@ -33,9 +34,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * there's no need to call it again unless you want to destroy the previous events
 	 */
 	private final void instantiateMaps() {
-		this.planeTicketEvents = new HashMap<Location, Map<Date, List<PlaneTicketEvent>>>();
-		this.lodgingEvents = new HashMap<Location, Map<Date, List<LodgingEvent>>>();
-		this.travelPackageEvents = new HashMap<Location, Map<Date, List<TravelPackageEvent>>>();
+		this.planeTicketEvents = new HashMap<Location, Map<Date, ArrayList<PlaneTicketEvent>>>();
+		this.lodgingEvents = new HashMap<Location, Map<Date, ArrayList<LodgingEvent>>>();
+		this.travelPackageEvents = new HashMap<Location, Map<Date, ArrayList<TravelPackageEvent>>>();
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @param listTravelPackages list of travel packages
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	public ServImpl(List<PlaneTicket> listPlaneTickets, List<Lodging> listLodgings, List<TravelPackage> listTravelPackages) throws RemoteException {
+	public ServImpl(ArrayList<PlaneTicket> listPlaneTickets, ArrayList<Lodging> listLodgings, ArrayList<TravelPackage> listTravelPackages) throws RemoteException {
 		if (listPlaneTickets == null) {
 			throw new NullPointerException("Parameter listPlaneTickets cannot be null");
 		}
@@ -79,7 +80,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<Lodging> getLodgings() throws RemoteException {
+	public ArrayList<Lodging> getLodgings() throws RemoteException {
 		return listLodgings;
 	}
 	
@@ -87,8 +88,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
-		List<Lodging> filteredLodgings = new ArrayList<Lodging>();
+	public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
+		ArrayList<Lodging> filteredLodgings = new ArrayList<Lodging>();
 		
 		for (Lodging lodging : listLodgings) {
 			// Check the location filter
@@ -119,7 +120,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<PlaneTicket> getPlaneTickets() throws RemoteException {
+	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
 		return listPlaneTickets;
 	}
 	
@@ -127,8 +128,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
-		List<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
+	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
+		ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
 		
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			// Check the origin filter
@@ -162,7 +163,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<TravelPackage> getTravelPackages() throws RemoteException {
+	public ArrayList<TravelPackage> getTravelPackages() throws RemoteException {
 		return listTravelPackages;
 	}
 	
@@ -170,8 +171,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @inheritDoc
 	 */
 	@Override
-	public List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable) throws RemoteException {
-		List<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
+	public ArrayList<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable) throws RemoteException {
+		ArrayList<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
 		
 		for (TravelPackage travelPackage : listTravelPackages) {
 			// Check the origin filter
@@ -292,7 +293,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		}
 		else {
 			// There's nothing related to that destiny, add everything
-			planeTicketEvents.put(destiny, new HashMap<Date, List<PlaneTicketEvent>>());
+			planeTicketEvents.put(destiny, new HashMap<Date, ArrayList<PlaneTicketEvent>>());
 			planeTicketEvents.get(destiny).put(departureDate, new ArrayList<PlaneTicketEvent>());
 			planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
 		}
@@ -322,7 +323,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		}
 		else {
 			// There's nothing related to that destiny, add everything
-			lodgingEvents.put(location, new HashMap<Date, List<LodgingEvent>>());
+			lodgingEvents.put(location, new HashMap<Date, ArrayList<LodgingEvent>>());
 			lodgingEvents.get(location).put(checkIn, new ArrayList<LodgingEvent>());
 			lodgingEvents.get(location).get(checkIn).add(newInterest);
 		}
@@ -352,11 +353,47 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		}
 		else {
 			// There's nothing related to that destiny, add everything
-			travelPackageEvents.put(destiny, new HashMap<Date, List<TravelPackageEvent>>());
+			travelPackageEvents.put(destiny, new HashMap<Date, ArrayList<TravelPackageEvent>>());
 			travelPackageEvents.get(destiny).put(departureDate, new ArrayList<TravelPackageEvent>());
 			travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
 		}
 
 		return newInterest.getId();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean removeInterestPlaneTicket(int id, Location destiny, Date departureDate) throws RemoteException {
+		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey(departureDate)) {
+			Predicate<PlaneTicketEvent> planeTicketPredicate = p -> p.getId() == id;
+			return planeTicketEvents.get(destiny).get(departureDate).removeIf(planeTicketPredicate);
+		}
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean removeInterestLodging(int id, Location location, Date checkIn) throws RemoteException {
+		if (lodgingEvents.containsKey(location) && lodgingEvents.get(location).containsKey(checkIn)) {
+			Predicate<LodgingEvent> lodgingPredicate = p -> p.getId() == id;
+			return lodgingEvents.get(location).get(checkIn).removeIf(lodgingPredicate);
+		}
+		return false;
+	}
+
+	/**
+	* @inheritDoc
+	*/
+	@Override
+	public boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException {
+		if (travelPackageEvents.containsKey(destiny) && travelPackageEvents.get(destiny).containsKey(departureDate)) {
+			Predicate<TravelPackageEvent> travelPackagePredicate = p -> p.getId() == id;
+			return travelPackageEvents.get(destiny).get(departureDate).removeIf(travelPackagePredicate);
+		}
+		return false;
 	}
 }
