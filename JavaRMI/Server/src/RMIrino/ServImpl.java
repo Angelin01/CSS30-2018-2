@@ -89,7 +89,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get(planeTicket.getDepartureDate())) {
 				// destiny and departure date filters are checked
 				// check maximumPrice
+				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() > planeTicket.getPrice()) { continue; }
 
+				// check origin filter
+				if (event.getOrigin() != null && event.getOrigin() != planeTicket.getOrigin()) { continue; }
+
+				// check returnDate filter
+				// To check that it's the same day, calculates the Julian Day Number
+				if (event.getReturnDate() != null && planeTicket.getReturnDate().getTime()/MILLIS_IN_DAY != event.getReturnDate().getTime()/MILLIS_IN_DAY) { continue; }
+
+				// Passed all checks, notify client
 				try {
 					event.notifyClient(planeTicket);
 				} catch (RemoteException e) {
