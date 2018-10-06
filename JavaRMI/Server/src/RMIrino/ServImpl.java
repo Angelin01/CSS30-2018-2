@@ -38,8 +38,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		this.travelPackageEvents = new HashMap<Location, Map<Date, List<TravelPackageEvent>>>();
 	}
 
-
-
 	/**
 	 * Simple constructor for ServImpl with empty lists
 	 * @throws RemoteException if there's any problem with the remote connection
@@ -272,5 +270,93 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public int interestPlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
+		PlaneTicketEvent newInterest = new PlaneTicketEvent(origin, destiny, departureDate, returnDate, maximumPrice, clientReference);
 
+		// Check if there's already a key for this destiny, otherwise create one
+		if (planeTicketEvents.containsKey(destiny)) {
+			// Check if there's already a key for this date, otherwise create one
+			if (planeTicketEvents.get(destiny).containsKey(departureDate)) {
+				// Just add the new interest to a pre-existing list
+				planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+			}
+			else {
+				// There was a destiny, but no date, add the date
+				planeTicketEvents.get(destiny).put(departureDate, new ArrayList<PlaneTicketEvent>());
+				planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+			}
+		}
+		else {
+			// There's nothing related to that destiny, add everything
+			planeTicketEvents.put(destiny, new HashMap<Date, List<PlaneTicketEvent>>());
+			planeTicketEvents.get(destiny).put(departureDate, new ArrayList<PlaneTicketEvent>());
+			planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+		}
+
+		return newInterest.getId();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public int interestLodging(Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
+		LodgingEvent newInterest = new LodgingEvent(location, checkIn, checkOut, maximumPrice, clientReference);
+
+		// Check if there's already a key for this destiny, otherwise create one
+		if (lodgingEvents.containsKey(location)) {
+			// Check if there's already a key for this date, otherwise create one
+			if (lodgingEvents.get(location).containsKey(checkIn)) {
+				// Just add the new interest to a pre-existing list
+				lodgingEvents.get(location).get(checkIn).add(newInterest);
+			}
+			else {
+				// There was a destiny, but no date, add the date
+				lodgingEvents.get(location).put(checkIn, new ArrayList<LodgingEvent>());
+				lodgingEvents.get(location).get(checkIn).add(newInterest);
+			}
+		}
+		else {
+			// There's nothing related to that destiny, add everything
+			lodgingEvents.put(location, new HashMap<Date, List<LodgingEvent>>());
+			lodgingEvents.get(location).put(checkIn, new ArrayList<LodgingEvent>());
+			lodgingEvents.get(location).get(checkIn).add(newInterest);
+		}
+
+		return newInterest.getId();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public int interestTravelPackage(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
+		TravelPackageEvent newInterest = new TravelPackageEvent(origin, destiny, departureDate, returnDate, maximumPrice, clientReference);
+
+		// Check if there's already a key for this destiny, otherwise create one
+		if (travelPackageEvents.containsKey(destiny)) {
+			// Check if there's already a key for this date, otherwise create one
+			if (travelPackageEvents.get(destiny).containsKey(departureDate)) {
+				// Just add the new interest to a pre-existing list
+				travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+			}
+			else {
+				// There was a destiny, but no date, add the date
+				travelPackageEvents.get(destiny).put(departureDate, new ArrayList<TravelPackageEvent>());
+				travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+			}
+		}
+		else {
+			// There's nothing related to that destiny, add everything
+			travelPackageEvents.put(destiny, new HashMap<Date, List<TravelPackageEvent>>());
+			travelPackageEvents.get(destiny).put(departureDate, new ArrayList<TravelPackageEvent>());
+			travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+		}
+
+		return newInterest.getId();
+	}
 }
