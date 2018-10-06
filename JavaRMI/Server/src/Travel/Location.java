@@ -1,5 +1,8 @@
 package Travel;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public enum Location {
 	ARACAJU("Aracaju"),
 	BELEM("Belem"),
@@ -39,5 +42,13 @@ public enum Location {
 		return name;
 	}
 
-
+	/**
+	 * Returns a String of all locations separated by a comma
+	 * @return the String of all locations
+	 */
+	public static String printAll() {
+		return Stream.of(Location.values()).
+				map(Location::name).
+				collect(Collectors.joining(", "));
+	}
 }
