@@ -99,10 +99,10 @@ public interface InterfaceServ extends Remote {
 
 	/**
 	 * Method for registering interest in new plane tickets
-	 * @param destiny the destiny location for the plane ticket. null if doesn't matter
+	 * @param destiny the destiny location for the plane ticket. REQUIRED
 	 * @param origin the origin location for the plane ticket. null if doesn't matter
 	 * @param maximumPrice the maximum price for the tickets in CENTS. &lt;= 0 if doesn't matter
-	 * @param departureDate the Date object for the departure date. null if doesn't matter
+	 * @param departureDate the Date object for the departure date. REQUIRED
 	 * @param returnDate the Date object for the return date. null if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyPlaneTicket(int id, PlaneTicket planeTicket)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
@@ -112,10 +112,10 @@ public interface InterfaceServ extends Remote {
 
 	/**
 	 * Method for registering interest in new lodgings
-	 * @param location the location for the lodging
-	 * @param checkIn the Date object for the check in date
-	 * @param checkOut the Date object for the check out date
-	 * @param maximumPrice the maximum price for the lodging in CENTS per room
+	 * @param location the location for the lodging. REQUIRED
+	 * @param checkIn the Date object for the check in date. REQUIRED
+	 * @param checkOut the Date object for the check out date.null if doesn't matter
+	 * @param maximumPrice the maximum price for the lodging in CENTS per room. &lt;= 0 if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyLodging(int id, Lodging lodging)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
@@ -124,11 +124,11 @@ public interface InterfaceServ extends Remote {
 
 	/**
 	 * Method for registering interest in new plane tickets
-	 * @param destiny the destiny location for the travel package
-	 * @param origin the origin location for the travel package
-	 * @param departureDate the Date object for the departure date. null if doesn't matter
+	 * @param destiny the destiny location for the travel package. REQUIRED
+	 * @param origin the origin location for the travel package. null if doesn't matter
+	 * @param departureDate the Date object for the departure date. null if doesn't matter. REQUIRED
 	 * @param returnDate the Date object for the return date. null if doesn't matter
-	 * @param maximumPrice the maximum price for the travel package in CENTS
+	 * @param maximumPrice the maximum price for the travel package in CENTS. &lt;= 0 if doesn't matter
 	 * @param clientReference the reference on which to notify the client. This interface MUST implement the "notifyTravelPackage(int id, TravelPackage travelPackage)" method
 	 * @return the id for the successfully registered event. Returns -1 if there was a failure.
 	 * @throws RemoteException if there's any problem with the remote connection
