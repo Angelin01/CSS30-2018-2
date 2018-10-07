@@ -5,16 +5,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * A PlaneTicket, with a origin and destination, departure date, optional return date, pricing and number of available seats
- */
 public class PlaneTicket implements Serializable {
 	private Location destiny;
 	private Location origin;
 	private Date departureDate;
 	private Date returnDate;
 	private int price;
-	private int numSeats;
 	private int id;
 	private static int nextId = 0;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -26,11 +22,10 @@ public class PlaneTicket implements Serializable {
 	 * @param departureDate Date object of departure
 	 * @param returnDate Date object of return. If null, ticket is one way
 	 * @param price price in CENTS for the ticket
-	 * @param numSeats number of seats on the plane
 	 * @throws NullPointerException if null is passed to destiny, origin or departure date
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public PlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int price, int numSeats) {
+	public PlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int price) {
 		if(destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
 		}
@@ -47,14 +42,9 @@ public class PlaneTicket implements Serializable {
 		this.departureDate = departureDate;
 
 		this.returnDate = returnDate;
-
-		if (numSeats < 0) {
-			throw new IllegalArgumentException("Parameter numSeats cannot be negative");
-		}
-		this.numSeats = numSeats;
 		
 		if (price < 0) {
-			throw new IllegalArgumentException("Parameter price cannot be negative");
+			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
 
@@ -68,12 +58,11 @@ public class PlaneTicket implements Serializable {
 	 * @param departureDate String date of departure
 	 * @param returnDate String date of return. If null, ticket is one way
 	 * @param price price in CENTS for the ticket
-	 * @param numSeats number of seats on the plane
 	 * @throws java.text.ParseException if the format for the date strings is incorrect
 	 * @throws NullPointerException if null is passed to destiny, origin or departure date
 	 * @throws IllegalArgumentException if price is negative
 	 */
-	public PlaneTicket(Location destiny, Location origin, String departureDate, String returnDate, int price, int numSeats)
+	public PlaneTicket(Location destiny, Location origin, String departureDate, String returnDate, int price)
 			throws java.text.ParseException {
 		if(destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
@@ -96,14 +85,9 @@ public class PlaneTicket implements Serializable {
 		else {
 			this.returnDate = format.parse(returnDate);
 		}
-
-		if (numSeats < 0) {
-			throw new IllegalArgumentException("Parameter numSeats cannot be negative");
-		}
-		this.numSeats = numSeats;
-
+		
 		if (price < 0) {
-			throw new IllegalArgumentException("Parameter price cannot be negative");
+			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
 
@@ -227,21 +211,6 @@ public class PlaneTicket implements Serializable {
 			throw new IllegalArgumentException("Price cannot be negative");
 		}
 		this.price = price;
-	}
-
-	/**
-	 * Simple getter for the number of seats
-	 * @return the number of seats
-	 */
-	public int getNumSeats() {
-		return numSeats;
-	}
-
-	public void setNumSeats(int numSeats) {
-		if (numSeats < 0) {
-			throw new IllegalArgumentException("Parameter numSeats cannot be negative");
-		}
-		this.numSeats = numSeats;
 	}
 
 	/**

@@ -7,7 +7,6 @@ import Travel.TravelPackage;
 import TravelEvent.LodgingEvent;
 import TravelEvent.PlaneTicketEvent;
 import TravelEvent.TravelPackageEvent;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;

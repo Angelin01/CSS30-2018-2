@@ -83,6 +83,7 @@ public interface InterfaceServ extends Remote {
 	 * Method for buying a lodging using Date objects
 	 * @param lodgingID the id for the desired Lodging
 	 * @param numRooms the number of rooms desired
+
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
@@ -91,6 +92,7 @@ public interface InterfaceServ extends Remote {
 	/**
 	 * Method for buying a Travel Package using Date objects
 	 * @param travelPackageID the id for the desired travel package
+
 	 * @param numPackets the number of rooms desired for the lodging
 	 * @return true if the travel package was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
@@ -164,6 +166,4 @@ public interface InterfaceServ extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException;
-
-
 }

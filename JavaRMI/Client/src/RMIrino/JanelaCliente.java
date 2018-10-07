@@ -3,8 +3,10 @@ package RMIrino;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 public class JanelaCliente {
+    private InterfaceServ server;
     private JButton btnTickets;
     private JButton btnRegistries;
     private JButton btnCombos;
@@ -13,7 +15,9 @@ public class JanelaCliente {
     private JLabel labelClient;
     private JFrame frameClient;
 
-    public JanelaCliente() {
+
+    public JanelaCliente(InterfaceServ server) {
+        this.server = server;
         this.frameClient = new JFrame("Janela Cliente");
         this.frameClient.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.frameClient.setContentPane(this.getPanelClient());
@@ -23,7 +27,11 @@ public class JanelaCliente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frameClient.dispose();
-                new TicketsWindow();
+                try {
+                    new TicketsWindow(server);
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }
