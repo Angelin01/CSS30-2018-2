@@ -97,6 +97,26 @@ public class TravelPackage implements Serializable {
 	}
 
 	/**
+	 * Decreases the amount of available packages by equally decreasing the amount of lodging rooms and plane seats
+	 * @param amount the amount of packages available to decrease
+	 * @throws IllegalArgumentException if either the plane ticket or lodging is gonna get negative values
+	 */
+	public void decreaseAvailable(int amount) throws IllegalArgumentException {
+		this.lodging.setNumRooms(this.lodging.getNumRooms() - amount);
+		this.planeTicket.setNumSeats(this.planeTicket.getNumSeats() - amount);
+	}
+
+	/**
+	 * Returns the number of available packages
+	 * Will always be the minimum between plane seats and lodging rooms
+	 * This travel agency specializes in 1 person rooms
+	 * @return the number of available packages
+	 */
+	public int getAvailable() {
+		return (planeTicket.getNumSeats() < lodging.getNumRooms() ? planeTicket.getNumSeats()  : lodging.getNumRooms());
+	}
+
+	/**
 	 * Simple getter for the id
 	 * @return the id for the TravelPackage
 	 */
