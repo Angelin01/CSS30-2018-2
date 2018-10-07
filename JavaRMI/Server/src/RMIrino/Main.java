@@ -1,8 +1,10 @@
 package RMIrino;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,14 +18,56 @@ public class Main {
 	static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	static final SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public static void main (String[] args) throws RemoteException, ParseException {
+	public static void main (String[] args) throws RemoteException, NotBoundException {
 		final int PORT = 1337;
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
 		//ServImpl servico = new ServImpl();
 		ServImpl servico = new ServImpl(defaultPlaneTickets(), defaultLodgings(), defaultTravelPackages());
 		referenciaServicoNomes.rebind("servico", servico);
 
-		System.out.println(inputLodging());
+		int choice;
+		while (true) {
+			choice = -1;
+			System.out.println("RMI Travel Agency management system thingy\n" +
+			                   "If you'd like to perform an action, input an option:\n" +
+			                   "1 - Input new Plane Ticket\n" +
+			                   "2 - Input new Lodging\n" +
+			                   "3 - Input new Travel Package\n" +
+			                   "0 - Shutdown service");
+			while (choice < 0) {
+				while (!input.hasNextInt()) {
+					input.next();
+					System.out.println("Invalid option! Try again:");
+				}
+				choice = input.nextInt();
+				if (choice < 0 || choice > 3) {
+					System.out.println("Invalid option! Try again:");
+				}
+			}
+
+			switch(choice) {
+				case 1:
+					servico.addPlaneTicket(inputPlaneTicket());
+					break;
+
+				case 2:
+					servico.addLodging(inputLodging());
+					break;
+
+				case 3:
+					servico.addTravelPackage(inputTravelPackage());
+					break;
+
+				case 0:
+					System.out.println("Are you sure you want to shutdown the system? (y/[n])");
+					if (input.next().equals("y")) {
+						System.out.println("Okay, good bye :(");
+						referenciaServicoNomes.unbind("servico");
+						UnicastRemoteObject.unexportObject(servico, true);
+						System.exit(0);
+					}
+			}
+		}
 	}
 
 	/**
