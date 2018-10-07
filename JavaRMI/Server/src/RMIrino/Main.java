@@ -178,7 +178,7 @@ public class Main {
 	}
 
 	/**
-	 * Constructos a Lodging object reading input from the user
+	 * Constructs a Lodging object reading input from the user
 	 * @return the Lodging object
 	 */
 	protected static Lodging inputLodging() {
@@ -252,5 +252,33 @@ public class Main {
 		}
 
 		return new Lodging(location, checkIn, checkOut, price, numRooms);
+	}
+
+	/**
+	 * Constructs a TravelPackage object reading input from the user
+	 * Calls the inputPlaneTicket and inputLodging methods before asking for a price
+	 * @return the TravelPackage object
+	 */
+	protected static TravelPackage inputTravelPackage() {
+		System.out.println("Making a new Travel Package.\nPlease input the information for the PLANE TICKET:");
+		PlaneTicket planeTicket = inputPlaneTicket();
+
+		System.out.println("Plane Ticket built successfully.\nPlease input the information for the LODGING:");
+		Lodging lodging = inputLodging();
+
+		System.out.println("Lodging built successfully.\nPlease input the price for the PACKAGE, in CENTS:");
+		int price = -1;
+		while (price < 0) {
+			while (!input.hasNextInt()) {
+				input.next();
+				System.out.println("Invalid price! Try again:");
+			}
+			price = input.nextInt();
+			if (price < 0) {
+				System.out.println("Price cannot be negative! Try again:");
+			}
+		}
+
+		return new TravelPackage(planeTicket, lodging, price);
 	}
 }
