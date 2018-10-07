@@ -43,7 +43,7 @@ public class Lodging implements Serializable {
 		if (checkOut == null) {
 			throw new NullPointerException("Parameter checkOut cannot be null");
 		}
-		this.checkIn = checkOut;
+		this.checkOut = checkOut;
 		
 		if (price < 0) {
 			throw new IllegalArgumentException("Parameter price cannot be negative");

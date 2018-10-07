@@ -23,7 +23,7 @@ public class Main {
 		ServImpl servico = new ServImpl(defaultPlaneTickets(), defaultLodgings(), defaultTravelPackages());
 		referenciaServicoNomes.rebind("servico", servico);
 
-		System.out.println(inputPlaneTicket());
+		System.out.println(inputLodging());
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class Main {
 			}
 			price = input.nextInt();
 			if (price < 0) {
-				System.out.println("Price cannot be negative! Try again");
+				System.out.println("Price cannot be negative! Try again:");
 			}
 		}
 
@@ -170,10 +170,87 @@ public class Main {
 			}
 			numSeats = input.nextInt();
 			if (numSeats < 0) {
-				System.out.println("Number of seats cannot be negative! Try again");
+				System.out.println("Number of seats cannot be negative! Try again:");
 			}
 		}
 
 		return new PlaneTicket(destiny, origin, departureDate, returnDate, price, numSeats);
+	}
+
+	/**
+	 * Constructos a Lodging object reading input from the user
+	 * @return the Lodging object
+	 */
+	protected static Lodging inputLodging() {
+		System.out.println("Available locations:\n" + Location.printAll());
+
+		// Input location
+		Location location = null;
+		while (location == null) {
+			try {
+				location = Location.valueOf(input.next().toUpperCase());
+			}
+			catch (IllegalArgumentException e) {
+				System.out.println("Invalid location! Try again.\nAvailable locations:\n" + Location.printAll());
+			}
+		}
+
+		// Read the junk \n from the previous input.next()
+		input.nextLine();
+
+		// Input checkIn
+		System.out.println("Input a check in date, use the \"yyyy-MM-dd\" format:");
+		Date checkIn = null;
+		while (checkIn == null) {
+			try {
+				checkIn = dateFormat.parse(input.nextLine());
+			}
+			catch (ParseException e) {
+				System.out.println("Invalid date format! Please try again, use the \"yyyy-MM-dd\" format:");
+			}
+		}
+
+		// Input checkOut
+		System.out.println("Input a check out date, use the \"yyyy-MM-dd\" format:");
+		Date checkOut = null;
+		while (checkOut == null) {
+			try {
+				checkOut = dateFormat.parse(input.nextLine());
+			}
+			catch (ParseException e) {
+				System.out.println("Invalid date format! Please try again, use the \"yyyy-MM-dd\" format:");
+			}
+		}
+
+		// Input price
+		System.out.println("Input the price for the lodging in CENTS, must not be negative:");
+		int price = -1;
+		while (price < 0) {
+			while (!input.hasNextInt()) {
+				input.next();
+				System.out.println("Invalid price! Try again:");
+			}
+			price = input.nextInt();
+			if (price < 0) {
+				System.out.println("Price cannot be negative! Try again:");
+			}
+		}
+
+		// Input number of available rooms
+		// As a reminder, we are a travel agency that specializes in 1 person rooms
+		System.out.println("Input the amount of available rooms, must not be negative:");
+		int numRooms = -1;
+		while (numRooms < 0) {
+			while (!input.hasNextInt()) {
+				input.next();
+				System.out.println("Invalid number of rooms! Try again:");
+			}
+			numRooms = input.nextInt();
+			if (numRooms < 0) {
+				System.out.println("Number of rooms cannot be negative! Try again:");
+			}
+		}
+
+		return new Lodging(location, checkIn, checkOut, price, numRooms);
 	}
 }
