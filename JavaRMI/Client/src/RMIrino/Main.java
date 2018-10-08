@@ -1,9 +1,12 @@
 package RMIrino;
 
+import RMIrino.ClientWindow.ClientWindow;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import javafx.application.Application;
 
 public class Main {
     public static void main (String[] args) throws RemoteException {
@@ -19,7 +22,6 @@ public class Main {
         CliImpl client = new CliImpl(servidor);
 
         // GUI
-
-        JanelaCliente clientWindow = new JanelaCliente(servidor);
+        Application.launch(ClientWindow.class, args);
     }
 }
