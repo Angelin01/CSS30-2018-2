@@ -224,29 +224,11 @@ public class Lodging implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return("Lodging:\n" +
-		       "Location: " + location + "\n" +
-		       "CheckIn: " + checkIn + "\n" +
-		       "CheckOut: " + checkOut + "\n" +
-		       "Price per room: $" + price/100 + "." + price%100);
+		return("Lodging: " +
+		       "Location=" + location + " " +
+		       "CheckIn=" + checkIn + " " +
+		       "CheckOut=" + checkOut + " " +
+		       "Price per room=R$" + price/100 + "." + price%100);
 	}
 
-	/**
-	 * Simple getter for the id
-	 * @return the id for the Lodging
-	 */
-	/*public int getId() {
-		return id;
-	}*/
-
-	/**
-	 * A simple to string method for using with print to visualize a Lodging object
-	 * @return a string visualization of the Lodging
-	 */
-	/*@Override
-	public String toString() {
-		return("Lodging:\n" +
-		       "Location: " + location + "\n" +
-		       "Price per room per day: $" + price/100 + "." + price%100);
-	}*/
 }

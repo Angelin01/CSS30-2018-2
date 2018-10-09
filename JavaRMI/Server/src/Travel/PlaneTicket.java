@@ -258,12 +258,12 @@ public class PlaneTicket implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return("Ticket:\n" +
-		       "Type: " + (returnDate == null ? "One way" : "Round-trip") + "\n" +
-		       "Destiny: " + destiny + "\n" +
-		       "Origin: " + origin + "\n" +
-		       "Departure Date: " + departureDate + "\n" +
-		       (returnDate != null ? ("Return date: " + returnDate + "\n") : "") +
-		       "Price: $" + price/100 + "." + price%100);
+		return("Ticket:" +
+		       "Type=" + (returnDate == null ? "One way" : "Round-trip") + " " +
+		       "Destiny=" + destiny + " " +
+		       "Origin=" + origin + " " +
+		       "Departure Date=" + departureDate + " " +
+		       (returnDate != null ? ("Return date: " + returnDate + " ") : "") +
+		       "Price=R$" + price/100 + "." + price%100);
 	}
 }

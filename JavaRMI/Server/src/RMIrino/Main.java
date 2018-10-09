@@ -1,5 +1,6 @@
 package RMIrino;
 
+import java.lang.reflect.Array;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -22,7 +23,10 @@ public class Main {
 		final int PORT = 1337;
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
 		//ServImpl servico = new ServImpl();
-		ServImpl servico = new ServImpl(defaultPlaneTickets(), defaultLodgings(), defaultTravelPackages());
+		ServImpl servico = new ServImpl(defaultPlaneTickets(), defaultLodgings(), new ArrayList<TravelPackage>());
+		servico.addTravelPackage(new TravelPackage(servico.getPlaneTickets().get(0), servico.getLodgings().get(0), 200000));
+		servico.addTravelPackage(new TravelPackage(servico.getPlaneTickets().get(3), servico.getLodgings().get(1), 190000));
+
 		referenciaServicoNomes.rebind("servico", servico);
 
 		int choice;
@@ -55,7 +59,7 @@ public class Main {
 					break;
 
 				case 3:
-					servico.addTravelPackage(inputTravelPackage());
+					servico.addTravelPackage(inputTravelPackage(servico));
 					break;
 
 				case 0:
@@ -94,7 +98,8 @@ public class Main {
 	protected static final ArrayList<Lodging> defaultLodgings() {
 		ArrayList<Lodging> lodgings = new ArrayList<Lodging>();
 		try {
-			lodgings.add(new Lodging(Location.CURITIBA, "2018-11-15", "2018-11-25", 100000, 100));
+			lodgings.add(new Lodging(Location.ARACAJU, "2018-11-15", "2018-11-25", 90000, 120));
+			lodgings.add(new Lodging(Location.CURITIBA, "2018-12-02", "2018-12-05", 100000, 100));
 			lodgings.add(new Lodging(Location.SAO_PAULO, "2018-10-20", "2018-10-22", 40000, 150));
 			lodgings.add(new Lodging(Location.MANAUS, "2018-12-30", "2019-01-04", 125000, 80));
 			lodgings.add(new Lodging(Location.FLORIANOPOLIS, "2018-11-25", "2018-11-30", 90000, 120));
@@ -102,30 +107,6 @@ public class Main {
 			e.printStackTrace();
 		}
 		return lodgings;
-	}
-
-	/**
-	 * Returns a list of default TravelPackages
-	 * @return the list with 2 TravelPackages
-	 */
-	protected static final ArrayList<TravelPackage> defaultTravelPackages() {
-		ArrayList<TravelPackage> travelPackages = new ArrayList<TravelPackage>();
-		try {
-			travelPackages.add(new TravelPackage(
-					new PlaneTicket(Location.ARACAJU, Location.CURITIBA, "2018-11-15 08:30:00", "2018-11-25 16:00:00", 150000, 200),
-					new Lodging(Location.ARACAJU, "2018-11-15", "2018-11-25", 100000, 100),
-					200000
-			));
-			travelPackages.add(new TravelPackage(
-					new PlaneTicket(Location.SALVADOR, Location.SAO_PAULO, "2018-12-01 10:30:00", "2018-12-05 16:00:00", 100000, 150),
-					new Lodging(Location.SALVADOR, "2018-12-01", "2018-12-05", 60000, 80),
-					120000
-			));
-		}
-		catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return travelPackages;
 	}
 
 	/**
@@ -300,17 +281,56 @@ public class Main {
 
 	/**
 	 * Constructs a TravelPackage object reading input from the user
-	 * Calls the inputPlaneTicket and inputLodging methods before asking for a price
+	 * Requires already constructed PlaneTickets and Lodgings
+	 * @param servico the already running RMI server
 	 * @return the TravelPackage object
 	 */
-	protected static TravelPackage inputTravelPackage() {
-		System.out.println("Making a new Travel Package.\nPlease input the information for the PLANE TICKET:");
-		PlaneTicket planeTicket = inputPlaneTicket();
+	protected static TravelPackage inputTravelPackage(ServImpl servico) throws RemoteException {
+		if (servico.getPlaneTickets().isEmpty()) {
+			System.out.println("No plane tickets available! Create one first!");
+			servico.addPlaneTicket(inputPlaneTicket());
+		}
 
-		System.out.println("Plane Ticket built successfully.\nPlease input the information for the LODGING:");
-		Lodging lodging = inputLodging();
+		if (servico.getLodgings().isEmpty()) {
+			System.out.println("No lodgings available! Create one first!");
+			servico.addLodging(inputLodging());
+		}
 
-		System.out.println("Lodging built successfully.\nPlease input the price for the PACKAGE, in CENTS:");
+		System.out.println("Choose a plane ticket number to add to the travel package, the available tickets are\n");
+		for (int i=0; i < servico.getPlaneTickets().size(); ++i) {
+			System.out.println(i + " - " + servico.getPlaneTickets().get(i));
+		}
+
+		int planeTicketID = -1;
+		while (planeTicketID < 0 || planeTicketID > servico.getPlaneTickets().size()) {
+			while (!input.hasNextInt()) {
+				input.next();
+				System.out.println("Invalid ID! Try again:");
+			}
+			planeTicketID = input.nextInt();
+			if (planeTicketID < 0 || planeTicketID > servico.getPlaneTickets().size()) {
+				System.out.println("Invalid ID! Try again:");
+			}
+		}
+
+		System.out.println("\nChoose a lodging number to add to the travel package, the available lodgings are\n");
+		for (int i=0; i < servico.getLodgings().size(); ++i) {
+			System.out.println(i + " - " + servico.getLodgings().get(i));
+		}
+
+		int lodgingID = -1;
+		while (lodgingID < 0 || lodgingID > servico.getLodgings().size()) {
+			while (!input.hasNextInt()) {
+				input.next();
+				System.out.println("Invalid ID! Try again:");
+			}
+			lodgingID = input.nextInt();
+			if (lodgingID < 0 || lodgingID > servico.getLodgings().size()) {
+				System.out.println("Invalid ID! Try again:");
+			}
+		}
+
+		System.out.println("Please input the price for the PACKAGE, in CENTS:");
 		int price = -1;
 		while (price < 0) {
 			while (!input.hasNextInt()) {
@@ -322,8 +342,7 @@ public class Main {
 				System.out.println("Price cannot be negative! Try again:");
 			}
 		}
-
 		
-		return new TravelPackage(planeTicket, lodging, price);
+		return new TravelPackage(servico.getPlaneTickets().get(planeTicketID), servico.getLodgings().get(lodgingID), price);
 	}
 }
