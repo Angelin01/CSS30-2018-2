@@ -1,9 +1,14 @@
 package RMIrino.ClientWindow;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import RMIrino.CliImpl;
+import RMIrino.InterfaceServ;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -24,6 +29,11 @@ import javafx.stage.Stage;
 
 public class ClientWindow extends Application {
 
+    InterfaceServ server;
+    public void setServer(InterfaceServ server){
+        this.server = server;
+    }
+
     /**
      *
      * @param primaryStage The top level container for JavaFX application
@@ -31,13 +41,15 @@ public class ClientWindow extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //ClientController customControl = new ClientController();
 
         Parent root = FXMLLoader.load(getClass().getResource("ClientWindow.fxml"));
         primaryStage.setTitle("Janela Cliente");
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.show();
+
     }
+
+
 
 
 }

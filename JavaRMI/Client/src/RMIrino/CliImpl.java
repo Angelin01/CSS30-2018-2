@@ -6,7 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
     private InterfaceServ serverReference = null;
 
-    protected CliImpl(InterfaceServ serverReference) throws RemoteException {
+    public CliImpl(InterfaceServ serverReference) throws RemoteException {
         this.serverReference = serverReference;
     }
 

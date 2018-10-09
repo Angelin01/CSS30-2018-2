@@ -1,6 +1,10 @@
 package RMIrino.ClientWindow;
 
+import RMIrino.CliImpl;
+import RMIrino.InterfaceServ;
+import RMIrino.TicketsFX.TicketsController;
 import RMIrino.TicketsFX.TicketsFX;
+import Travel.PlaneTicket;
 import com.sun.istack.internal.NotNull;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -13,28 +17,42 @@ import javafx.stage.Stage;
 
 import javax.lang.model.type.NullType;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.List;
 
 public class ClientController extends VBox {
 
-    /*public ClientController() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ClientWindow.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
+    private final int PORT = 1337;
+    private Registry nameServiceReference;
+    private InterfaceServ server;
+    private CliImpl client;
+
+    public ClientController() throws RemoteException {
+
+        this.nameServiceReference = LocateRegistry.getRegistry(PORT);
 
         try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
+            this.server = (InterfaceServ) nameServiceReference.lookup("servico");
+        } catch (NotBoundException e) {
+            e.printStackTrace();
         }
+         this.client = new CliImpl(server);
 
-    }*/
+    }
 
-    public void btnTicketsAction(ActionEvent event) throws IOException {
-        Parent tableViewParent = FXMLLoader.load(getClass().getResource("/RMIrino/TicketsFX/TicketsFX.fxml"));
+    public void btnTicketsAction(ActionEvent event) throws IOException, NotBoundException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/TicketsFX/TicketsFX.fxml"));
+        Parent tableViewParent = loader.load();
+        TicketsController controller = loader.getController();
+        controller.setServer(this.server);
         Stage window = new Stage();
         window.setTitle("Janela Passagens");
         window.setScene(new Scene(tableViewParent, 600,400));
         window.show();
+
         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
