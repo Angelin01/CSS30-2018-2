@@ -106,7 +106,7 @@ public class TicketsController {
             });
         });
 
-        seatField.textProperty().addListener((observable, oldValue, newValue) -> {
+        /*seatField.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(ticket -> {
                 // If filter text is empty, display all tickets.
                 if (newValue == null || newValue.isEmpty()) {
@@ -121,7 +121,7 @@ public class TicketsController {
                 } else
                     return false; // Does not match.
             });
-        });
+        });*/
 
         departureField.valueProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(ticket -> {
@@ -211,6 +211,7 @@ public class TicketsController {
 
             List<PlaneTicket> planeTickets = null;
             planeTickets = server.getPlaneTickets();
+            masterData.removeAll();
             masterData.addAll(planeTickets);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

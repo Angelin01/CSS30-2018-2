@@ -2,6 +2,7 @@ package RMIrino.ClientWindow;
 
 import RMIrino.CliImpl;
 import RMIrino.InterfaceServ;
+import RMIrino.LodgesFX.LodgesController;
 import RMIrino.TicketsFX.TicketsController;
 import RMIrino.TicketsFX.TicketsFX;
 import Travel.PlaneTicket;
@@ -50,6 +51,19 @@ public class ClientController extends VBox {
         controller.setServer(this.server);
         Stage window = new Stage();
         window.setTitle("Janela Passagens");
+        window.setScene(new Scene(tableViewParent, 600,400));
+        window.show();
+
+        ((Node)(event.getSource())).getScene().getWindow().hide();
+    }
+
+    public void btnLodgingAction(ActionEvent event) throws IOException, NotBoundException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/LodgesFX/LodgesFX.fxml"));
+        Parent tableViewParent = loader.load();
+        LodgesController controller = loader.getController();
+        controller.setServer(this.server);
+        Stage window = new Stage();
+        window.setTitle("Janela Hospedagem");
         window.setScene(new Scene(tableViewParent, 600,400));
         window.show();
 

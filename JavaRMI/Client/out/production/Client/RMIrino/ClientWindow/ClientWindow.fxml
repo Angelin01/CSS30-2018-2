@@ -19,7 +19,7 @@
             </MenuBar>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Ver Passagens" onAction="#btnTicketsAction">
+                  <Button mnemonicParsing="false" onAction="#btnTicketsAction" prefHeight="25.0" prefWidth="130.0" text="Ver Passagens">
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
                      </HBox.margin>
@@ -31,7 +31,7 @@
             </HBox>
             <HBox layoutX="10.0" layoutY="35.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Ver hospedagens">
+                  <Button mnemonicParsing="false" onAction="#btnLodgingAction" prefHeight="25.0" prefWidth="130.0" text="Ver hospedagens">
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
                      </HBox.margin>
