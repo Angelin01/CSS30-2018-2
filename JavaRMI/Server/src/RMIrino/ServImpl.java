@@ -83,9 +83,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 
 		// First check if there is a key pair that matches the desired destiny and departureDate
 		if (planeTicketEvents.containsKey(planeTicket.getDestiny()) &&
-		    planeTicketEvents.get(planeTicket.getDestiny()).containsKey(planeTicket.getDepartureDate())) {
+		    planeTicketEvents.get(planeTicket.getDestiny()).containsKey((int) planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY)) {
 			// Loop through the existing events and notify the ones that match
-			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get(planeTicket.getDepartureDate())) {
+			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get((int) planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY)) {
 				// destiny and departure date filters are checked
 				// check maximumPrice
 				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < planeTicket.getPrice()) { continue; }
@@ -116,9 +116,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 
 		// First check if there is a key pair that matches the desired location and checkIn
 		if (lodgingEvents.containsKey(lodging.getLocation()) &&
-		    lodgingEvents.get(lodging.getLocation()).containsKey(lodging.getCheckIn())) {
+		    lodgingEvents.get(lodging.getLocation()).containsKey((int) lodging.getCheckIn().getTime()/MILLIS_IN_DAY)) {
 			// Loop through the existing events and notify the ones that match
-			for (LodgingEvent event : lodgingEvents.get(lodging.getLocation()).get(lodging.getCheckIn())) {
+			for (LodgingEvent event : lodgingEvents.get(lodging.getLocation()).get((int) lodging.getCheckIn().getTime()/MILLIS_IN_DAY)) {
 				// location and checkIn filters are checked
 				// check maximumPrice
 				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < lodging.getPrice()) { continue; }
@@ -146,9 +146,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 
 		// First check if there is a key pair that matches the desired destiny and departureDate
 		if (travelPackageEvents.containsKey(travelPackage.getPlaneTicket().getDestiny()) &&
-				travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).containsKey(travelPackage.getPlaneTicket().getDepartureDate())) {
+				travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).containsKey((int) travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY)) {
 			// Loop through the existing events and notify the ones that match
-			for (TravelPackageEvent event : travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).get(travelPackage.getPlaneTicket().getDepartureDate())) {
+			for (TravelPackageEvent event : travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).get((int) travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY)) {
 				// destiny and departure date filters are checked
 				// check maximumPrice
 				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < travelPackage.getPrice()) { continue; }
