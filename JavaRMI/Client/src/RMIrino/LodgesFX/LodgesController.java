@@ -47,6 +47,8 @@ public class LodgesController {
     private TableColumn<Lodging, Date> checkinColumn;
     @FXML
     private TableColumn<Lodging, Date> checkoutColumn;
+    @FXML
+    private Button btnBack;
 
     // Wrap the FilteredList in a SortedList.
     SortedList<Lodging> sortedData = null;
@@ -190,5 +192,8 @@ public class LodgesController {
            this.interestIds.add(lodgesTable.getSelectionModel().getSelectedItem().getId());
     }
 
+    public void btnBackAction(){
+        btnBack.getScene().getWindow().hide();
+    }
 
 }

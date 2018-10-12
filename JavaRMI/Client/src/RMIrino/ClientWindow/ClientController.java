@@ -6,10 +6,12 @@ import RMIrino.LodgesFX.LodgesController;
 import RMIrino.PackagesFX.PackagesController;
 import RMIrino.TicketsFX.TicketsController;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -21,6 +23,8 @@ import java.rmi.registry.Registry;
 
 public class ClientController extends VBox {
 
+    @FXML
+    private Button btnTickets;
     private final int PORT = 1337;
     private Registry nameServiceReference;
     private InterfaceServ server;
@@ -45,11 +49,10 @@ public class ClientController extends VBox {
         TicketsController controller = loader.getController();
         controller.setServer(this.server, this.client);
         Stage window = new Stage();
+        window.initOwner(btnTickets.getScene().getWindow());
         window.setTitle("Janela Passagens");
         window.setScene(new Scene(tableViewParent, 900,600));
-        window.show();
-
-        ((Node)(event.getSource())).getScene().getWindow().hide();
+        window.showAndWait();
     }
 
     public void btnLodgingAction(ActionEvent event) throws IOException, NotBoundException {
@@ -60,9 +63,7 @@ public class ClientController extends VBox {
         Stage window = new Stage();
         window.setTitle("Janela Hospedagem");
         window.setScene(new Scene(tableViewParent, 900,600));
-        window.show();
-
-        ((Node)(event.getSource())).getScene().getWindow().hide();
+        window.showAndWait();
     }
 
     public void btnPackageAction(ActionEvent event) throws IOException, NotBoundException {
@@ -73,9 +74,7 @@ public class ClientController extends VBox {
         Stage window = new Stage();
         window.setTitle("Janela Pacotes");
         window.setScene(new Scene(tableViewParent, 900,600));
-        window.show();
-
-        ((Node)(event.getSource())).getScene().getWindow().hide();
+        window.showAndWait();
     }
 
 }

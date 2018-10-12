@@ -51,6 +51,8 @@ public class TicketsController {
     private TableColumn<PlaneTicket, Date> departureColumn;
     @FXML
     private TableColumn<PlaneTicket, Date> returnColumn;
+    @FXML
+    private Button btnBack;
 
     @FXML
     public void initialize(){
@@ -200,5 +202,8 @@ public class TicketsController {
         }
     }
 
+    public void btnBackAction(){
+        btnBack.getScene().getWindow().hide();
+    }
 
 }

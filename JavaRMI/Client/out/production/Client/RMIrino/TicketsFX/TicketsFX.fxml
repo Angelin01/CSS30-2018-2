@@ -15,6 +15,10 @@
    <top>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
+            <Button fx:id="btnBack" mnemonicParsing="false" onAction="#btnBackAction" text="Voltar">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin></Button>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Label text="Origem:">
@@ -81,7 +85,7 @@
                   <Insets />
                </VBox.margin>
                <padding>
-                  <Insets bottom="10.0" left="270.0" />
+                  <Insets bottom="10.0" left="430.0" />
                </padding>
             </Label>
          </children></VBox>

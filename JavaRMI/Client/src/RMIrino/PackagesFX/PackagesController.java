@@ -55,6 +55,8 @@ public class PackagesController {
     private TableColumn<TravelPackage, Date> departureColumn;
     @FXML
     private TableColumn<TravelPackage, Date> returnColumn;
+    @FXML
+    private Button btnBack;
 
     @FXML
     public void initialize(){
@@ -206,5 +208,8 @@ public class PackagesController {
         }
     }
 
+    public void btnBackAction(){
+        btnBack.getScene().getWindow().hide();
+    }
 
 }
