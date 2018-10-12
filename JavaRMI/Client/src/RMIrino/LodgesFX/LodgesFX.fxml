@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.LodgesFX.LodgesController">
     <top>
@@ -19,7 +20,18 @@
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />
                </VBox.margin></Button>
-                <HBox prefHeight="100.0" prefWidth="200.0">
+                <Label prefHeight="53.0" prefWidth="599.0" text="Hospedagens">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="10.0" left="375.0" />
+                    </padding>
+               <font>
+                  <Font size="29.0" />
+               </font>
+                </Label>
+                <HBox prefHeight="19.0" prefWidth="900.0">
                     <children>
                         <Label minHeight="-Infinity" minWidth="-Infinity" text="Cidade:">
                             <HBox.margin>
@@ -33,7 +45,7 @@
                         </TextField>
                         <Label text="Checkin:   ">
                             <HBox.margin>
-                                <Insets left="415.0" top="12.0" />
+                                <Insets left="418.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                         <DatePicker fx:id="departureField" minWidth="-Infinity" prefWidth="110.0">
@@ -52,7 +64,7 @@
                         </Label>
                         <TextField fx:id="seatField" minWidth="-Infinity" prefWidth="120.0">
                             <HBox.margin>
-                                <Insets left="20.0" top="10.0" />
+                                <Insets left="23.0" top="10.0" />
                             </HBox.margin>
                         </TextField>
                         <Label text="Checkout:">
@@ -66,14 +78,6 @@
                             </HBox.margin></DatePicker>
                     </children>
                 </HBox>
-                <Label text="Hospedagens:">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <padding>
-                        <Insets bottom="10.0" left="420.0" />
-                    </padding>
-                </Label>
             </children></VBox>
     </top>
     <center>

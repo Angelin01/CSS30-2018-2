@@ -3,6 +3,7 @@ package RMIrino.TicketsFX;
 import RMIrino.CliImpl;
 import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
+import Travel.Location;
 import Travel.PlaneTicket;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;

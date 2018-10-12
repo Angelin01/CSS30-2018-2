@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.PackagesFX.PackagesController">
     <top>
@@ -20,11 +21,22 @@
                   <Insets left="10.0" top="10.0" />
                </VBox.margin>
             </Button>
-                <HBox prefHeight="100.0" prefWidth="200.0">
+                <Label text="Pacotes">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="10.0" left="400.0" />
+                    </padding>
+               <font>
+                  <Font size="29.0" />
+               </font>
+                </Label>
+                <HBox prefHeight="0.0" prefWidth="900.0">
                     <children>
                         <Label text="Origem:">
                             <HBox.margin>
-                                <Insets left="10.0" top="12.0" />
+                                <Insets left="99.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                   <TextField fx:id="originField" minWidth="-Infinity" prefWidth="110.0">
@@ -46,20 +58,20 @@
                   <Insets />
                </VBox.margin>
                 </HBox>
-                <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                <HBox layoutX="10.0" layoutY="10.0" prefHeight="7.0" prefWidth="900.0">
                     <children>
                   <Label text="Destino:">
                      <HBox.margin>
-                        <Insets left="10.0" top="2.0" />
+                        <Insets left="97.0" top="12.0" />
                      </HBox.margin></Label>
                         <TextField fx:id="destinyField" minWidth="-Infinity" prefWidth="110.0">
                             <HBox.margin>
-                                <Insets left="10.0" />
+                                <Insets left="10.0" top="10.0" />
                             </HBox.margin>
                         </TextField>
                         <Label text="Volta/Checkout:">
                             <HBox.margin>
-                                <Insets left="416.0" right="10.0" top="12.0" />
+                                <Insets left="418.0" right="10.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                         <DatePicker fx:id="returnField" minWidth="-Infinity" prefWidth="110.0">
@@ -68,28 +80,20 @@
                             </HBox.margin></DatePicker>
                     </children>
                 </HBox>
-                <HBox layoutX="10.0" layoutY="97.0" prefHeight="100.0" prefWidth="200.0">
+                <HBox layoutX="10.0" layoutY="97.0" prefHeight="3.0" prefWidth="900.0">
                     <children>
                         <Label text="Número de pessoas:">
                             <HBox.margin>
-                                <Insets left="10.0" top="12.0" />
+                                <Insets left="33.0" top="12.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="seatField" prefWidth="120.0">
+                        <TextField fx:id="seatField" prefWidth="110.0">
                             <HBox.margin>
-                                <Insets left="20.0" top="10.0" />
+                                <Insets left="10.0" top="10.0" />
                             </HBox.margin>
                         </TextField>
                     </children>
                 </HBox>
-                <Label text="Pacotes:">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <padding>
-                        <Insets bottom="10.0" left="425.0" />
-                    </padding>
-                </Label>
             </children></VBox>
     </top>
     <center>

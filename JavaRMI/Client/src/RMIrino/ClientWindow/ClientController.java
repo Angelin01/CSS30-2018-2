@@ -1,6 +1,7 @@
 package RMIrino.ClientWindow;
 
 import RMIrino.CliImpl;
+import RMIrino.InterestFX.InterestController;
 import RMIrino.InterfaceServ;
 import RMIrino.LodgesFX.LodgesController;
 import RMIrino.PackagesFX.PackagesController;
@@ -73,6 +74,17 @@ public class ClientController extends VBox {
         controller.setServer(this.server, this.client);
         Stage window = new Stage();
         window.setTitle("Janela Pacotes");
+        window.setScene(new Scene(tableViewParent, 900,600));
+        window.showAndWait();
+    }
+
+    public void btnInterestAction(ActionEvent event) throws IOException, NotBoundException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/InterestFX/InterestFX.fxml"));
+        Parent tableViewParent = loader.load();
+        InterestController controller = loader.getController();
+        controller.setServer(this.server, this.client);
+        Stage window = new Stage();
+        window.setTitle("Janela Interesses");
         window.setScene(new Scene(tableViewParent, 900,600));
         window.showAndWait();
     }

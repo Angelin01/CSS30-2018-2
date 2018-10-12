@@ -19,7 +19,7 @@
             </MenuBar>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnTickets" mnemonicParsing="false" onAction="#btnTicketsAction" prefHeight="25.0" prefWidth="130.0" text="Ver Passagens">
+                  <Button fx:id="btnTickets" mnemonicParsing="false" onAction="#btnTicketsAction" prefHeight="25.0" prefWidth="130.0" text="Ver passagens">
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
                      </HBox.margin>
@@ -58,6 +58,13 @@
                <VBox.margin>
                   <Insets top="50.0" />
                </VBox.margin>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#btnInterestAction" prefHeight="25.0" prefWidth="130.0" text="Registrar interesse">
+                     <HBox.margin>
+                        <Insets left="230.0" top="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
             </HBox>
          </children>
       </VBox>

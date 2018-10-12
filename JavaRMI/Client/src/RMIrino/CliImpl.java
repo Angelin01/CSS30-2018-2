@@ -3,6 +3,7 @@ package RMIrino;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
+import javafx.scene.control.Alert;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,18 +20,30 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         System.out.println(str);
     }
 
-    /*@Override
-    public void notifyLodging(int id, Lodging lodging) {
-
+    @Override
+    public void notifyLodging(int id, Lodging lodging) throws RemoteException {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação de cadastro");
+        alert.setContentText("Nova hospedagem com interesse cadastrada! Cheque os registros.");
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 
     @Override
-    public void notifyTravelPackage(int id, TravelPackage travelPackage) {
-
+    public void notifyTravelPackage(int id, TravelPackage travelPackage) throws RemoteException {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação de cadastro");
+        alert.setContentText("Novo pacote com interesse cadastrada! Cheque os registros.");
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 
     @Override
-    public void notifyPlaneTicket(int id, PlaneTicket planeTicket) {
-
-    }*/
+    public void notifyPlaneTicket(int id, PlaneTicket planeTicket) throws RemoteException {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação de cadastro");
+        alert.setContentText("Nova passagem com interesse cadastrada! Cheque os registros.");
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
 }

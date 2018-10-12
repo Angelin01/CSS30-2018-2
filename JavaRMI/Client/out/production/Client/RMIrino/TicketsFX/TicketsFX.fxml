@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.TicketsFX.TicketsController">
    <top>
@@ -19,11 +20,19 @@
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />
                </VBox.margin></Button>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <Label text="Passagens">
+               <padding>
+                  <Insets bottom="10.0" left="390.0" />
+               </padding>
+               <font>
+                  <Font size="29.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="22.0" prefWidth="900.0">
                <children>
                   <Label text="Origem:">
                      <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
+                        <Insets left="97.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="originField" minWidth="-Infinity" prefWidth="120.0">
@@ -33,7 +42,7 @@
                   </TextField>
                   <Label layoutX="20.0" layoutY="22.0" prefHeight="17.0" text="Data de Ida:">
                      <HBox.margin>
-                        <Insets left="442.0" top="12.0" />
+                        <Insets left="420.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <DatePicker fx:id="departureField" minWidth="-Infinity" prefHeight="25.0" prefWidth="110.0">
@@ -43,11 +52,11 @@
                   </DatePicker>
                </children>
             </HBox>
-            <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+            <HBox layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="900.0">
                <children>
-                  <Label text="Destino:">
+                  <Label prefHeight="17.0" prefWidth="48.0" text="Destino:">
                      <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
+                        <Insets left="92.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="destinyField" minWidth="-Infinity" prefWidth="120.0">
@@ -57,7 +66,7 @@
                   </TextField>
                   <Label prefHeight="17.0" text="Data de Volta:">
                      <HBox.margin>
-                        <Insets left="430.0" right="10.0" top="12.0" />
+                        <Insets left="410.0" right="10.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <DatePicker fx:id="returnField" minWidth="-Infinity" prefWidth="110.0">
@@ -66,7 +75,7 @@
                      </HBox.margin></DatePicker>
                </children>
             </HBox>
-            <HBox layoutX="10.0" layoutY="97.0" prefHeight="100.0" prefWidth="200.0">
+            <HBox layoutX="10.0" layoutY="97.0" prefHeight="16.0" prefWidth="900.0">
                <children>
                   <Label text="Número de passageiros:">
                      <HBox.margin>
@@ -75,19 +84,11 @@
                   </Label>
                   <TextField fx:id="seatField" prefWidth="120.0">
                      <HBox.margin>
-                        <Insets left="20.0" top="10.0" />
+                        <Insets left="10.0" top="10.0" />
                      </HBox.margin>
                   </TextField>
                </children>
             </HBox>
-            <Label text="Passagens:">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="10.0" left="430.0" />
-               </padding>
-            </Label>
          </children></VBox>
    </top>
    <center>

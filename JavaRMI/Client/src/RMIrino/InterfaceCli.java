@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 
 public interface InterfaceCli extends Remote {
     void echo(String str) throws RemoteException;
-    //void notifyLodging(int id, Lodging lodging);
-    //void notifyTravelPackage(int id, TravelPackage travelPackage);
-    //void notifyPlaneTicket(int id, PlaneTicket planeTicket);
+    void notifyLodging(int id, Lodging lodging) throws RemoteException;
+    void notifyTravelPackage(int id, TravelPackage travelPackage) throws RemoteException;
+    void notifyPlaneTicket(int id, PlaneTicket planeTicket) throws RemoteException;
 }
