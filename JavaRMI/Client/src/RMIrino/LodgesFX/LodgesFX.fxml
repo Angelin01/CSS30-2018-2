@@ -11,28 +11,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.LodgesFX.LodgesController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.LodgesFX.LodgesController">
     <top>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Label prefHeight="17.0" prefWidth="95.0" text="Cidade:">
+                        <Label minHeight="-Infinity" minWidth="-Infinity" text="Cidade:">
                             <HBox.margin>
                                 <Insets left="10.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                         <TextField fx:id="originField" minWidth="-Infinity" prefWidth="120.0">
                             <HBox.margin>
-                                <Insets left="100.0" top="10.0" />
+                                <Insets left="90.0" top="10.0" />
                             </HBox.margin>
                         </TextField>
-                        <Label layoutX="20.0" layoutY="22.0" prefHeight="17.0" prefWidth="116.0" text="Checkin:">
+                        <Label text="Checkin:   ">
                             <HBox.margin>
-                                <Insets left="130.0" top="12.0" />
+                                <Insets left="415.0" top="12.0" />
                             </HBox.margin>
                         </Label>
-                        <DatePicker fx:id="departureField" minWidth="-Infinity" prefHeight="25.0" prefWidth="110.0">
+                        <DatePicker fx:id="departureField" minWidth="-Infinity" prefWidth="110.0">
                             <HBox.margin>
                                 <Insets right="10.0" top="10.0" />
                             </HBox.margin>
@@ -41,7 +41,17 @@
                 </HBox>
                 <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Label prefHeight="17.0" prefWidth="120.0" text="Checkout:">
+                        <Label minHeight="-Infinity" minWidth="-Infinity" text="Número de quartos:">
+                            <HBox.margin>
+                                <Insets left="10.0" top="12.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="seatField" minWidth="-Infinity" prefWidth="120.0">
+                            <HBox.margin>
+                                <Insets left="20.0" top="10.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <Label text="Checkout:">
                             <HBox.margin>
                                 <Insets left="410.0" right="10.0" top="12.0" />
                             </HBox.margin>
@@ -52,26 +62,12 @@
                             </HBox.margin></DatePicker>
                     </children>
                 </HBox>
-                <HBox layoutX="10.0" layoutY="97.0" prefHeight="100.0" prefWidth="200.0">
-                    <children>
-                        <Label text="Número de quartos:">
-                            <HBox.margin>
-                                <Insets left="10.0" top="12.0" />
-                            </HBox.margin>
-                        </Label>
-                        <TextField fx:id="seatField" prefWidth="120.0">
-                            <HBox.margin>
-                                <Insets left="20.0" top="10.0" />
-                            </HBox.margin>
-                        </TextField>
-                    </children>
-                </HBox>
-                <Label text="Hospedagens">
+                <Label text="Hospedagens:">
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
                     <padding>
-                        <Insets bottom="10.0" left="270.0" />
+                        <Insets bottom="10.0" left="420.0" />
                     </padding>
                 </Label>
             </children></VBox>
@@ -83,19 +79,18 @@
             </padding>
             <columns>
                 <TableColumn fx:id="idColumn" prefWidth="75.0" text="Id" />
-                <TableColumn fx:id="locationColumn" prefWidth="75.0" text="Cidade" />
-                <TableColumn fx:id="checkinColumn" prefWidth="75.0" text="Check-in" />
-                <TableColumn fx:id="checkoutColumn" prefWidth="75.0" text="Check-out" />
-                <TableColumn fx:id="priceColumn" prefWidth="75.0" text="Preço" />
-                <TableColumn fx:id="roomColumn" prefWidth="147.0" text="Quartos" />
+                <TableColumn fx:id="locationColumn" prefWidth="92.0" text="Cidade" />
+                <TableColumn fx:id="checkinColumn" prefWidth="187.0" text="Check-in" />
+                <TableColumn fx:id="checkoutColumn" prefWidth="206.0" text="Check-out" />
+                <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="125.0" text="Preço" />
+                <TableColumn fx:id="roomColumn" prefWidth="151.0" text="Quartos Disponíveis" />
             </columns>
         </TableView>
     </center>
-    <bottom>
-        <Button mnemonicParsing="false" onAction="#buylodge" text="Comprar" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets bottom="10.0" top="10.0" />
-            </BorderPane.margin>
-        </Button>
-    </bottom>
+   <bottom>
+      <Button mnemonicParsing="false" onAction="#buyLodge" text="Comprar" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </BorderPane.margin></Button>
+   </bottom>
 </BorderPane>

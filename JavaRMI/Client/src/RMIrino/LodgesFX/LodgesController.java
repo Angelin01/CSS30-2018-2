@@ -1,5 +1,6 @@
 package RMIrino.LodgesFX;
 
+import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
 import Travel.Lodging;
 import javafx.beans.property.*;
@@ -9,10 +10,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
@@ -21,7 +20,9 @@ import java.util.List;
 
 public class LodgesController {
     InterfaceServ server;
+    InterfaceCli client;
 
+    private List<Integer> interestIds;
     private ObservableList<Lodging> masterData = FXCollections.observableArrayList();
 
     @FXML
@@ -46,6 +47,9 @@ public class LodgesController {
     private TableColumn<Lodging, Date> checkinColumn;
     @FXML
     private TableColumn<Lodging, Date> checkoutColumn;
+
+    // Wrap the FilteredList in a SortedList.
+    SortedList<Lodging> sortedData = null;
 
     @FXML
     public void initialize(){
@@ -77,24 +81,6 @@ public class LodgesController {
                     return false; // Does not match.
             });
         });
-
-
-        /*seatField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(lodge -> {
-                // If filter text is empty, display all lodges.
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare seats from table with filter.
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (lodge.getNumRooms() >= Integer.valueOf(lowerCaseFilter)) {
-                    return true; // Filter matches seats.
-                } else
-                    return false; // Does not match.
-            });
-        });*/
 
         departureField.valueProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(lodge -> {
@@ -147,17 +133,19 @@ public class LodgesController {
         });
 
         // Wrap the FilteredList in a SortedList.
-        SortedList<Lodging> sortedData = new SortedList<>(filteredData);
+        sortedData = new SortedList<>(filteredData);
 
         // Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(lodgesTable.comparatorProperty());
 
         // Add sorted (and filtered) data to the table.
         lodgesTable.setItems(sortedData);
+
     }
 
-    public void setServer(InterfaceServ server) throws RemoteException {
+    public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
+        this.client = client;
         List<Lodging> lodges = null;
         lodges = server.getLodgings();
         masterData.addAll(lodges);
@@ -167,7 +155,7 @@ public class LodgesController {
      * This function calls the server buyLodge method with the inputs from the fields
      * @throws RemoteException
      */
-    public void buylodge() throws RemoteException {
+    public void buyLodge() throws RemoteException {
         if (seatField.getText() == null || seatField.getText().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Informação da hospedagem");
@@ -182,10 +170,11 @@ public class LodgesController {
             alert.setHeaderText(null);
             alert.showAndWait();
 
-            List<Lodging> planelodges = null;
-            planelodges = server.getLodgings();
-            masterData.removeAll();
-            masterData.addAll(planelodges);
+            List<Lodging> lodges = server.getLodgings();
+            masterData.remove(0, masterData.size());
+            masterData.addAll(lodges);
+
+
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Informação da hospedagem");
@@ -193,6 +182,12 @@ public class LodgesController {
             alert.setHeaderText(null);
             alert.showAndWait();
         }
+    }
+
+    public void interestLodge() throws RemoteException {
+        // (Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference)
+       if (server.interestLodging(lodgesTable.getSelectionModel().getSelectedItem().getLocation(), lodgesTable.getSelectionModel().getSelectedItem().getCheckIn(), lodgesTable.getSelectionModel().getSelectedItem().getCheckOut(), lodgesTable.getSelectionModel().getSelectedItem().getPrice(), this.client) != -1)
+           this.interestIds.add(lodgesTable.getSelectionModel().getSelectedItem().getId());
     }
 
 

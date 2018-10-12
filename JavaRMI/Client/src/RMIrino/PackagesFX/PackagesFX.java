@@ -1,4 +1,4 @@
-package RMIrino.LodgesFX;
+package RMIrino.PackagesFX;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,14 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class LodgesFX extends Application {
+public class PackagesFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("LodgesFX.fxml"));
-        primaryStage.setTitle("Janela Hospedagem");
+        Parent root = FXMLLoader.load(getClass().getResource("PackagesFX.fxml"));
+        primaryStage.setTitle("Janela Pacotes");
         primaryStage.setScene(new Scene(root, 600,400));
         primaryStage.show();
     }
 }
-

@@ -3,11 +3,8 @@ package RMIrino.ClientWindow;
 import RMIrino.CliImpl;
 import RMIrino.InterfaceServ;
 import RMIrino.LodgesFX.LodgesController;
+import RMIrino.PackagesFX.PackagesController;
 import RMIrino.TicketsFX.TicketsController;
-import RMIrino.TicketsFX.TicketsFX;
-import Travel.PlaneTicket;
-import com.sun.istack.internal.NotNull;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -16,13 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javax.lang.model.type.NullType;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
 
 public class ClientController extends VBox {
 
@@ -48,10 +43,10 @@ public class ClientController extends VBox {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/TicketsFX/TicketsFX.fxml"));
         Parent tableViewParent = loader.load();
         TicketsController controller = loader.getController();
-        controller.setServer(this.server);
+        controller.setServer(this.server, this.client);
         Stage window = new Stage();
         window.setTitle("Janela Passagens");
-        window.setScene(new Scene(tableViewParent, 600,400));
+        window.setScene(new Scene(tableViewParent, 900,600));
         window.show();
 
         ((Node)(event.getSource())).getScene().getWindow().hide();
@@ -61,10 +56,23 @@ public class ClientController extends VBox {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/LodgesFX/LodgesFX.fxml"));
         Parent tableViewParent = loader.load();
         LodgesController controller = loader.getController();
-        controller.setServer(this.server);
+        controller.setServer(this.server, this.client);
         Stage window = new Stage();
         window.setTitle("Janela Hospedagem");
-        window.setScene(new Scene(tableViewParent, 600,400));
+        window.setScene(new Scene(tableViewParent, 900,600));
+        window.show();
+
+        ((Node)(event.getSource())).getScene().getWindow().hide();
+    }
+
+    public void btnPackageAction(ActionEvent event) throws IOException, NotBoundException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/PackagesFX/PackagesFX.fxml"));
+        Parent tableViewParent = loader.load();
+        PackagesController controller = loader.getController();
+        controller.setServer(this.server, this.client);
+        Stage window = new Stage();
+        window.setTitle("Janela Pacotes");
+        window.setScene(new Scene(tableViewParent, 900,600));
         window.show();
 
         ((Node)(event.getSource())).getScene().getWindow().hide();

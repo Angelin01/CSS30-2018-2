@@ -1,5 +1,7 @@
 package RMIrino.TicketsFX;
 
+import RMIrino.CliImpl;
+import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
 import Travel.PlaneTicket;
 import javafx.beans.property.*;
@@ -9,24 +11,17 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
-import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 public class TicketsController {
     InterfaceServ server;
+    InterfaceCli client;
 
     private ObservableList<PlaneTicket> masterData = FXCollections.observableArrayList();
 
@@ -106,23 +101,6 @@ public class TicketsController {
             });
         });
 
-        /*seatField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(ticket -> {
-                // If filter text is empty, display all tickets.
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare seats from table with filter.
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (ticket.getNumSeats() >= Integer.valueOf(lowerCaseFilter)) {
-                    return true; // Filter matches seats.
-                } else
-                    return false; // Does not match.
-            });
-        });*/
-
         departureField.valueProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(ticket -> {
                 // If filter text is empty, display all tickets.
@@ -183,8 +161,9 @@ public class TicketsController {
         ticketsTable.setItems(sortedData);
     }
 
-    public void setServer(InterfaceServ server) throws RemoteException {
+    public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
+        this.client = this.client;
         List<PlaneTicket> planeTickets = null;
         planeTickets = server.getPlaneTickets();
         masterData.addAll(planeTickets);
@@ -209,9 +188,8 @@ public class TicketsController {
             alert.setHeaderText(null);
             alert.showAndWait();
 
-            List<PlaneTicket> planeTickets = null;
-            planeTickets = server.getPlaneTickets();
-            masterData.removeAll();
+            List<PlaneTicket> planeTickets = server.getPlaneTickets();
+            masterData.remove(0, masterData.size());
             masterData.addAll(planeTickets);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
