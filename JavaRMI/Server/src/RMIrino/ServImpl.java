@@ -22,9 +22,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private ArrayList<Lodging> listLodgings;
 	private ArrayList<TravelPackage> listTravelPackages;
 
-	Map<Location, Map<Date, ArrayList<PlaneTicketEvent>>> planeTicketEvents;
-	Map<Location, Map<Date, ArrayList<LodgingEvent>>> lodgingEvents;
-	Map<Location, Map<Date, ArrayList<TravelPackageEvent>>> travelPackageEvents;
+	Map<Location, Map<Integer, ArrayList<PlaneTicketEvent>>> planeTicketEvents;
+	Map<Location, Map<Integer, ArrayList<LodgingEvent>>> lodgingEvents;
+	Map<Location, Map<Integer, ArrayList<TravelPackageEvent>>> travelPackageEvents;
 
 	/**
 	 * Instantiates the HashMaps for events
@@ -32,9 +32,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * there's no need to call it again unless you want to destroy the previous events
 	 */
 	private final void instantiateMaps() {
-		this.planeTicketEvents = new HashMap<Location, Map<Date, ArrayList<PlaneTicketEvent>>>();
-		this.lodgingEvents = new HashMap<Location, Map<Date, ArrayList<LodgingEvent>>>();
-		this.travelPackageEvents = new HashMap<Location, Map<Date, ArrayList<TravelPackageEvent>>>();
+		this.planeTicketEvents = new HashMap<Location, Map<Integer, ArrayList<PlaneTicketEvent>>>();
+		this.lodgingEvents = new HashMap<Location, Map<Integer, ArrayList<LodgingEvent>>>();
+		this.travelPackageEvents = new HashMap<Location, Map<Integer, ArrayList<TravelPackageEvent>>>();
 	}
 
 	/**
@@ -376,19 +376,19 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (planeTicketEvents.containsKey(destiny)) {
 				// Check if there's already a key for this date, otherwise create one
-				if (planeTicketEvents.get(destiny).containsKey(departureDate)) {
+				if (planeTicketEvents.get(destiny).containsKey((int) departureDate.getTime()/MILLIS_IN_DAY)) {
 					// Just add the new interest to a pre-existing list
-					planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+					planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 				} else {
 					// There was a destiny, but no date, add the date
-					planeTicketEvents.get(destiny).put(departureDate, new ArrayList<PlaneTicketEvent>());
-					planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+					planeTicketEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<PlaneTicketEvent>());
+					planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 				}
 			} else {
 				// There's nothing related to that destiny, add everything
-				planeTicketEvents.put(destiny, new HashMap<Date, ArrayList<PlaneTicketEvent>>());
-				planeTicketEvents.get(destiny).put(departureDate, new ArrayList<PlaneTicketEvent>());
-				planeTicketEvents.get(destiny).get(departureDate).add(newInterest);
+				planeTicketEvents.put(destiny, new HashMap<Integer, ArrayList<PlaneTicketEvent>>());
+				planeTicketEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<PlaneTicketEvent>());
+				planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 			}
 		}
 
@@ -406,19 +406,19 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (lodgingEvents.containsKey(location)) {
 				// Check if there's already a key for this date, otherwise create one
-				if (lodgingEvents.get(location).containsKey(checkIn)) {
+				if (lodgingEvents.get(location).containsKey((int) checkIn.getTime()/MILLIS_IN_DAY)) {
 					// Just add the new interest to a pre-existing list
-					lodgingEvents.get(location).get(checkIn).add(newInterest);
+					lodgingEvents.get(location).get((int) checkIn.getTime()/MILLIS_IN_DAY).add(newInterest);
 				} else {
 					// There was a destiny, but no date, add the date
-					lodgingEvents.get(location).put(checkIn, new ArrayList<LodgingEvent>());
-					lodgingEvents.get(location).get(checkIn).add(newInterest);
+					lodgingEvents.get(location).put((int) checkIn.getTime()/MILLIS_IN_DAY, new ArrayList<LodgingEvent>());
+					lodgingEvents.get(location).get((int) checkIn.getTime()/MILLIS_IN_DAY).add(newInterest);
 				}
 			} else {
 				// There's nothing related to that destiny, add everything
-				lodgingEvents.put(location, new HashMap<Date, ArrayList<LodgingEvent>>());
-				lodgingEvents.get(location).put(checkIn, new ArrayList<LodgingEvent>());
-				lodgingEvents.get(location).get(checkIn).add(newInterest);
+				lodgingEvents.put(location, new HashMap<Integer, ArrayList<LodgingEvent>>());
+				lodgingEvents.get(location).put((int) checkIn.getTime()/MILLIS_IN_DAY, new ArrayList<LodgingEvent>());
+				lodgingEvents.get(location).get((int) checkIn.getTime()/MILLIS_IN_DAY).add(newInterest);
 			}
 		}
 
@@ -436,19 +436,19 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (travelPackageEvents.containsKey(destiny)) {
 				// Check if there's already a key for this date, otherwise create one
-				if (travelPackageEvents.get(destiny).containsKey(departureDate)) {
+				if (travelPackageEvents.get(destiny).containsKey((int) departureDate.getTime()/MILLIS_IN_DAY)) {
 					// Just add the new interest to a pre-existing list
-					travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+					travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 				} else {
 					// There was a destiny, but no date, add the date
-					travelPackageEvents.get(destiny).put(departureDate, new ArrayList<TravelPackageEvent>());
-					travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+					travelPackageEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<TravelPackageEvent>());
+					travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 				}
 			} else {
 				// There's nothing related to that destiny, add everything
-				travelPackageEvents.put(destiny, new HashMap<Date, ArrayList<TravelPackageEvent>>());
-				travelPackageEvents.get(destiny).put(departureDate, new ArrayList<TravelPackageEvent>());
-				travelPackageEvents.get(destiny).get(departureDate).add(newInterest);
+				travelPackageEvents.put(destiny, new HashMap<Integer, ArrayList<TravelPackageEvent>>());
+				travelPackageEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<TravelPackageEvent>());
+				travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
 			}
 		}
 
