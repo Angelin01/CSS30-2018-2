@@ -3,8 +3,8 @@ package RMIrino.InterestFX;
 import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
 import Travel.Location;
-import Travel.Lodging;
 import Travel.TravelPackage;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +24,7 @@ public class InterestController {
     InterfaceServ server;
     InterfaceCli client;
 
-    private ObservableList<TravelPackage> masterData = FXCollections.observableArrayList();
+    private ObservableList<Registry> masterData = FXCollections.observableArrayList();
 
     @FXML
     private ChoiceBox<Location> originField;
@@ -41,23 +41,21 @@ public class InterestController {
     @FXML
     private ChoiceBox<String> optionChoiceBox;
     @FXML
-    private TableView<TravelPackage> registryTable;
+    private TableView<Registry> registryTable;
     @FXML
-    private TableColumn<TravelPackage, Number> idColumn;
+    private TableColumn<Registry, Number> idColumn;
     @FXML
-    private TableColumn<TravelPackage, Number> seatsColumn;
+    private TableColumn<Registry, String> typeColumn;
     @FXML
-    private TableColumn<TravelPackage, Number> roomColumn;
+    private TableColumn<Registry, String> priceColumn;
     @FXML
-    private TableColumn<TravelPackage, String> priceColumn;
+    private TableColumn<Registry, String> destinyColumn;
     @FXML
-    private TableColumn<TravelPackage, String> destinyColumn;
+    private TableColumn<Registry, String> originColumn;
     @FXML
-    private TableColumn<TravelPackage, String> originColumn;
+    private TableColumn<Registry, Date> departureColumn;
     @FXML
-    private TableColumn<TravelPackage, Date> departureColumn;
-    @FXML
-    private TableColumn<TravelPackage, Date> returnColumn;
+    private TableColumn<Registry, Date> returnColumn;
 
     @FXML
     public void initialize(){
@@ -68,14 +66,12 @@ public class InterestController {
 
         // Initialize the columns.
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()));
-        destinyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlaneTicket().getDestiny().toString()));
-        seatsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getPlaneTicket().getNumSeats()));
-        seatsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getPlaneTicket().getNumSeats()));
-        roomColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getLodging().getNumRooms()));
-        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty("R$ " + cellData.getValue().getPrice()/100 + new DecimalFormat("#.00").format(cellData.getValue().getPrice()%100)));
-        originColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlaneTicket().getOrigin().toString()));
-        departureColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getPlaneTicket().getDepartureDate()));
-        returnColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getPlaneTicket().getReturnDate()));
+        destinyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDestiny().toString()));
+        typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
+        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty("R$ " + cellData.getValue().getPrice() + new DecimalFormat("#.00").format(00)));
+        originColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOrigin().toString()));
+        departureColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getDepartureDate()));
+        returnColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getReturnDate()));
 
         // Add sorted (and filtered) data to the table.
         registryTable.setItems(masterData);
@@ -89,17 +85,23 @@ public class InterestController {
 
     public void btnInterestAction() throws RemoteException {
         int registry = 0;
+        Registry reg = null;
         if (optionChoiceBox.getSelectionModel().getSelectedItem() == "Passagem"){
             // Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference
             registry = server.interestPlaneTicket(destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
-            //masterData.add((TravelPackage) server.getTravelPackages(destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Integer.valueOf(priceField.getText()), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), 0));
+            System.out.println(registry);
+            System.out.println(destinyField.getSelectionModel().getSelectedItem().toString());
+            System.out.println(Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());
+            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Passagem",destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
         } else if (optionChoiceBox.getSelectionModel().getSelectedItem() == "Hospedagem"){
             // Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference
             registry = server.interestLodging(destinyField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
+            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Hospedagem", destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         } else {
             // Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference
             registry = server.interestTravelPackage(destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
-
+            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Pacote", destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }
         if (registry != -1){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -107,6 +109,7 @@ public class InterestController {
             alert.setContentText("Registro criado com sucesso!");
             alert.setHeaderText(null);
             alert.showAndWait();
+            masterData.add(reg);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Informação da registro");
@@ -116,6 +119,36 @@ public class InterestController {
         }
     }
 
+    public void btnRemoveInterestAction() throws RemoteException {
+        Registry reg = registryTable.getSelectionModel().getSelectedItem();
+        Boolean removed = false;
+        if (reg.getType() == "Passagem") {
+            removed = server.removeInterestPlaneTicket(reg.getId(), reg.getDestiny(), reg.getDepartureDate());
+            System.out.println(reg.getId());
+            System.out.println(reg.getDestiny().toString());
+            System.out.println(reg.getDepartureDate().toString());
+        } else if (reg.getType() == "Hospedagem") {
+            removed = server.removeInterestLodging(reg.getId(), reg.getDestiny(), reg.getDepartureDate());
+        } else if (reg.getType() == "Pacote") {
+            removed = server.removeInterestTravelPackage(reg.getId(), reg.getDestiny(), reg.getDepartureDate());
+        }
+
+        if (removed == true) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação de registro");
+            alert.setContentText("Registro removido com sucesso!");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+            masterData.remove(reg);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Informação da registro");
+            alert.setContentText("Erro na remoção do  registro.");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+        }
+
+    }
     public void btnBackAction(){
         btnBack.getScene().getWindow().hide();
     }

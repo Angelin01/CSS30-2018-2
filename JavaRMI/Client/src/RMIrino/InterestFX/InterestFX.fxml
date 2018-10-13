@@ -114,13 +114,12 @@
                </padding>
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="75.0" text="Id" />
-                  <TableColumn fx:id="originColumn" prefWidth="75.0" text="Origem" />
-                  <TableColumn fx:id="destinyColumn" prefWidth="75.0" text="Destino" />
-                  <TableColumn fx:id="departureColumn" prefWidth="162.0" text="Ida" />
-                  <TableColumn fx:id="returnColumn" prefWidth="166.0" text="Volta" />
-                  <TableColumn fx:id="priceColumn" prefWidth="84.0" text="Preço" />
-                  <TableColumn fx:id="seatsColumn" minWidth="0.0" prefWidth="132.0" text="Assentos Disponíveis" />
-                  <TableColumn fx:id="roomColumn" maxWidth="243.0" prefWidth="126.0" text="Quartos Disponíveis" />
+                  <TableColumn fx:id="typeColumn" maxWidth="243.0" prefWidth="126.0" text="Tipo" />
+                  <TableColumn fx:id="originColumn" prefWidth="115.0" text="Origem" />
+                  <TableColumn fx:id="destinyColumn" prefWidth="150.0" text="Destino" />
+                  <TableColumn fx:id="departureColumn" prefWidth="165.0" text="Ida" />
+                  <TableColumn fx:id="returnColumn" prefWidth="178.0" text="Volta" />
+                  <TableColumn fx:id="priceColumn" prefWidth="91.0" text="Preço" />
                </columns>
             </TableView>
             </children></VBox>
@@ -133,7 +132,7 @@
                   <Insets left="370.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Apagar Registro">
+            <Button mnemonicParsing="false" onAction="#btnRemoveInterestAction" text="Apagar Registro">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

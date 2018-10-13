@@ -185,15 +185,6 @@ public class LodgesController {
             alert.showAndWait();
         }
     }
-
-    public void interestLodge() throws RemoteException {
-        // (Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference)
-       if (server.interestLodging(lodgesTable.getSelectionModel().getSelectedItem().getLocation(), lodgesTable.getSelectionModel().getSelectedItem().getCheckIn(), lodgesTable.getSelectionModel().getSelectedItem().getCheckOut(), lodgesTable.getSelectionModel().getSelectedItem().getPrice(), this.client) != -1)
-           this.interestIds.add(lodgesTable.getSelectionModel().getSelectedItem().getId());
-    }
-
-    public void btnBackAction(){
-        btnBack.getScene().getWindow().hide();
-    }
+    public void btnBackAction(){btnBack.getScene().getWindow().hide(); }
 
 }
