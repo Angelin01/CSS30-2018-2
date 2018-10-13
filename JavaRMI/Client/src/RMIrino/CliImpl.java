@@ -22,11 +22,22 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         this.serverReference = serverReference;
     }
 
+    /**
+     * Print requested string
+     * @param str - String to print
+     * @throws RemoteException
+     */
     @Override
     public void echo(String str) throws RemoteException {
         System.out.println(str);
     }
 
+    /**
+     * Pops-up a window warning the user that the interested lodging is now available
+     * @param id - Unique identification of the interest
+     * @param lodging - The complete lodging in which user is interested
+     * @throws RemoteException
+     */
     @Override
     public void notifyLodging(int id, Lodging lodging) throws RemoteException {
         Platform.runLater(new Runnable() {
@@ -41,6 +52,12 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         });
     }
 
+    /**
+     * Pops-up a window warning the user that the interested package is now available
+     * @param id - Unique identification of the interest
+     * @param travelPackage - The complete package in which user is interested
+     * @throws RemoteException
+     */
     @Override
     public void notifyTravelPackage(int id, TravelPackage travelPackage) throws RemoteException {
         Platform.runLater(new Runnable() {
@@ -55,6 +72,12 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         });
     }
 
+    /**
+     * Pops-up a window warning the user that the interested ticket is now available
+     * @param id - Unique identification of the interest
+     * @param planeTicket - The complete ticket in which user is interested
+     * @throws RemoteException
+     */
     @Override
     public void notifyPlaneTicket(int id, PlaneTicket planeTicket) throws RemoteException {
         Platform.runLater(new Runnable() {
