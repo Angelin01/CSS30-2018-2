@@ -6,6 +6,8 @@ import RMIrino.InterfaceServ;
 import RMIrino.LodgesFX.LodgesController;
 import RMIrino.PackagesFX.PackagesController;
 import RMIrino.TicketsFX.TicketsController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +30,7 @@ public class ClientController extends VBox {
     private Registry nameServiceReference;
     private InterfaceServ server;
     private CliImpl client;
+    private ObservableList<RMIrino.InterestFX.Registry> masterData = FXCollections.observableArrayList();
 
     public ClientController() throws RemoteException {
 
@@ -104,7 +107,7 @@ public class ClientController extends VBox {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/InterestFX/InterestFX.fxml"));
         Parent tableViewParent = loader.load();
         InterestController controller = loader.getController();
-        controller.setServer(this.server, this.client);
+        controller.setServer(this.server, this.client, this.masterData);
         Stage window = new Stage();
         window.setTitle("Janela Interesses");
         window.setScene(new Scene(tableViewParent, 900,600));

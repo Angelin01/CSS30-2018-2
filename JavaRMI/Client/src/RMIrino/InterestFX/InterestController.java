@@ -18,8 +18,7 @@ import java.util.Date;
 public class InterestController {
     InterfaceServ server;
     InterfaceCli client;
-
-    private ObservableList<Registry> masterData = FXCollections.observableArrayList();
+    ObservableList<Registry> masterData;
 
     @FXML
     private ChoiceBox<Location> originField;
@@ -66,12 +65,12 @@ public class InterestController {
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()));
         destinyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDestiny().toString()));
         typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
-        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty("R$ " + cellData.getValue().getPrice() + new DecimalFormat("#.00").format(00)));
-        originColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOrigin().toString()));
+        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty((cellData.getValue()==null) ? "-" : "R$ " + cellData.getValue().getPrice() + new DecimalFormat("#.00").format(00)));
+        originColumn.setCellValueFactory(cellData -> new SimpleStringProperty((cellData.getValue().getOrigin()==null) ? "-" : cellData.getValue().getOrigin().toString()));
         departureColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getDepartureDate()));
-        returnColumn.setCellValueFactory(cellData -> new SimpleObjectProperty(cellData.getValue().getReturnDate()));
+        returnColumn.setCellValueFactory(cellData -> new SimpleObjectProperty((cellData.getValue()==null) ? "-" : cellData.getValue().getReturnDate()));
 
-        // Add sorted (and filtered) data to the table.
+        // Add data to the table.
         registryTable.setItems(masterData);
 
     }
@@ -80,11 +79,14 @@ public class InterestController {
      * Set the server and the client to the controller
      * @param server The server which the controller will listen
      * @param client The client that the controller will pass to the server
+     * @param masterData List of registered interests
      * @throws RemoteException if there's any problems with the remote connection
      */
-    public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
+    public void setServer(InterfaceServ server, InterfaceCli client, ObservableList<Registry> masterData) throws RemoteException {
         this.server = server;
         this.client = client;
+        this.masterData = masterData;
+        //registryTable.setItems(masterData);
     }
 
     /**
@@ -94,22 +96,34 @@ public class InterestController {
     public void btnInterestAction() throws RemoteException {
         int registry = 0;
         Registry reg = null;
+
+        Location destiny;
+        Location origin;
+        Date departure;
+        Date returnn = null;
+        int price = 0;
+
+
+        destiny = (destinyField == null) ? null : destinyField.getSelectionModel().getSelectedItem();
+        origin = (originField == null) ? null : originField.getSelectionModel().getSelectedItem();
+        departure = (departureField.getValue() == null) ? null : Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        returnn = (returnField.getValue() == null) ? null : Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        price = (priceField.getText().isEmpty()) ? 0 : Integer.valueOf(priceField.getText());
+
         if (optionChoiceBox.getSelectionModel().getSelectedItem() == "Passagem"){
             // Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference
-            registry = server.interestPlaneTicket(destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
-            System.out.println(registry);
-            System.out.println(destinyField.getSelectionModel().getSelectedItem().toString());
-            System.out.println(Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());
-            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Passagem",destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            registry = server.interestPlaneTicket(destiny, origin, departure, returnn, price, client);
+            reg = new Registry(registry, price, "Passagem", destiny , origin, departure, returnn);
 
         } else if (optionChoiceBox.getSelectionModel().getSelectedItem() == "Hospedagem"){
             // Location location, Date checkIn, Date checkOut, int maximumPrice, InterfaceCli clientReference
-            registry = server.interestLodging(destinyField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
-            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Hospedagem", destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            registry = server.interestLodging(destiny, departure, returnn, price, client);
+            reg = new Registry(registry, price, "Hospedagem",destiny, origin, departure, returnn);
         } else {
             // Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference
-            registry = server.interestTravelPackage(destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Integer.valueOf(priceField.getText()), client);
-            reg = new Registry(registry, Integer.valueOf(priceField.getText()), "Pacote", destinyField.getSelectionModel().getSelectedItem(), originField.getSelectionModel().getSelectedItem(), Date.from(departureField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()), Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            registry = server.interestTravelPackage(destiny, origin, departure, returnn, price, client);
+            reg = new Registry(registry, price, "Pacote", destiny, origin, departure, returnn);
+
         }
         if (registry != -1){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -118,6 +132,7 @@ public class InterestController {
             alert.setHeaderText(null);
             alert.showAndWait();
             masterData.add(reg);
+            registryTable.setItems(masterData);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Informação da registro");
@@ -135,10 +150,8 @@ public class InterestController {
         Registry reg = registryTable.getSelectionModel().getSelectedItem();
         Boolean removed = false;
         if (reg.getType() == "Passagem") {
+            System.out.println(server.getLodgings());
             removed = server.removeInterestPlaneTicket(reg.getId(), reg.getDestiny(), reg.getDepartureDate());
-            System.out.println(reg.getId());
-            System.out.println(reg.getDestiny().toString());
-            System.out.println(reg.getDepartureDate().toString());
         } else if (reg.getType() == "Hospedagem") {
             removed = server.removeInterestLodging(reg.getId(), reg.getDestiny(), reg.getDepartureDate());
         } else if (reg.getType() == "Pacote") {
@@ -152,6 +165,7 @@ public class InterestController {
             alert.setHeaderText(null);
             alert.showAndWait();
             masterData.remove(reg);
+            registryTable.setItems(masterData);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Informação da registro");
