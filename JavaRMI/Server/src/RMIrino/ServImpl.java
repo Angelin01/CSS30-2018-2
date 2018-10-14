@@ -460,14 +460,12 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean removeInterestPlaneTicket(int id, Location destiny, Date departureDate) throws RemoteException {
-		System.out.println("Client sent id " + id + ", destiny " + destiny + " and departureDate " + departureDate);
-		System.out.println(planeTicketEvents.get(destiny).keySet());
 		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey((int)(departureDate.getTime()/MILLIS_IN_DAY))) {
+			System.out.println("Passed if");
 			synchronized (planeTicketEvents) {
 				return planeTicketEvents.get(destiny).get(departureDate).removeIf(p -> p.getId() == id);
 			}
 		}
-		System.out.println("Returned false to client");
 		return false;
 	}
 
