@@ -9,13 +9,11 @@ import RMIrino.TicketsFX.TicketsController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -44,6 +42,12 @@ public class ClientController extends VBox {
 
     }
 
+    /**
+     * Open the tickets window
+     * @param event the button pressed
+     * @throws IOException if there's any problem with the button
+     * @throws NotBoundException if there's any problems with the remote connection
+     */
     public void btnTicketsAction(ActionEvent event) throws IOException, NotBoundException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/TicketsFX/TicketsFX.fxml"));
         Parent tableViewParent = loader.load();
@@ -56,6 +60,12 @@ public class ClientController extends VBox {
         window.showAndWait();
     }
 
+    /**
+     * Open the lodgings window
+     * @param event the button pressed
+     * @throws IOException if there's any problem with the button
+     * @throws NotBoundException if there's any problems with the remote connection
+     */
     public void btnLodgingAction(ActionEvent event) throws IOException, NotBoundException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/LodgesFX/LodgesFX.fxml"));
         Parent tableViewParent = loader.load();
@@ -67,6 +77,12 @@ public class ClientController extends VBox {
         window.showAndWait();
     }
 
+    /**
+     * Open the packages window
+     * @param event the button pressed
+     * @throws IOException if there's any problem with the button
+     * @throws NotBoundException if there's any problems with the remote connection
+     */
     public void btnPackageAction(ActionEvent event) throws IOException, NotBoundException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/PackagesFX/PackagesFX.fxml"));
         Parent tableViewParent = loader.load();
@@ -78,6 +94,12 @@ public class ClientController extends VBox {
         window.showAndWait();
     }
 
+    /**
+     * Open the registries window
+     * @param event the button pressed
+     * @throws IOException if there's any problem with the button
+     * @throws NotBoundException if there's any problems with the remote connection
+     */
     public void btnInterestAction(ActionEvent event) throws IOException, NotBoundException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RMIrino/InterestFX/InterestFX.fxml"));
         Parent tableViewParent = loader.load();

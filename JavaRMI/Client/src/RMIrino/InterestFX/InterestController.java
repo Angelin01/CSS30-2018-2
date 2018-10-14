@@ -3,13 +3,9 @@ package RMIrino.InterestFX;
 import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
 import Travel.Location;
-import Travel.TravelPackage;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
@@ -18,7 +14,6 @@ import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 public class InterestController {
     InterfaceServ server;
@@ -57,6 +52,9 @@ public class InterestController {
     @FXML
     private TableColumn<Registry, Date> returnColumn;
 
+    /**
+     * Initializes the table columns and the comparators
+     */
     @FXML
     public void initialize(){
         Location[] yourEnums = Location.values();
@@ -78,11 +76,21 @@ public class InterestController {
 
     }
 
+    /**
+     * Set the server and the client to the controller
+     * @param server The server which the controller will listen
+     * @param client The client that the controller will pass to the server
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
         this.client = client;
     }
 
+    /**
+     * Set a new registry when user click the button
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void btnInterestAction() throws RemoteException {
         int registry = 0;
         Registry reg = null;
@@ -119,6 +127,10 @@ public class InterestController {
         }
     }
 
+    /**
+     * Deletes selected registry when user click the button
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void btnRemoveInterestAction() throws RemoteException {
         Registry reg = registryTable.getSelectionModel().getSelectedItem();
         Boolean removed = false;
@@ -149,6 +161,9 @@ public class InterestController {
         }
 
     }
+    /**
+     * Goes back to the previous window
+     */
     public void btnBackAction(){
         btnBack.getScene().getWindow().hide();
     }

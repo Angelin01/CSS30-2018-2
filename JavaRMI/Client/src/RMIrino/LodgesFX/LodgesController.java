@@ -53,6 +53,9 @@ public class LodgesController {
     // Wrap the FilteredList in a SortedList.
     SortedList<Lodging> sortedData = null;
 
+    /**
+     * Initializes the table columns and the comparators
+     */
     @FXML
     public void initialize(){
         // Initialize the columns.
@@ -145,11 +148,16 @@ public class LodgesController {
 
     }
 
+    /**
+     * Set the server and the client to the controller
+     * @param server The server which the controller will listen
+     * @param client The client that the controller will pass to the server
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
         this.client = client;
-        List<Lodging> lodges = null;
-        lodges = server.getLodgings();
+        List<Lodging> lodges = server.getLodgings();
         masterData.addAll(lodges);
     }
 
@@ -185,6 +193,10 @@ public class LodgesController {
             alert.showAndWait();
         }
     }
+
+    /**
+     * Goes back to the previous window
+     */
     public void btnBackAction(){btnBack.getScene().getWindow().hide(); }
 
 }

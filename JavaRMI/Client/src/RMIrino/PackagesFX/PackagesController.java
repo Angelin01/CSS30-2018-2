@@ -58,6 +58,9 @@ public class PackagesController {
     @FXML
     private Button btnBack;
 
+    /**
+     * Initializes the table columns and the comparators
+     */
     @FXML
     public void initialize(){
         // Initialize the columns.
@@ -169,9 +172,15 @@ public class PackagesController {
         packagesTable.setItems(sortedData);
     }
 
+    /**
+     * Set the server and the client to the controller
+     * @param server The server which the controller will listen
+     * @param client The client that the controller will pass to the server
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
-        this.client = this.client;
+        this.client = client;
         List<TravelPackage> packages = null;
         packages = server.getTravelPackages();
         masterData.addAll(packages);
@@ -207,7 +216,9 @@ public class PackagesController {
             alert.showAndWait();
         }
     }
-
+    /**
+     * Goes back to the previous window
+     */
     public void btnBackAction(){
         btnBack.getScene().getWindow().hide();
     }

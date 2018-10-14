@@ -12,7 +12,7 @@ public class ClientWindow extends Application {
     /**
      *
      * @param primaryStage The top level container for JavaFX application
-     * @throws Exception
+     * @throws Exception if there is any error in showing up the window
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,8 +23,4 @@ public class ClientWindow extends Application {
         primaryStage.show();
 
     }
-
-
-
-
 }

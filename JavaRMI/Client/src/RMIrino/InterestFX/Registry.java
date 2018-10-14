@@ -1,7 +1,6 @@
 package RMIrino.InterestFX;
 
 import Travel.Location;
-
 import java.util.Date;
 
 public class Registry {
@@ -29,32 +28,56 @@ public class Registry {
 
     /**
      * Simple getter for the price
-     * @return the price in CENTS
+     * @return the price
      */
     public int getPrice() {
         return price;
     }
 
+    /**
+     * Simple getter for the DepartureDate
+     * @return the DepartureDate
+     */
     public Date getDepartureDate() {
         return departureDate;
     }
 
+    /**
+     * Simple getter for the ReturnDate
+     * @return the ReturnDate
+     */
     public Date getReturnDate() {
         return returnDate;
     }
 
+    /**
+     * Simple getter for the Id
+     * @return the Id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Simple getter for the Destiny
+     * @return the Destiny
+     */
     public Location getDestiny() {
         return destiny;
     }
 
+    /**
+     * Simple getter for the Origin
+     * @return the Origin
+     */
     public Location getOrigin() {
         return origin;
     }
 
+    /**
+     * Simple getter for the Type
+     * @return the Type
+     */
     public String getType() {
         return type;
     }

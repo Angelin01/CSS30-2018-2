@@ -1,9 +1,7 @@
 package RMIrino.TicketsFX;
 
-import RMIrino.CliImpl;
 import RMIrino.InterfaceCli;
 import RMIrino.InterfaceServ;
-import Travel.Location;
 import Travel.PlaneTicket;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -55,6 +53,9 @@ public class TicketsController {
     @FXML
     private Button btnBack;
 
+    /**
+     * Initializes the table columns and the comparators
+     */
     @FXML
     public void initialize(){
         // Initialize the columns.
@@ -164,6 +165,12 @@ public class TicketsController {
         ticketsTable.setItems(sortedData);
     }
 
+    /**
+     * Set the server and the client to the controller
+     * @param server The server which the controller will listen
+     * @param client The client that the controller will pass to the server
+     * @throws RemoteException if there's any problems with the remote connection
+     */
     public void setServer(InterfaceServ server, InterfaceCli client) throws RemoteException {
         this.server = server;
         this.client = this.client;
@@ -174,7 +181,7 @@ public class TicketsController {
 
     /**
      * This function calls the server buyTicket method with the inputs from the fields
-     * @throws RemoteException
+     * @throws RemoteException if there's any problems with the remote connection
      */
     public void buyTicket() throws RemoteException {
         if (seatField.getText() == null || seatField.getText().isEmpty()){
@@ -202,7 +209,9 @@ public class TicketsController {
             alert.showAndWait();
         }
     }
-
+    /**
+     * Goes back to the previous window
+     */
     public void btnBackAction(){
         btnBack.getScene().getWindow().hide();
     }
