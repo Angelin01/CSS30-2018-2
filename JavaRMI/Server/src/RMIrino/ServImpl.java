@@ -237,7 +237,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			
 			// Check the departure date filter
 			// To check that it's the same day, calculates the Julian Day Number
-			if (departureDate != null && planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY != departureDate.getTime()/MILLIS_IN_DAY) { continue; }
+			if (departureDate != null && planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY != (departureDate.getTime()/MILLIS_IN_DAY)) { continue; }
 			
 			// Check the return date filter
 			// To check that it's the same day, calculates the Julian Day Number
@@ -280,7 +280,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			
 			// Check the departure date filter
 			// To check that it's the same day, calculates the Julian Day Number
-			if (departureDate != null && travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY != departureDate.getTime()/MILLIS_IN_DAY) { continue; }
+			if (departureDate != null && travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY != (departureDate.getTime()/MILLIS_IN_DAY)) { continue; }
 			
 			// Check the return date filter
 			// To check that it's the same day, calculates the Julian Day Number
@@ -372,25 +372,29 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public int interestPlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
 		PlaneTicketEvent newInterest = new PlaneTicketEvent(origin, destiny, departureDate, returnDate, maximumPrice, clientReference);
 
+		System.out.println((departureDate.getTime()/MILLIS_IN_DAY));
+
 		synchronized (planeTicketEvents) {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (planeTicketEvents.containsKey(destiny)) {
 				// Check if there's already a key for this date, otherwise create one
-				if (planeTicketEvents.get(destiny).containsKey((int) departureDate.getTime()/MILLIS_IN_DAY)) {
+				if (planeTicketEvents.get(destiny).containsKey((int) (departureDate.getTime()/MILLIS_IN_DAY))) {
 					// Just add the new interest to a pre-existing list
-					planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+					planeTicketEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 				} else {
 					// There was a destiny, but no date, add the date
-					planeTicketEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<PlaneTicketEvent>());
-					planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+					planeTicketEvents.get(destiny).put((int) (departureDate.getTime()/MILLIS_IN_DAY), new ArrayList<PlaneTicketEvent>());
+					planeTicketEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 				}
 			} else {
 				// There's nothing related to that destiny, add everything
 				planeTicketEvents.put(destiny, new HashMap<Integer, ArrayList<PlaneTicketEvent>>());
-				planeTicketEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<PlaneTicketEvent>());
-				planeTicketEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+				planeTicketEvents.get(destiny).put((int) (departureDate.getTime()/MILLIS_IN_DAY), new ArrayList<PlaneTicketEvent>());
+				planeTicketEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 			}
 		}
+
+		System.out.println(planeTicketEvents.get(destiny).keySet());
 
 		return newInterest.getId();
 	}
@@ -436,19 +440,19 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (travelPackageEvents.containsKey(destiny)) {
 				// Check if there's already a key for this date, otherwise create one
-				if (travelPackageEvents.get(destiny).containsKey((int) departureDate.getTime()/MILLIS_IN_DAY)) {
+				if (travelPackageEvents.get(destiny).containsKey((int) (departureDate.getTime()/MILLIS_IN_DAY))) {
 					// Just add the new interest to a pre-existing list
-					travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+					travelPackageEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 				} else {
 					// There was a destiny, but no date, add the date
-					travelPackageEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<TravelPackageEvent>());
-					travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+					travelPackageEvents.get(destiny).put((int) (departureDate.getTime()/MILLIS_IN_DAY), new ArrayList<TravelPackageEvent>());
+					travelPackageEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 				}
 			} else {
 				// There's nothing related to that destiny, add everything
 				travelPackageEvents.put(destiny, new HashMap<Integer, ArrayList<TravelPackageEvent>>());
-				travelPackageEvents.get(destiny).put((int) departureDate.getTime()/MILLIS_IN_DAY, new ArrayList<TravelPackageEvent>());
-				travelPackageEvents.get(destiny).get((int) departureDate.getTime()/MILLIS_IN_DAY).add(newInterest);
+				travelPackageEvents.get(destiny).put((int) (departureDate.getTime()/MILLIS_IN_DAY), new ArrayList<TravelPackageEvent>());
+				travelPackageEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 			}
 		}
 
@@ -460,12 +464,15 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean removeInterestPlaneTicket(int id, Location destiny, Date departureDate) throws RemoteException {
-		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey(departureDate.getTime()/MILLIS_IN_DAY)) {
+		System.out.println("Client sent id " + id + ", destiny " + destiny + " and departureDate " + departureDate);
+		System.out.println(planeTicketEvents.get(destiny).keySet());
+		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey((departureDate.getTime()/MILLIS_IN_DAY))) {
 			Predicate<PlaneTicketEvent> planeTicketPredicate = p -> p.getId() == id;
 			synchronized (planeTicketEvents) {
 				return planeTicketEvents.get(destiny).get(departureDate).removeIf(planeTicketPredicate);
 			}
 		}
+		System.out.println("Returned false to client");
 		return false;
 	}
 
@@ -488,7 +495,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	*/
 	@Override
 	public boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException {
-		if (travelPackageEvents.containsKey(destiny) && travelPackageEvents.get(destiny).containsKey(departureDate.getTime()/MILLIS_IN_DAY)) {
+		if (travelPackageEvents.containsKey(destiny) && travelPackageEvents.get(destiny).containsKey((departureDate.getTime()/MILLIS_IN_DAY))) {
 			Predicate<TravelPackageEvent> travelPackagePredicate = p -> p.getId() == id;
 			synchronized (travelPackageEvents) {
 				return travelPackageEvents.get(destiny).get(departureDate).removeIf(travelPackagePredicate);
