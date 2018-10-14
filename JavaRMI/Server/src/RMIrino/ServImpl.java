@@ -372,8 +372,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public int interestPlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int maximumPrice, InterfaceCli clientReference) throws RemoteException {
 		PlaneTicketEvent newInterest = new PlaneTicketEvent(origin, destiny, departureDate, returnDate, maximumPrice, clientReference);
 
-		System.out.println((departureDate.getTime()/MILLIS_IN_DAY));
-
 		synchronized (planeTicketEvents) {
 			// Check if there's already a key for this destiny, otherwise create one
 			if (planeTicketEvents.containsKey(destiny)) {
@@ -393,8 +391,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				planeTicketEvents.get(destiny).get((int) (departureDate.getTime()/MILLIS_IN_DAY)).add(newInterest);
 			}
 		}
-
-		System.out.println(planeTicketEvents.get(destiny).keySet());
 
 		return newInterest.getId();
 	}
@@ -466,7 +462,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public boolean removeInterestPlaneTicket(int id, Location destiny, Date departureDate) throws RemoteException {
 		System.out.println("Client sent id " + id + ", destiny " + destiny + " and departureDate " + departureDate);
 		System.out.println(planeTicketEvents.get(destiny).keySet());
-		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey((departureDate.getTime()/MILLIS_IN_DAY))) {
+		if (planeTicketEvents.containsKey(destiny) && planeTicketEvents.get(destiny).containsKey((int)(departureDate.getTime()/MILLIS_IN_DAY))) {
 			Predicate<PlaneTicketEvent> planeTicketPredicate = p -> p.getId() == id;
 			synchronized (planeTicketEvents) {
 				return planeTicketEvents.get(destiny).get(departureDate).removeIf(planeTicketPredicate);
@@ -481,7 +477,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean removeInterestLodging(int id, Location location, Date checkIn) throws RemoteException {
-		if (lodgingEvents.containsKey(location) && lodgingEvents.get(location).containsKey(checkIn.getTime()/MILLIS_IN_DAY)) {
+		if (lodgingEvents.containsKey(location) && lodgingEvents.get(location).containsKey((int)checkIn.getTime()/MILLIS_IN_DAY)) {
 			Predicate<LodgingEvent> lodgingPredicate = p -> p.getId() == id;
 			synchronized (lodgingEvents) {
 				return lodgingEvents.get(location).get(checkIn).removeIf(lodgingPredicate);
@@ -495,7 +491,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	*/
 	@Override
 	public boolean removeInterestTravelPackage(int id, Location destiny, Date departureDate) throws RemoteException {
-		if (travelPackageEvents.containsKey(destiny) && travelPackageEvents.get(destiny).containsKey((departureDate.getTime()/MILLIS_IN_DAY))) {
+		if (travelPackageEvents.containsKey(destiny) && travelPackageEvents.get(destiny).containsKey((int)(departureDate.getTime()/MILLIS_IN_DAY))) {
 			Predicate<TravelPackageEvent> travelPackagePredicate = p -> p.getId() == id;
 			synchronized (travelPackageEvents) {
 				return travelPackageEvents.get(destiny).get(departureDate).removeIf(travelPackagePredicate);
