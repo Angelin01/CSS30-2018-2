@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.ClientWindow.ClientController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.ClientWindow.ClientController">
    <top>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -19,7 +19,7 @@
             </MenuBar>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnTickets" mnemonicParsing="false" onAction="#btnTicketsAction" prefHeight="25.0" prefWidth="130.0" text="Ver passagens">
+                  <Button fx:id="btnTickets" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnTicketsAction" prefHeight="25.0" prefWidth="150.0" text="Ver passagens">
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
                      </HBox.margin>
@@ -31,7 +31,7 @@
             </HBox>
             <HBox layoutX="10.0" layoutY="35.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#btnLodgingAction" prefHeight="25.0" prefWidth="130.0" text="Ver hospedagens">
+                  <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#btnLodgingAction" prefHeight="25.0" prefWidth="150.0" text="Ver hospedagens">
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
                      </HBox.margin>
@@ -43,7 +43,7 @@
             </HBox>
             <HBox layoutX="10.0" layoutY="123.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#btnPackageAction" prefHeight="25.0" prefWidth="130.0" text="Ver pacotes">
+                  <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#btnPackageAction" prefHeight="25.0" prefWidth="150.0" text="Ver pacotes">
 
                      <HBox.margin>
                         <Insets left="230.0" top="25.0" />
@@ -59,7 +59,7 @@
                   <Insets top="50.0" />
                </VBox.margin>
                <children>
-                  <Button mnemonicParsing="false" onAction="#btnInterestAction" prefHeight="25.0" prefWidth="130.0" text="Registrar interesse">
+                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnInterestAction" prefHeight="25.0" prefWidth="150.0" text="Registrar interesse">
                      <HBox.margin>
                         <Insets left="230.0" top="20.0" />
                      </HBox.margin>

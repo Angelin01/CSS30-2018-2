@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.TicketsFX.TicketsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.TicketsFX.TicketsController">
    <top>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -32,7 +32,7 @@
                <children>
                   <Label text="Origem:">
                      <HBox.margin>
-                        <Insets left="97.0" top="12.0" />
+                        <Insets left="16.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="originField" minWidth="-Infinity" prefWidth="120.0">
@@ -42,7 +42,7 @@
                   </TextField>
                   <Label layoutX="20.0" layoutY="22.0" prefHeight="17.0" text="Data de Ida:">
                      <HBox.margin>
-                        <Insets left="420.0" top="12.0" />
+                        <Insets left="350.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <DatePicker fx:id="departureField" minWidth="-Infinity" prefHeight="25.0" prefWidth="110.0">
@@ -54,9 +54,9 @@
             </HBox>
             <HBox layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="900.0">
                <children>
-                  <Label prefHeight="17.0" prefWidth="48.0" text="Destino:">
+                  <Label minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="60.0" text="Destino:">
                      <HBox.margin>
-                        <Insets left="92.0" top="12.0" />
+                        <Insets left="10.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="destinyField" minWidth="-Infinity" prefWidth="120.0">
@@ -66,7 +66,7 @@
                   </TextField>
                   <Label prefHeight="17.0" text="Data de Volta:">
                      <HBox.margin>
-                        <Insets left="410.0" right="10.0" top="12.0" />
+                        <Insets left="336.0" right="10.0" top="12.0" />
                      </HBox.margin>
                   </Label>
                   <DatePicker fx:id="returnField" minWidth="-Infinity" prefWidth="110.0">
@@ -75,20 +75,7 @@
                      </HBox.margin></DatePicker>
                </children>
             </HBox>
-            <HBox layoutX="10.0" layoutY="97.0" prefHeight="16.0" prefWidth="900.0">
-               <children>
-                  <Label text="Número de passageiros:">
-                     <HBox.margin>
-                        <Insets left="10.0" top="12.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="seatField" prefWidth="120.0">
-                     <HBox.margin>
-                        <Insets left="10.0" top="10.0" />
-                     </HBox.margin>
-                  </TextField>
-               </children>
-            </HBox>
+            <HBox layoutX="10.0" layoutY="97.0" prefHeight="16.0" prefWidth="900.0" />
          </children></VBox>
    </top>
    <center>
@@ -108,10 +95,24 @@
       </TableView>
    </center>
    <bottom>
-      <Button mnemonicParsing="false" onAction="#buyTicket" text="Comprar" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </BorderPane.margin>
-      </Button>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Número de passageiros:">
+               <HBox.margin>
+                  <Insets left="150.0" top="12.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="seatField" prefWidth="120.0">
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin>
+            </TextField>
+            <Button mnemonicParsing="false" onAction="#buyTicket" text="Comprar">
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </bottom>
 </BorderPane>

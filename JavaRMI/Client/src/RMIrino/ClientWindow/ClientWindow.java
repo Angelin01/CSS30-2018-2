@@ -19,7 +19,7 @@ public class ClientWindow extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("ClientWindow.fxml"));
         primaryStage.setTitle("Janela Cliente");
-        primaryStage.setScene(new Scene(root, 600,400));
+        primaryStage.setScene(new Scene(root, 900,600));
         primaryStage.show();
 
     }

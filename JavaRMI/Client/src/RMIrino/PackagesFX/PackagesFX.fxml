@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.PackagesFX.PackagesController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RMIrino.PackagesFX.PackagesController">
     <top>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
@@ -36,7 +36,7 @@
                     <children>
                         <Label text="Origem:">
                             <HBox.margin>
-                                <Insets left="99.0" top="12.0" />
+                                <Insets left="10.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                   <TextField fx:id="originField" minWidth="-Infinity" prefWidth="110.0">
@@ -45,7 +45,7 @@
                      </HBox.margin></TextField>
                         <Label layoutX="20.0" layoutY="22.0" prefHeight="17.0" text="Ida/Check-in:">
                             <HBox.margin>
-                                <Insets left="430.0" top="12.0" />
+                                <Insets left="438.0" top="12.0" />
                             </HBox.margin>
                         </Label>
                         <DatePicker fx:id="departureField" minWidth="-Infinity" prefHeight="25.0" prefWidth="110.0">
@@ -62,7 +62,7 @@
                     <children>
                   <Label text="Destino:">
                      <HBox.margin>
-                        <Insets left="97.0" top="12.0" />
+                        <Insets left="10.0" top="12.0" />
                      </HBox.margin></Label>
                         <TextField fx:id="destinyField" minWidth="-Infinity" prefWidth="110.0">
                             <HBox.margin>
@@ -80,20 +80,7 @@
                             </HBox.margin></DatePicker>
                     </children>
                 </HBox>
-                <HBox layoutX="10.0" layoutY="97.0" prefHeight="3.0" prefWidth="900.0">
-                    <children>
-                        <Label text="Número de pessoas:">
-                            <HBox.margin>
-                                <Insets left="33.0" top="12.0" />
-                            </HBox.margin>
-                        </Label>
-                        <TextField fx:id="seatField" prefWidth="110.0">
-                            <HBox.margin>
-                                <Insets left="10.0" top="10.0" />
-                            </HBox.margin>
-                        </TextField>
-                    </children>
-                </HBox>
+                <HBox layoutX="10.0" layoutY="97.0" prefHeight="3.0" prefWidth="900.0" />
             </children></VBox>
     </top>
     <center>
@@ -113,11 +100,25 @@
             </columns>
         </TableView>
     </center>
-    <bottom>
-        <Button mnemonicParsing="false" onAction="#buyPackage" text="Comprar" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets bottom="10.0" top="10.0" />
-            </BorderPane.margin>
-        </Button>
-    </bottom>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+                  <Label text="Número de pessoas:">
+                      <HBox.margin>
+                          <Insets left="150.0" top="12.0" />
+                      </HBox.margin>
+                  </Label>
+                  <TextField fx:id="seatField" prefWidth="110.0">
+                      <HBox.margin>
+                          <Insets left="10.0" top="10.0" />
+                      </HBox.margin>
+                  </TextField>
+              <Button mnemonicParsing="false" onAction="#buyPackage" text="Comprar">
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin>
+              </Button>
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>
