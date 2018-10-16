@@ -79,7 +79,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @param planeTicket the PlaneTicket to add
 	 */
 	public void addPlaneTicket(PlaneTicket planeTicket) {
-		listPlaneTickets.add(planeTicket);
+		synchronized (listPlaneTickets) {
+			listPlaneTickets.add(planeTicket);
+		}
 
 		// First check if there is a key pair that matches the desired destiny and departureDate
 		if (planeTicketEvents.containsKey(planeTicket.getDestiny()) &&
@@ -112,7 +114,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @param lodging the Lodging to add
 	 */
 	public void addLodging(Lodging lodging) {
-		listLodgings.add(lodging);
+		synchronized (listLodgings) {
+			listLodgings.add(lodging);
+		}
 
 		// First check if there is a key pair that matches the desired location and checkIn
 		if (lodgingEvents.containsKey(lodging.getLocation()) &&
@@ -142,7 +146,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * @param travelPackage the TravelPackage to add
 	 */
 	public void addTravelPackage(TravelPackage travelPackage) {
-		listTravelPackages.add(travelPackage);
+		synchronized (listTravelPackages) {
+			listTravelPackages.add(travelPackage);
+		}
 
 		// First check if there is a key pair that matches the desired destiny and departureDate
 		if (travelPackageEvents.containsKey(travelPackage.getPlaneTicket().getDestiny()) &&
