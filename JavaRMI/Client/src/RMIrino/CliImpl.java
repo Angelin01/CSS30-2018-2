@@ -43,9 +43,20 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                String lodgingDestiny = lodging.getLocation().toString();
+                String lodgingCheckin = lodging.getCheckIn().toString();
+                String lodgingCheckout = lodging.getCheckOut().toString();
+                int lodgingRooms = lodging.getNumRooms();
+                int lodgingPrice = lodging.getPrice();
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informação de cadastro");
-                alert.setContentText("Nova hospedagem com interesse cadastrada!");
+                alert.setHeaderText("Nova hospedagem com interesse cadastrada! Verifique a tela de hospedagens novamente.");
+                alert.setContentText("Local: " + lodgingDestiny + "\n" +
+                                    "Check-in: " + lodgingCheckin + "\n" +
+                                    "Check-out: " + lodgingCheckout + "\n" +
+                                    "Preço(R$): " + lodgingPrice/100 + "," + lodgingPrice%100 + "\n" +
+                                    "Quartos vagos: " + lodgingRooms + "\n");
                 alert.setHeaderText(null);
                 alert.showAndWait();
             }
@@ -63,10 +74,29 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                String lodgingDestiny = travelPackage.getLodging().getLocation().toString();
+                String lodgingCheckin = travelPackage.getLodging().getCheckIn().toString();
+                String lodgingCheckout = travelPackage.getLodging().getCheckOut().toString();
+
+                String ticketDestiny = travelPackage.getPlaneTicket().getDestiny().toString();
+                String ticketOrigin = travelPackage.getPlaneTicket().getOrigin().toString();
+                String ticketCheckin = travelPackage.getPlaneTicket().getDepartureDate().toString();
+                String ticketCheckout = (travelPackage.getPlaneTicket().getReturnDate() == null) ? "-" : travelPackage.getPlaneTicket().getReturnDate().toString();
+                int packageAvailables = travelPackage.getAvailable();
+                int packagePrice = travelPackage.getPrice();
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informação de cadastro");
-                alert.setContentText("Novo pacote com interesse cadastrado!");
-                alert.setHeaderText(null);
+                alert.setHeaderText("Novo pacote com interesse cadastrado! Verifique a tela de pacotes novamente.");
+                alert.setContentText("Local: " + lodgingDestiny + "\n" +
+                        "Check-in: " + lodgingCheckin + "\n" +
+                        "Check-out: " + lodgingCheckout + "\n" +
+                        "Origem: " + ticketOrigin + "\n" +
+                        "Destino: " + ticketDestiny + "\n" +
+                        "Ida: " + ticketCheckin + "\n" +
+                        "Volta: " + ticketCheckout + "\n" +
+                        "Preço(R$): " + packagePrice/100 + "," + packagePrice%100 + "\n" +
+                        "Quantidade disponível: " + packageAvailables + "\n");
                 alert.showAndWait();
             }
         });
@@ -81,12 +111,23 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli {
     @Override
     public void notifyPlaneTicket(int id, PlaneTicket planeTicket) throws RemoteException {
         Platform.runLater(new Runnable() {
+            String ticketDestiny = planeTicket.getDestiny().toString();
+            String ticketOrigin = planeTicket.getOrigin().toString();
+            String ticketCheckin = planeTicket.getDepartureDate().toString();
+            String ticketCheckout = (planeTicket.getReturnDate() == null) ? "-" : planeTicket.getReturnDate().toString();
+            int ticketRooms = planeTicket.getNumSeats();
+            int ticketPrice = planeTicket.getPrice();
             @Override
             public void run() {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informação de cadastro");
-                alert.setContentText("Nova passagem com interesse cadastrada!");
-                alert.setHeaderText(null);
+                alert.setHeaderText("Nova passagem com interesse cadastrada! Verifique a tela de passagens novamente.");
+                alert.setContentText("Origem: " + ticketOrigin + "\n" +
+                        "Destino: " + ticketDestiny + "\n" +
+                        "Ida: " + ticketCheckin + "\n" +
+                        "Volta: " + ticketCheckout + "\n" +
+                        "Preço(R$): " + ticketPrice/100 + "," + ticketPrice%100 + "\n" +
+                        "Assentos vagos: " + ticketRooms + "\n");
                 alert.showAndWait();
             }
         });
