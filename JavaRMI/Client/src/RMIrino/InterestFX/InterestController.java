@@ -111,7 +111,7 @@ public class InterestController {
         returnn = (returnField.getValue() == null) ? null : Date.from(returnField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
         price = (priceField.getText().isEmpty()) ? 0 : Integer.valueOf(priceField.getText());
 
-        if (origin == null || departure == null || optionChoiceBox.getSelectionModel().getSelectedItem().isEmpty()){
+        if (destiny == null || departure == null || optionChoiceBox.getSelectionModel().getSelectedItem().isEmpty()){
             success = false;
         }
         else if (optionChoiceBox.getSelectionModel().getSelectedItem() == "Passagem"){
