@@ -28,7 +28,7 @@
     </property>
     <layout class="QHBoxLayout" name="MainLayout">
      <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer_Left">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -41,9 +41,9 @@
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="btnGetPlaneTickets">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -62,26 +62,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Calibri</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Consultar Pacotes</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="btnGetLodgings">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -103,16 +84,28 @@
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <widget class="QPushButton" name="btnGetTravelPackages">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Calibri</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Consultar Pacotes</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="horizontalSpacer_Right">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -130,9 +123,8 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_3</tabstop>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>btnGetPlaneTickets</tabstop>
+  <tabstop>btnGetLodgings</tabstop>
  </tabstops>
  <resources/>
  <connections/>
