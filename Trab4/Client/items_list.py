@@ -148,6 +148,12 @@ class ItemList(object):
 		self.tableItems.horizontalHeader().setStretchLastSection(True)
 		self.tableItems.verticalHeader().setVisible(False)
 		self.tableItems.verticalHeader().setStretchLastSection(False)
+
+		# Configures the table to select a row on click
+		self.tableItems.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
+		# Configures the table to not have editing
+		self.tableItems.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
 		self.mainLayout.addWidget(self.tableItems)
 		self.buyLayout = QtWidgets.QHBoxLayout()
 		self.buyLayout.setObjectName("buyLayout")
@@ -176,6 +182,11 @@ class ItemList(object):
 		self.buyLayout.addItem(spacerItem5)
 		self.mainLayout.addLayout(self.buyLayout)
 
+		# ======================================== #
+		# Connects the buttons to methods
+		# ======================================== #
+		self.btnBuy.clicked.connect(self.echo_row)
+
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.LODGING:
 			self._setLodging(Form)
@@ -183,6 +194,17 @@ class ItemList(object):
 			self._setPlaneTicket(Form)
 
 		QtCore.QMetaObject.connectSlotsByName(Form)
+
+
+		# fixme REMOVE
+		# Test table
+		for i in range(7):
+			self.tableItems.insertRow(self.tableItems.rowCount())
+			self.tableItems.setItem(self.tableItems.rowCount()-1, i, QtWidgets.QTableWidgetItem("TEXTO"))
+
+	# fixme REMOVE
+	def echo_row(self):
+		print(self.tableItems.selectionModel().selectedRows()[0].row())
 
 	def _setPlaneTicket(self, Form):
 		"""
@@ -242,3 +264,12 @@ class ItemList(object):
 		item.setText(_translate("Form", "Quantidade Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
+
+if __name__ == "__main__":
+	import sys
+	app = QtWidgets.QApplication(sys.argv)
+	Form = QtWidgets.QWidget()
+	ui = ItemList(FormType.PLANE_TICKET)
+	ui.setupUi(Form)
+	Form.show()
+	sys.exit(app.exec_())
