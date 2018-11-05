@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Enum
+from location import Location
 
 
 class FormType(Enum):
@@ -65,6 +66,14 @@ class ItemList(object):
 		self.cmbDestiny.setFont(font)
 		self.cmbDestiny.setObjectName("cmbDestiny")
 		self.locationLayout.addWidget(self.cmbDestiny)
+
+		# Set Locations in the combo boxes
+		# Also adds a "None" item
+		self.cmbOrigin.addItem('Nenhum')
+		self.cmbDestiny.addItem('Nenhum')
+		self.cmbOrigin.addItems([l.value for l in Location])
+		self.cmbDestiny.addItems([l.value for l in Location])
+
 		spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
 		self.locationLayout.addItem(spacerItem2)
 		self.mainLayout.addLayout(self.locationLayout)
@@ -233,13 +242,3 @@ class ItemList(object):
 		item.setText(_translate("Form", "Quantidade Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = ItemList(FormType.LODGING)
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())
