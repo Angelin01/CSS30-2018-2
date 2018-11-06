@@ -188,9 +188,14 @@ class ItemList(object):
 		self.mainLayout.addLayout(self.buyLayout)
 
 		# ======================================== #
-		# Connects the buttons to methods
+		# Connects the buttons and other clickables to methods
+		# Most are self explanatory just by reading the call
 		# ======================================== #
 		self.btnBuy.clicked.connect(self.echo_row)
+		self.calendarDeparture.clicked[QtCore.QDate].connect(self.echo_date)
+		self.calendarReturn.clicked[QtCore.QDate].connect(self.echo_date)
+		self.cmbOrigin.currentTextChanged.connect(self.echo_cmb)
+		self.cmbDestiny.currentTextChanged.connect(self.echo_cmb)
 
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.PLANE_TICKET:
@@ -209,6 +214,17 @@ class ItemList(object):
 		for i in range(7):
 			self.tableItems.insertRow(self.tableItems.rowCount())
 			self.tableItems.setItem(self.tableItems.rowCount()-1, i, QtWidgets.QTableWidgetItem("TEXTO"))
+
+	# fixme REMOVE
+	def echo_cmb(self, value):
+		if value == "Nenhum":
+			print("")
+		else:
+			print(Location(value).name)
+
+	# fixme REMOVE
+	def echo_date(self, date):
+		print(date.toString("yyyy-MM-dd"))
 
 	# fixme REMOVE
 	def echo_row(self):

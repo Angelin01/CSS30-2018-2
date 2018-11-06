@@ -64,6 +64,7 @@ class Ui_MainWindow(object):
 
 		# ======================================== #
 		# Connects the buttons to methods
+		# Most are self explanatory just by reading the call
 		# ======================================== #
 		self.btnGetPlaneTickets.clicked.connect(self._showPlaneTickets)
 		self.btnGetLodgings.clicked.connect(self._showLodgings)
