@@ -12,11 +12,12 @@ class FormType(Enum):
 class ItemList(object):
 	def __init__(self, formType: FormType):
 		self._formType = formType
+		self.form = QtWidgets.QWidget()
 
-	def setupUi(self, Form):
-		Form.setObjectName("Form")
-		Form.resize(799, 598)
-		self.verticalLayoutWidget = QtWidgets.QWidget(Form)
+	def setupUi(self):
+		self.form.setObjectName("Form")
+		self.form.resize(799, 598)
+		self.verticalLayoutWidget = QtWidgets.QWidget(self.form)
 		self.verticalLayoutWidget.setGeometry(QtCore.QRect(9, 9, 781, 581))
 		self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
 		self.mainLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -189,14 +190,14 @@ class ItemList(object):
 
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.LODGING:
-			self._setLodging(Form)
+			self._setLodging()
 		elif self._formType == FormType.PLANE_TICKET or self._formType == FormType.TRAVEL_PACKAGE:
-			self._setPlaneTicket(Form)
+			self._setPlaneTicket()
 
-		QtCore.QMetaObject.connectSlotsByName(Form)
+		QtCore.QMetaObject.connectSlotsByName(self.form)
 
 
-		# fixme REMOVE
+		# fixme REMOVE WHEN I CAN READ THE STUFF
 		# Test table
 		for i in range(7):
 			self.tableItems.insertRow(self.tableItems.rowCount())
@@ -206,13 +207,13 @@ class ItemList(object):
 	def echo_row(self):
 		print(self.tableItems.selectionModel().selectedRows()[0].row())
 
-	def _setPlaneTicket(self, Form):
+	def _setPlaneTicket(self):
 		"""
 		Modifies the UI for a PlaneTicket style
 		Mostly just text modifications
 		"""
 		_translate = QtCore.QCoreApplication.translate
-		Form.setWindowTitle(_translate("Form", "Form"))
+		self.form.setWindowTitle(_translate("Form", "Form"))
 		self.label.setText(_translate("Form", "Passagens"))
 		self.labelOrigin.setText(_translate("Form", "Origem:"))
 		self.labelDestiny.setText(_translate("Form", "Destino:"))
@@ -235,13 +236,13 @@ class ItemList(object):
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
-	def _setLodging(self, Form):
+	def _setLodging(self):
 		"""
 		Modifies the UI for a Lodging style
 		Hides the 'Destiny' fields in the combo box selection and on the table
 		"""
 		_translate = QtCore.QCoreApplication.translate
-		Form.setWindowTitle(_translate("Form", "Form"))
+		self.form.setWindowTitle(_translate("Form", "Form"))
 		self.label.setText(_translate("Form", "Hospedagens"))
 		self.labelOrigin.setText(_translate("Form", "Localidade:"))
 		self.labelDestiny.hide()
@@ -268,8 +269,7 @@ class ItemList(object):
 if __name__ == "__main__":
 	import sys
 	app = QtWidgets.QApplication(sys.argv)
-	Form = QtWidgets.QWidget()
 	ui = ItemList(FormType.PLANE_TICKET)
-	ui.setupUi(Form)
-	Form.show()
+	ui.setupUi()
+	ui.form.show()
 	sys.exit(app.exec_())

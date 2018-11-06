@@ -80,11 +80,10 @@ class Ui_MainWindow(object):
 		Shows a form with the desired type: FormType.PLANE_TICKET, FormType.LODGING or FormType.TRAVEL_PACKAGE
 		:param formType: A FormType for the desired ItemList
 		"""
-		Form = QtWidgets.QWidget()
 		ui = ItemList(formType)
-		ui.setupUi(Form)
-		self.itemListDialogue = Form
-		Form.show()
+		ui.setupUi()
+		self.itemListUi = ui
+		ui.form.show()
 
 	# Methods for connecting the buttons to.
 	# Should be self explanatory
