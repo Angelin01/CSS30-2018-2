@@ -15,6 +15,10 @@ class ItemList(object):
 		self.form = QtWidgets.QWidget()
 
 	def setupUi(self):
+		"""
+		Mostly auto generated stuff by pyuic5 from the .ui files
+		Not auto-generated stuff is isolated by whitespace and has comments explaining changes
+		"""
 		self.form.setObjectName("Form")
 		self.form.resize(799, 598)
 		self.verticalLayoutWidget = QtWidgets.QWidget(self.form)
@@ -189,10 +193,13 @@ class ItemList(object):
 		self.btnBuy.clicked.connect(self.echo_row)
 
 		# Set the appropriate text for the specified type
-		if self._formType == FormType.LODGING:
-			self._setLodging()
-		elif self._formType == FormType.PLANE_TICKET or self._formType == FormType.TRAVEL_PACKAGE:
+		if self._formType == FormType.PLANE_TICKET:
 			self._setPlaneTicket()
+		elif self._formType == FormType.LODGING:
+			self._setLodging()
+		elif self._formType == FormType.TRAVEL_PACKAGE:
+			self._setTravelPackage()
+
 
 		QtCore.QMetaObject.connectSlotsByName(self.form)
 
@@ -213,7 +220,7 @@ class ItemList(object):
 		Mostly just text modifications
 		"""
 		_translate = QtCore.QCoreApplication.translate
-		self.form.setWindowTitle(_translate("Form", "Form"))
+		self.form.setWindowTitle(_translate("Form", "Passagens"))
 		self.label.setText(_translate("Form", "Passagens"))
 		self.labelOrigin.setText(_translate("Form", "Origem:"))
 		self.labelDestiny.setText(_translate("Form", "Destino:"))
@@ -242,7 +249,7 @@ class ItemList(object):
 		Hides the 'Destiny' fields in the combo box selection and on the table
 		"""
 		_translate = QtCore.QCoreApplication.translate
-		self.form.setWindowTitle(_translate("Form", "Form"))
+		self.form.setWindowTitle(_translate("Form", "Hospedagens"))
 		self.label.setText(_translate("Form", "Hospedagens"))
 		self.labelOrigin.setText(_translate("Form", "Localidade:"))
 		self.labelDestiny.hide()
@@ -266,6 +273,18 @@ class ItemList(object):
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
+	def _setTravelPackage(self):
+		"""
+		Modifies the UI for a TravelPackage style
+		Pretty much identical to PlaneTicket (even calls that method) except for the titles
+		"""
+		self._setPlaneTicket()
+		_translate = QtCore.QCoreApplication.translate
+		self.form.setWindowTitle(_translate("Form", "Pacotes"))
+		self.label.setText(_translate("Form", "Pacotes"))
+
+
+# For testing purposes only, thanks to the if wrap won't run when imported in another file
 if __name__ == "__main__":
 	import sys
 	app = QtWidgets.QApplication(sys.argv)

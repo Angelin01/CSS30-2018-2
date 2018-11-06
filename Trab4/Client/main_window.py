@@ -4,6 +4,10 @@ from items_list import FormType, ItemList
 
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
+		"""
+		Mostly auto generated stuff by pyuic5 from the .ui files
+		Not auto-generated stuff is isolated by whitespace and has comments explaining changes
+		"""
 		MainWindow.setObjectName("MainWindow")
 		MainWindow.resize(804, 523)
 		MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -70,7 +74,7 @@ class Ui_MainWindow(object):
 		Sets the text in the window
 		"""
 		_translate = QtCore.QCoreApplication.translate
-		MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+		MainWindow.setWindowTitle(_translate("MainWindow", "Agência de Viagens"))
 		self.btnGetPlaneTickets.setText(_translate("MainWindow", "Consultar Passagens"))
 		self.btnGetLodgings.setText(_translate("MainWindow", "Consultar Hospedagens"))
 		self.btnGetTravelPackages.setText(_translate("MainWindow", "Consultar Pacotes"))
@@ -82,7 +86,7 @@ class Ui_MainWindow(object):
 		"""
 		ui = ItemList(formType)
 		ui.setupUi()
-		self.itemListUi = ui
+		self.itemListUi = ui  # Must keep the reference otherwise garbage collector will destroy the window
 		ui.form.show()
 
 	# Methods for connecting the buttons to.
