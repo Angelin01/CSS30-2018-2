@@ -4,24 +4,13 @@ import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
-//import TravelEvent.LodgingEvent;
-//import TravelEvent.PlaneTicketEvent;
-//import TravelEvent.TravelPackageEvent;
-import javax.json.JsonArray;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.rmi.RemoteException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Predicate;
 
 
 @Path("/agencia")
@@ -31,35 +20,49 @@ public class ServImpl implements InterfaceServ {
 	private static ArrayList<Lodging> listLodgings;
 	private static ArrayList<TravelPackage> listTravelPackages;
 
-	/*
-	Map<Location, Map<Integer, ArrayList<PlaneTicketEvent>>> planeTicketEvents;
-	Map<Location, Map<Integer, ArrayList<LodgingEvent>>> lodgingEvents;
-	Map<Location, Map<Integer, ArrayList<TravelPackageEvent>>> travelPackageEvents;
-	*/
+    /**
+     * Returns a list of default PlaneTickets
+     * @return the list with 4 PlaneTickets
+     */
+    protected static final ArrayList<PlaneTicket> defaultPlaneTickets() {
+        ArrayList<PlaneTicket> planeTickets = new ArrayList<PlaneTicket>();
+        try {
+            planeTickets.add(new PlaneTicket(Location.ARACAJU, Location.CURITIBA, "2018-11-15 08:30:00", "2018-11-25 16:00:00", 150000, 200));
+            planeTickets.add(new PlaneTicket(Location.SAO_PAULO, Location.SALVADOR, "2018-10-14 12:30:00", null, 90000, 150));
+            planeTickets.add(new PlaneTicket(Location.CURITIBA, Location.MANAUS, "2018-12-01 21:00:00", null, 100000, 150));
+            planeTickets.add(new PlaneTicket(Location.CURITIBA, Location.MANAUS, "2018-12-01 21:00:00", "2018-12-05 10:00:00", 125000, 125));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return planeTickets;
+    }
 
-
-	/**
-	 * Instantiates the HashMaps for events
-	 * Will be cannot on the constructors for ServImpl,
-	 * there's no need to call it again unless you want to destroy the previous events
-	 */
-	/*
-	private final void instantiateMaps() {
-		this.planeTicketEvents = new HashMap<Location, Map<Integer, ArrayList<PlaneTicketEvent>>>();
-		this.lodgingEvents = new HashMap<Location, Map<Integer, ArrayList<LodgingEvent>>>();
-		this.travelPackageEvents = new HashMap<Location, Map<Integer, ArrayList<TravelPackageEvent>>>();
-	}
-	*/
+    /**
+     * Returns a list of default Lodgings
+     * @return the list with 4 Lodgings
+     */
+    protected static final ArrayList<Lodging> defaultLodgings() {
+        ArrayList<Lodging> lodgings = new ArrayList<Lodging>();
+        try {
+            lodgings.add(new Lodging(Location.ARACAJU, "2018-11-15", "2018-11-25", 90000, 120));
+            lodgings.add(new Lodging(Location.CURITIBA, "2018-12-02", "2018-12-05", 100000, 100));
+            lodgings.add(new Lodging(Location.SAO_PAULO, "2018-10-20", "2018-10-22", 40000, 150));
+            lodgings.add(new Lodging(Location.MANAUS, "2018-12-30", "2019-01-04", 125000, 80));
+            lodgings.add(new Lodging(Location.FLORIANOPOLIS, "2018-11-25", "2018-11-30", 90000, 120));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return lodgings;
+    }
 
 	/**
 	 * Simple constructor for ServImpl with empty lists
 	 */
 	public ServImpl()  {
-		listPlaneTickets = new ArrayList<PlaneTicket>();
-		listLodgings = new ArrayList<Lodging>();
+		listPlaneTickets = defaultPlaneTickets();
+		listLodgings = defaultLodgings();
 		listTravelPackages = new ArrayList<TravelPackage>();
 
-		//instantiateMaps();
 	}
 
 	/**
@@ -79,11 +82,10 @@ public class ServImpl implements InterfaceServ {
 			throw new NullPointerException("Parameter listTravelPackages cannot be null");
 		}
 
-		this.listPlaneTickets = listPlaneTickets;
-		this.listLodgings = listLodgings;
+		this.listPlaneTickets = defaultPlaneTickets();
+		this.listLodgings = defaultLodgings();
 		this.listTravelPackages = listTravelPackages;
 
-		//instantiateMaps();
 	}
 
 	/**
@@ -164,33 +166,6 @@ public class ServImpl implements InterfaceServ {
 		synchronized (listTravelPackages) {
 			listTravelPackages.add(travelPackage);
 		}
-
-		/*
-		// First check if there is a key pair that matches the desired destiny and departureDate
-		if (travelPackageEvents.containsKey(travelPackage.getPlaneTicket().getDestiny()) &&
-				travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).containsKey((int) (travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY))) {
-			// Loop through the existing events and notify the ones that match
-			for (TravelPackageEvent event : travelPackageEvents.get(travelPackage.getPlaneTicket().getDestiny()).get((int) (travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY))) {
-				// destiny and departure date filters are checked
-				// check maximumPrice
-				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < travelPackage.getPrice()) { continue; }
-
-				// check origin filter
-				if (event.getOrigin() != null && event.getOrigin() != travelPackage.getPlaneTicket().getOrigin()) { continue; }
-
-				// check returnDate filter
-				// To check that it's the same day, calculates the Julian Day Number
-				if (event.getReturnDate() != null && travelPackage.getPlaneTicket().getReturnDate().getTime()/MILLIS_IN_DAY != event.getReturnDate().getTime()/MILLIS_IN_DAY) { continue; }
-
-				// Passed all checks, notify client
-				try {
-					event.notifyClient(travelPackage);
-				} catch (RemoteException e) {
-					// Remove from interest list?
-				}
-			}
-		}
-		*/
 	}
 
 	/**
@@ -200,11 +175,18 @@ public class ServImpl implements InterfaceServ {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getLodgings()  {
-		//return listLodgings;
-
-		GenericEntity<List<Lodging>> entity = new GenericEntity<List<Lodging>>(listLodgings) {};
-		return Response.ok(listLodgings).build();
+        return Response.status(Response.Status.OK).entity(listLodgings).build();
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Path("/planetickets")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlaneTickets()  {
+        return Response.status(Response.Status.OK).entity(listPlaneTickets).build();
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -240,9 +222,9 @@ public class ServImpl implements InterfaceServ {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ArrayList<PlaneTicket> getPlaneTickets()  {
+	/*public ArrayList<PlaneTicket> getPlaneTickets()  {
 		return listPlaneTickets;
-	}
+	}*/
 	
 	/**
 	 * {@inheritDoc}

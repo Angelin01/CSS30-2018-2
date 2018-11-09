@@ -2,11 +2,8 @@ package Controllers;
 
 import Travel.*;
 
-import javax.json.JsonArray;
 import javax.ws.rs.core.Response;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public interface InterfaceServ {
 	 * Simple getter for the list of available plane tickets
 	 * @return a List of ALL PlaneTickets objects
 	 */
-	List<PlaneTicket> getPlaneTickets();
+    Response getPlaneTickets();
 
 	/**
 	 * Getter for PlaneTickets with filters
