@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Enum
 from location import Location
+from requests import get
 
 
 class FormType(Enum):
@@ -10,9 +11,18 @@ class FormType(Enum):
 
 
 class ItemList(object):
+	_base_address = "localhost:8080/SampleApp"
 	def __init__(self, formType: FormType):
 		self._formType = formType
 		self.form = QtWidgets.QWidget()
+
+		# Set the appropriate URLs for the specified type
+		if self._formType == FormType.PLANE_TICKET:
+			self._get_all = "/api/agencia/planetickets"
+		elif self._formType == FormType.LODGING:
+			self._get_all = "/api/agencia/lodgings"
+		elif self._formType == FormType.TRAVEL_PACKAGE:
+			self._get_all = "/api/agencia/travelpackages"
 
 	def setupUi(self):
 		"""
@@ -199,21 +209,19 @@ class ItemList(object):
 
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.PLANE_TICKET:
-			self._setPlaneTicket()
+			self._set_PlaneTicket()
 		elif self._formType == FormType.LODGING:
-			self._setLodging()
+			self._set_Lodging()
 		elif self._formType == FormType.TRAVEL_PACKAGE:
-			self._setTravelPackage()
+			self._set_TravelPackage()
 
 
 		QtCore.QMetaObject.connectSlotsByName(self.form)
 
 
-		# fixme REMOVE WHEN I CAN READ THE STUFF
-		# Test table
-		for i in range(7):
-			self.tableItems.insertRow(self.tableItems.rowCount())
-			self.tableItems.setItem(self.tableItems.rowCount()-1, i, QtWidgets.QTableWidgetItem("TEXTO"))
+		# Reads the list of available ITEMS from the api
+
+
 
 	# fixme REMOVE
 	def echo_cmb(self, value):
@@ -230,7 +238,23 @@ class ItemList(object):
 	def echo_row(self):
 		print(self.tableItems.selectionModel().selectedRows()[0].row())
 
-	def _setPlaneTicket(self):
+	def _update_Lodgings(self):
+		"""
+		Reads Lodgings from the API
+		Uses _base_address + _get_all for a GET request
+		"""
+		lodgings = get(self._base_address + self._get_all).json()
+		tableRow = 0
+		self.tableItems.setRowCount(len(lodgings))
+		for lodging in lodgings:
+			self.tableItems.setItem(tableRow, 0, QtWidgets.QTableWidgetItem(lodging['id']))
+			self.tableItems.setItem(tableRow, 1, QtWidgets.QTableWidgetItem(lodging['location']))
+			self.tableItems.setItem(tableRow, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
+			self.tableItems.setItem(tableRow, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
+			self.tableItems.setItem(tableRow, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
+			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(lodging['numRooms']))
+
+	def _set_PlaneTicket(self):
 		"""
 		Modifies the UI for a PlaneTicket style
 		Mostly just text modifications
@@ -259,7 +283,7 @@ class ItemList(object):
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
-	def _setLodging(self):
+	def _set_Lodging(self):
 		"""
 		Modifies the UI for a Lodging style
 		Hides the 'Destiny' fields in the combo box selection and on the table
@@ -289,7 +313,7 @@ class ItemList(object):
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
-	def _setTravelPackage(self):
+	def _set_TravelPackage(self):
 		"""
 		Modifies the UI for a TravelPackage style
 		Pretty much identical to PlaneTicket (even calls that method) except for the titles
@@ -308,3 +332,4 @@ if __name__ == "__main__":
 	ui.setupUi()
 	ui.form.show()
 	sys.exit(app.exec_())
+	
