@@ -253,6 +253,7 @@ class ItemList(object):
 			self.tableItems.setItem(tableRow, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
 			self.tableItems.setItem(tableRow, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
 			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(lodging['numRooms']))
+			tableRow += 1
 
 	def _set_PlaneTicket(self):
 		"""
