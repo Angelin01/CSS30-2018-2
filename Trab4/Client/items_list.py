@@ -21,6 +21,7 @@ class ItemList(object):
 			self._get_all = "/api/agencia/planetickets"
 		elif self._formType == FormType.LODGING:
 			self._get_all = "/api/agencia/lodgings"
+			self.update_items = self._update_Lodgings
 		elif self._formType == FormType.TRAVEL_PACKAGE:
 			self._get_all = "/api/agencia/travelpackages"
 
@@ -220,6 +221,7 @@ class ItemList(object):
 
 
 		# Reads the list of available ITEMS from the api
+		self._update_items()
 
 
 
