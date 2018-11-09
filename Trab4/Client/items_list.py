@@ -19,11 +19,16 @@ class ItemList(object):
 		# Set the appropriate URLs for the specified type
 		if self._formType == FormType.PLANE_TICKET:
 			self._get_all = "/api/agencia/planetickets"
+			self._update_items = self._update_PlaneTickets
+			
 		elif self._formType == FormType.LODGING:
 			self._get_all = "/api/agencia/lodgings"
-			self.update_items = self._update_Lodgings
+			self._update_items = self._update_Lodgings
+			
 		elif self._formType == FormType.TRAVEL_PACKAGE:
 			self._get_all = "/api/agencia/travelpackages"
+			self._update_items = self._update_TravelPackages
+			
 
 	def setupUi(self):
 		"""
@@ -240,6 +245,9 @@ class ItemList(object):
 	def echo_row(self):
 		print(self.tableItems.selectionModel().selectedRows()[0].row())
 
+	def _update_PlaneTickets(self):
+		pass
+
 	def _update_Lodgings(self):
 		"""
 		Reads Lodgings from the API
@@ -256,6 +264,9 @@ class ItemList(object):
 			self.tableItems.setItem(tableRow, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
 			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(lodging['numRooms']))
 			tableRow += 1
+	
+	def _update_TravelPackages(self):
+		pass
 
 	def _set_PlaneTicket(self):
 		"""
