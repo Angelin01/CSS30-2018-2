@@ -9,6 +9,7 @@ import javax.ejb.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
@@ -76,9 +77,19 @@ public class ServImpl implements InterfaceServ {
 	@Path("/lodgings")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLodgings()  {
-        return Response.status(Response.Status.OK).entity(listLodgings).build();
-	}
+	public Response getLodgings()  { return Response.status(Response.Status.OK).entity(listLodgings).build(); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Path("/buylodging")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response buyLodging(@QueryParam("id") int id, @QueryParam("numRooms") int numRooms)  {
+        int newNumRooms = listLodgings.get(id).getNumRooms() - numRooms;
+        listLodgings.get(id).setNumRooms(newNumRooms);
+        return Response.status(Response.Status.OK).entity(listLodgings.get(id)).build();
+    }
 
     /**
      * {@inheritDoc}
@@ -93,11 +104,36 @@ public class ServImpl implements InterfaceServ {
     /**
      * {@inheritDoc}
      */
+    @Path("/buyplaneticket")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response buyPlaneTicket(@QueryParam("id") int id, @QueryParam("numTickets") int numTickets)  {
+        int newNumSeats = listPlaneTickets.get(id).getNumSeats() - numTickets;
+        listPlaneTickets.get(id).setNumSeats(newNumSeats);
+        return Response.status(Response.Status.OK).entity(listPlaneTickets.get(id)).build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Path("/travelpackages")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTravelPackages()  { return Response.status(Response.Status.OK).entity(listTravelPackages).build(); }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Path("/buytravelpackage")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response buyTravelPackage(@QueryParam("id") int id, @QueryParam("numPackages") int numPackages)  {
+        int newNumSeats = listTravelPackages.get(id).getPlaneTicket().getNumSeats() - numPackages;
+        int newNumRooms = listTravelPackages.get(id).getLodging().getNumRooms() - numPackages;
+        listTravelPackages.get(id).getPlaneTicket().setNumSeats(newNumSeats);
+        listTravelPackages.get(id).getLodging().setNumRooms(newNumRooms);
+        return Response.status(Response.Status.OK).entity(listTravelPackages.get(id)).build();
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -206,7 +242,7 @@ public class ServImpl implements InterfaceServ {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	/*@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets)  {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			if (planeTicket.getId() == planeTicketID) {
@@ -223,12 +259,12 @@ public class ServImpl implements InterfaceServ {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	/*@Override
 	public boolean buyLodging(int lodgingID, int numRooms)  {
 		for (Lodging lodging : listLodgings) {
 			if (lodging.getId() == lodgingID) {
@@ -246,12 +282,12 @@ public class ServImpl implements InterfaceServ {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	/*@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages)  {
 		for (TravelPackage travelPackage : listTravelPackages) {
 			if (travelPackage.getId() == travelPackageID) {
@@ -268,7 +304,7 @@ public class ServImpl implements InterfaceServ {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/*
 	/**

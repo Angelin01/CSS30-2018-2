@@ -26,6 +26,14 @@ public interface InterfaceServ {
 	 */
 	List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms);
 
+    /**
+     * Method for buying a lodging using Date objects
+     * @param id the id for the desired Lodging
+     * @param numRooms the number of rooms desired
+     * @return true if the lodging was successfully reserved, false if there was a problem
+     */
+    Response buyLodging(int id, int numRooms);
+
 	/**
 	 * Simple getter for the list of available plane tickets
 	 * @return a List of ALL PlaneTickets objects
@@ -46,6 +54,15 @@ public interface InterfaceServ {
 	                                  Date returnDate, int minimumSeats);
 
     /**
+     * Method for buying a PlaneTicket
+     * @param id the id for the desired plane ticket
+     * @param numTickets the number of desired tickets
+     * @return true if the ticket was successfully bought, false if there was a problem
+     */
+    Response buyPlaneTicket(int id, int numTickets);
+
+
+    /**
      * Simple getter for the list of available plane tickets
      * @return a List of ALL Travel Packages objects
      */
@@ -64,13 +81,21 @@ public interface InterfaceServ {
 	List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                      Date returnDate, int minimumAvailable);
 
+    /**
+     *
+     * @param id The id of the desired travel package
+     * @param numPackages The number of rooms of the desired travel package
+     * @return The travel package with the updated number packages available after the buy
+     */
+    Response buyTravelPackage(int id, int numPackages);
+
 	/**
 	 * Method for buying a PlaneTicket
 	 * @param planeTicketID the id for the desired plane
 	 * @param numTickets the number of desired tickets
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 */
-	boolean buyPlaneTicket(int planeTicketID, int numTickets);
+	//boolean buyPlaneTicket(int planeTicketID, int numTickets);
 
 	/**
 	 * Method for buying a lodging using Date objects
@@ -78,7 +103,7 @@ public interface InterfaceServ {
 	 * @param numRooms the number of rooms desired
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 */
-	boolean buyLodging(int lodgingID, int numRooms);
+	//boolean buyLodging(int lodgingID, int numRooms);
 
 	/**
 	 * Method for buying a Travel Package using Date objects
@@ -86,7 +111,7 @@ public interface InterfaceServ {
 	 * @param numPackets the number of rooms desired for the lodging
 	 * @return true if the travel package was successfully bought, false if there was a problem
 	 */
-	boolean buyTravelPackage(int travelPackageID, int numPackets);
+	//boolean buyTravelPackage(int travelPackageID, int numPackets);
 
 	/**
 	 * Method for registering interest in new plane tickets
