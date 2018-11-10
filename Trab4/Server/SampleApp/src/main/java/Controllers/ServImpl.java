@@ -4,6 +4,8 @@ import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
+
+import javax.ejb.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,11 +16,24 @@ import java.util.*;
 
 
 @Path("/agencia")
+//@Singleton
 public class ServImpl implements InterfaceServ {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private static ArrayList<PlaneTicket> listPlaneTickets;
 	private static ArrayList<Lodging> listLodgings;
 	private static ArrayList<TravelPackage> listTravelPackages;
+
+    /**
+     * Simple constructor for ServImpl with empty lists
+     */
+    public ServImpl()  {
+        listPlaneTickets = defaultPlaneTickets();
+        listLodgings = defaultLodgings();
+        listTravelPackages = new ArrayList<TravelPackage>();
+        listTravelPackages.add(new TravelPackage(listPlaneTickets.get(0), listLodgings.get(0), 200000));
+        listTravelPackages.add(new TravelPackage(listPlaneTickets.get(3), listLodgings.get(1), 190000));
+
+    }
 
     /**
      * Returns a list of default PlaneTickets
@@ -56,119 +71,6 @@ public class ServImpl implements InterfaceServ {
     }
 
 	/**
-	 * Simple constructor for ServImpl with empty lists
-	 */
-	public ServImpl()  {
-		listPlaneTickets = defaultPlaneTickets();
-		listLodgings = defaultLodgings();
-		listTravelPackages = new ArrayList<TravelPackage>();
-
-	}
-
-	/**
-	 * Simple constructor for ServImpl with pre existing lists
-	 * @param listPlaneTickets list of plane tickets
-	 * @param listLodgings list of lodgings
-	 * @param listTravelPackages list of travel packages
-	 */
-	public ServImpl(ArrayList<PlaneTicket> listPlaneTickets, ArrayList<Lodging> listLodgings, ArrayList<TravelPackage> listTravelPackages)  {
-		if (listPlaneTickets == null) {
-			throw new NullPointerException("Parameter listPlaneTickets cannot be null");
-		}
-		if (listLodgings == null) {
-			throw new NullPointerException("Parameter listLodgings cannot be null");
-		}
-		if (listTravelPackages == null) {
-			throw new NullPointerException("Parameter listTravelPackages cannot be null");
-		}
-
-		this.listPlaneTickets = defaultPlaneTickets();
-		this.listLodgings = defaultLodgings();
-		this.listTravelPackages = listTravelPackages;
-
-	}
-
-	/**
-	 * Adds a new plane ticket to the system and notifies any clients that registered interest and matched
-	 * @param planeTicket the PlaneTicket to add
-	 */
-	public void addPlaneTicket(PlaneTicket planeTicket) {
-		synchronized (listPlaneTickets) {
-			listPlaneTickets.add(planeTicket);
-		}
-		/*
-		// First check if there is a key pair that matches the desired destiny and departureDate
-		if (planeTicketEvents.containsKey(planeTicket.getDestiny()) &&
-		    planeTicketEvents.get(planeTicket.getDestiny()).containsKey((int) (planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY))) {
-			// Loop through the existing events and notify the ones that match
-			for (PlaneTicketEvent event : planeTicketEvents.get(planeTicket.getDestiny()).get((int) (planeTicket.getDepartureDate().getTime()/MILLIS_IN_DAY))) {
-				// destiny and departure date filters are checked
-				// check maximumPrice
-				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < planeTicket.getPrice()) { continue; }
-
-				// check origin filter
-				if (event.getOrigin() != null && event.getOrigin() != planeTicket.getOrigin()) { continue; }
-
-				// check returnDate filter
-				// To check that it's the same day, calculates the Julian Day Number
-				if (event.getReturnDate() != null && planeTicket.getReturnDate().getTime()/MILLIS_IN_DAY != event.getReturnDate().getTime()/MILLIS_IN_DAY) { continue; }
-
-				// Passed all checks, notify client
-				try {
-					event.notifyClient(planeTicket);
-				} catch (RemoteException e) {
-					// Remove from interest list?
-				}
-			}
-		}
-		*/
-	}
-
-	/**
-	 * Adds a new lodging to the system and notifies any clients that registered interest and matched
-	 * @param lodging the Lodging to add
-	 */
-	public void addLodging(Lodging lodging) {
-		synchronized (listLodgings) {
-			listLodgings.add(lodging);
-		}
-
-		/*
-		// First check if there is a key pair that matches the desired location and checkIn
-		if (lodgingEvents.containsKey(lodging.getLocation()) &&
-		    lodgingEvents.get(lodging.getLocation()).containsKey((int) (lodging.getCheckIn().getTime()/MILLIS_IN_DAY))) {
-			// Loop through the existing events and notify the ones that match
-			for (LodgingEvent event : lodgingEvents.get(lodging.getLocation()).get((int) (lodging.getCheckIn().getTime()/MILLIS_IN_DAY))) {
-				// location and checkIn filters are checked
-				// check maximumPrice
-				if (event.getMaximumPrice() > 0 && event.getMaximumPrice() < lodging.getPrice()) { continue; }
-
-				// check the checkOut filter
-				// To check that it's the same day, calculates the Julian Day Number
-				if (event.getCheckOut() != null && lodging.getCheckOut().getTime()/MILLIS_IN_DAY != event.getCheckOut().getTime()/MILLIS_IN_DAY) { continue; }
-
-				// Passed all checks, notify client
-				try {
-					event.notifyClient(lodging);
-				} catch (RemoteException e) {
-					// Remove from interest list?
-				}
-			}
-		}
-		*/
-	}
-
-	/**
-	 * Adds a new travel package to the system and notifies any clients that registered interest and matched
-	 * @param travelPackage the TravelPackage to add
-	 */
-	public void addTravelPackage(TravelPackage travelPackage) {
-		synchronized (listTravelPackages) {
-			listTravelPackages.add(travelPackage);
-		}
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Path("/lodgings")
@@ -187,7 +89,16 @@ public class ServImpl implements InterfaceServ {
     public Response getPlaneTickets()  {
         return Response.status(Response.Status.OK).entity(listPlaneTickets).build();
     }
-	
+
+    /**
+     * {@inheritDoc}
+     */
+    @Path("/travelpackages")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTravelPackages()  { return Response.status(Response.Status.OK).entity(listTravelPackages).build(); }
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -219,12 +130,7 @@ public class ServImpl implements InterfaceServ {
 		return filteredLodgings;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	/*public ArrayList<PlaneTicket> getPlaneTickets()  {
-		return listPlaneTickets;
-	}*/
+
 	
 	/**
 	 * {@inheritDoc}
@@ -259,15 +165,7 @@ public class ServImpl implements InterfaceServ {
 		
 		return filteredPlaneTickets;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ArrayList<TravelPackage> getTravelPackages()  {
-		return listTravelPackages;
-	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

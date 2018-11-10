@@ -45,11 +45,11 @@ public interface InterfaceServ {
 	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                  Date returnDate, int minimumSeats);
 
-	/**
-	 * Simple getter for the list of available packages
-	 * @return a List of ALL TravelPackages objects
-	 */
-	List<TravelPackage> getTravelPackages();
+    /**
+     * Simple getter for the list of available plane tickets
+     * @return a List of ALL Travel Packages objects
+     */
+    Response getTravelPackages();
 
 	/**
 	 * Getter for TravelPackages with filters
