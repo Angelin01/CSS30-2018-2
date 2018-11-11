@@ -207,11 +207,11 @@ class ItemList(object):
 		self.mainLayout.addLayout(self.buyLayout)
 
 		# ======================================== #
-		# Connects the buttons and other clickables to methods
+		# Connects the buttons and other clickables and pressables to methods
 		# Most are self explanatory just by reading the call
 		# ======================================== #
-		self.btnBuy.clicked.connect(self.buy_item)
-		self.editBuy.returnPressed.connect(self.buy_item)
+		self.btnBuy.clicked.connect(self._buy)
+		self.editBuy.returnPressed.connect(self._buy)
 		self.calendarDeparture.clicked[QtCore.QDate].connect(self.echo_date)
 		self.calendarReturn.clicked[QtCore.QDate].connect(self.echo_date)
 		self.cmbOrigin.currentTextChanged.connect(self.echo_cmb)
@@ -246,6 +246,10 @@ class ItemList(object):
 	# fixme REMOVE
 	def echo_row(self):
 		print(self.tableItems.selectionModel().selectedRows()[0].row())
+
+	# ========================== #
+	# Update Items methods below
+	# ========================== #
 
 	def _update_PlaneTickets(self):
 		"""
@@ -300,14 +304,34 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(package['numPackages']))
 			table_row += 1
 
+	# ====================== #
+	# Buy Item methods below
+	# ====================== #
+
+	def _buy(self):
+		# Check first if what is in the buy field is a positive number
+		if not self.editBuy.text().isdigit() or int(self.editBuy.text()) <= 0:
+			return
+
+		# Check if there is a selected row
+		if not self.tableItems.selectionModel().selectedRows():
+			return
+
+		self._buy_item(self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text(), int(self.editBuy.text()))
+
+
 	def _buy_PlaneTicket(self, id, amount):
 		pass
-
+s
 	def _buy_Lodging(self, id, amount):
 		pass
 
 	def _buy_TravelPackage(self, id, amount):
 		pass
+
+	# ========================== #
+	# Translations methods below
+	# ========================== #
 
 	def _set_PlaneTicket(self):
 		"""
