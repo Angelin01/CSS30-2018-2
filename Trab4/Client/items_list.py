@@ -316,20 +316,34 @@ class ItemList(object):
 
 		self._buy_item(self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text(), int(self.editBuy.text()))
 
-
 	def _buy_PlaneTicket(self, id, amount):
 		response = get(self._base_address + "/api/agencia/buyplaneticket?&id={}&numTickets={}".format(id, amount))
-		# Do some stuff here
+		if response.text == "true":
+			# Mostra uma janela de sucesso
+			pass
+		else:
+			# Mostra uma janela de fracasso
+			pass
 		self._update_items()
 
 	def _buy_Lodging(self, id, amount):
 		response = get(self._base_address + "/api/agencia/buylodging?&id={}&numRooms={}".format(id, amount))
-		# Do some stuff here
+		if response.text == "true":
+			# Mostra uma janela de sucesso
+			pass
+		else:
+			# Mostra uma janela de fracasso
+			pass
 		self._update_items()
 
 	def _buy_TravelPackage(self, id, amount):
 		response = get(self._base_address + "/api/agencia/buytravelpackage?&id={}&numPackages={}".format(id, amount))
-		# Do some stuff here
+		if response.text == "true":
+			# Mostra uma janela de sucesso
+			pass
+		else:
+			# Mostra uma janela de fracasso
+			pass
 		self._update_items()
 
 	# ========================== #
