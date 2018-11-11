@@ -6,6 +6,7 @@ import Travel.PlaneTicket;
 import Travel.TravelPackage;
 
 import javax.ejb.Singleton;
+import javax.validation.constraints.AssertFalse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -84,11 +85,13 @@ public class ServImpl implements InterfaceServ {
      */
     @Path("/buylodging")
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response buyLodging(@QueryParam("id") int id, @QueryParam("numRooms") int numRooms)  {
         int newNumRooms = listLodgings.get(id).getNumRooms() - numRooms;
+        if (newNumRooms < 0)
+            return Response.status(Response.Status.OK).entity(false).build();
         listLodgings.get(id).setNumRooms(newNumRooms);
-        return Response.status(Response.Status.OK).entity(listLodgings.get(id)).build();
+        return Response.status(Response.Status.OK).entity(true).build();
     }
 
     /**
@@ -106,11 +109,13 @@ public class ServImpl implements InterfaceServ {
      */
     @Path("/buyplaneticket")
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response buyPlaneTicket(@QueryParam("id") int id, @QueryParam("numTickets") int numTickets)  {
         int newNumSeats = listPlaneTickets.get(id).getNumSeats() - numTickets;
+        if (newNumSeats < 0)
+            return Response.status(Response.Status.OK).entity(false).build();
         listPlaneTickets.get(id).setNumSeats(newNumSeats);
-        return Response.status(Response.Status.OK).entity(listPlaneTickets.get(id)).build();
+        return Response.status(Response.Status.OK).entity(true).build();
     }
 
     /**
@@ -126,13 +131,15 @@ public class ServImpl implements InterfaceServ {
      */
     @Path("/buytravelpackage")
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response buyTravelPackage(@QueryParam("id") int id, @QueryParam("numPackages") int numPackages)  {
         int newNumSeats = listTravelPackages.get(id).getPlaneTicket().getNumSeats() - numPackages;
         int newNumRooms = listTravelPackages.get(id).getLodging().getNumRooms() - numPackages;
+        if (newNumRooms < 0 || newNumSeats < 0)
+            return Response.status(Response.Status.OK).entity(false).build();
         listTravelPackages.get(id).getPlaneTicket().setNumSeats(newNumSeats);
         listTravelPackages.get(id).getLodging().setNumRooms(newNumRooms);
-        return Response.status(Response.Status.OK).entity(listTravelPackages.get(id)).build();
+        return Response.status(Response.Status.OK).entity(true).build();
     }
 
 	/**
