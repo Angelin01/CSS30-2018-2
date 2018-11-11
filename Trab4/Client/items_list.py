@@ -20,14 +20,17 @@ class ItemList(object):
 		if self._formType == FormType.PLANE_TICKET:
 			self._get_all = "/api/agencia/planetickets"
 			self._update_items = self._update_PlaneTickets
+			self._buy_item = self._buy_PlaneTicket
 			
 		elif self._formType == FormType.LODGING:
 			self._get_all = "/api/agencia/lodgings"
 			self._update_items = self._update_Lodgings
+			self._buy_item = self._buy_Lodging
 			
 		elif self._formType == FormType.TRAVEL_PACKAGE:
 			self._get_all = "/api/agencia/travelpackages"
 			self._update_items = self._update_TravelPackages
+			self._buy_item = self._buy_TravelPackage
 			
 
 	def setupUi(self):
@@ -207,7 +210,8 @@ class ItemList(object):
 		# Connects the buttons and other clickables to methods
 		# Most are self explanatory just by reading the call
 		# ======================================== #
-		self.btnBuy.clicked.connect(self.echo_row)
+		self.btnBuy.clicked.connect(self.buy_item)
+		self.editBuy.returnPressed.connect(self.buy_item)
 		self.calendarDeparture.clicked[QtCore.QDate].connect(self.echo_date)
 		self.calendarReturn.clicked[QtCore.QDate].connect(self.echo_date)
 		self.cmbOrigin.currentTextChanged.connect(self.echo_cmb)
@@ -221,9 +225,7 @@ class ItemList(object):
 		elif self._formType == FormType.TRAVEL_PACKAGE:
 			self._set_TravelPackage()
 
-
 		QtCore.QMetaObject.connectSlotsByName(self.form)
-
 
 		# Reads the list of available ITEMS from the api
 		self._update_items()
@@ -297,6 +299,15 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{}".format(package['price'] / 100, package['price'] % 100)))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(package['numPackages']))
 			table_row += 1
+
+	def _buy_PlaneTicket(self, id, amount):
+		pass
+
+	def _buy_Lodging(self, id, amount):
+		pass
+
+	def _buy_TravelPackage(self, id, amount):
+		pass
 
 	def _set_PlaneTicket(self):
 		"""
