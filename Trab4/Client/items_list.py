@@ -248,12 +248,27 @@ class ItemList(object):
 	# Update Items methods below
 	# ========================== #
 
-	def _update_PlaneTickets(self):
+	def _update_PlaneTickets(self, add_filters=False):
 		"""
 		Reads PlaneTickets from the API
-		Uses _base_address + _get_all for a GET request
+		Uses _base_address + api_url + filters for a GET request
 		"""
-		plane_tickets = get(self._base_address + "/api/agencia/planetickets").json()
+		url = self._base_address + "/api/agencia/planetickets"
+		if add_filters:
+			url += "?"
+			url += self._filter_origin or ""
+			url += self._filter_destiny or ""
+			url += self._filter_max_price or ""
+			url += self._filter_departure_date or ""
+			url += self._filter_return_date or ""
+			url += self._filter_minimum_available or ""
+			
+		try:
+			plane_tickets = get(url).json()
+		except ConnectionError:
+			# Exibir msg de erro
+			return
+
 		table_row = 0
 		self.tableItems.setRowCount(len(plane_tickets))
 		for plane in plane_tickets:
@@ -266,12 +281,18 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(plane['numSeats']))
 			table_row += 1
 
-	def _update_Lodgings(self):
+	def _update_Lodgings(self, add_filters=False):
 		"""
 		Reads Lodgings from the API
-		Uses _base_address + _get_all for a GET request
+		Uses _base_address + api_url + filters for a GET request
 		"""
-		lodgings = get(self._base_address + "/api/agencia/lodgings").json()
+		url = self._base_address + "/api/agencia/lodgings"
+		try:
+			lodgings = get().json()
+		except ConnectionError:
+			# Exibir msg de erro
+			return
+
 		table_row = 0
 		self.tableItems.setRowCount(len(lodgings))
 		for lodging in lodgings:
@@ -283,12 +304,18 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(str(lodging['numRooms'])))
 			table_row += 1
 	
-	def _update_TravelPackages(self):
+	def _update_TravelPackages(self, add_filters=False):
 		"""
 		Reads TravelPackages from the API
-		Uses _base_address + _get_all for a GET request
+		Uses _base_address + api_url + filters for a GET request
 		"""
-		travel_packages = get(self._base_address + "/api/agencia/travelpackages").json()
+		url = self._base_address + "/api/agencia/travelpackages"
+		try:
+			travel_packages = get().json()
+		except ConnectionError:
+			# Exibir msg de erro
+			return
+
 		table_row = 0
 		self.tableItems.setRowCount(len(travel_packages))
 		for package in travel_packages:
@@ -313,7 +340,7 @@ class ItemList(object):
 
 		# Check if there is a selected row
 		if not self.tableItems.selectionModel().selectedRows():
-			# Mostra uma janela de sucesso
+			# Mostra uma janela de erro
 			return
 
 		id = self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
