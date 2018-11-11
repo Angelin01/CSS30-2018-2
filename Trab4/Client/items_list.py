@@ -257,12 +257,12 @@ class ItemList(object):
 		tableRow = 0
 		self.tableItems.setRowCount(len(lodgings))
 		for lodging in lodgings:
-			self.tableItems.setItem(tableRow, 0, QtWidgets.QTableWidgetItem(lodging['id']))
-			self.tableItems.setItem(tableRow, 1, QtWidgets.QTableWidgetItem(lodging['location']))
+			self.tableItems.setItem(tableRow, 0, QtWidgets.QTableWidgetItem(str(lodging['id'])))
+			self.tableItems.setItem(tableRow, 2, QtWidgets.QTableWidgetItem(lodging['location']))
 			self.tableItems.setItem(tableRow, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
 			self.tableItems.setItem(tableRow, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
 			self.tableItems.setItem(tableRow, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
-			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(lodging['numRooms']))
+			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(str(lodging['numRooms'])))
 			tableRow += 1
 	
 	def _update_TravelPackages(self):
