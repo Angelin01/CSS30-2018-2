@@ -18,17 +18,14 @@ class ItemList(object):
 
 		# Set the appropriate URLs for the specified type
 		if self._formType == FormType.PLANE_TICKET:
-			self._get_all = "/api/agencia/planetickets"
 			self._update_items = self._update_PlaneTickets
 			self._buy_item = self._buy_PlaneTicket
 			
 		elif self._formType == FormType.LODGING:
-			self._get_all = "/api/agencia/lodgings"
 			self._update_items = self._update_Lodgings
 			self._buy_item = self._buy_Lodging
 			
 		elif self._formType == FormType.TRAVEL_PACKAGE:
-			self._get_all = "/api/agencia/travelpackages"
 			self._update_items = self._update_TravelPackages
 			self._buy_item = self._buy_TravelPackage
 			
@@ -256,7 +253,7 @@ class ItemList(object):
 		Reads PlaneTickets from the API
 		Uses _base_address + _get_all for a GET request
 		"""
-		plane_tickets = get(self._base_address + self._get_all).json()
+		plane_tickets = get(self._base_address + "/api/agencia/planetickets").json()
 		table_row = 0
 		self.tableItems.setRowCount(len(plane_tickets))
 		for plane in plane_tickets:
@@ -274,7 +271,7 @@ class ItemList(object):
 		Reads Lodgings from the API
 		Uses _base_address + _get_all for a GET request
 		"""
-		lodgings = get(self._base_address + self._get_all).json()
+		lodgings = get(self._base_address + "/api/agencia/lodgings").json()
 		table_row = 0
 		self.tableItems.setRowCount(len(lodgings))
 		for lodging in lodgings:
@@ -291,7 +288,7 @@ class ItemList(object):
 		Reads TravelPackages from the API
 		Uses _base_address + _get_all for a GET request
 		"""
-		travel_packages = get(self._base_address + self._get_all).json()
+		travel_packages = get(self._base_address + "/api/agencia/travelpackages").json()
 		table_row = 0
 		self.tableItems.setRowCount(len(travel_packages))
 		for package in travel_packages:
@@ -321,8 +318,8 @@ class ItemList(object):
 
 
 	def _buy_PlaneTicket(self, id, amount):
-		pass
-s
+
+
 	def _buy_Lodging(self, id, amount):
 		pass
 
