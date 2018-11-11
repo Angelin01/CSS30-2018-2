@@ -246,7 +246,22 @@ class ItemList(object):
 		print(self.tableItems.selectionModel().selectedRows()[0].row())
 
 	def _update_PlaneTickets(self):
-		pass
+		"""
+		Reads PlaneTickets from the API
+		Uses _base_address + _get_all for a GET request
+		"""
+		plane_tickets = get(self._base_address + self._get_all).json()
+		table_row = 0
+		self.tableItems.setRowCount(len(plane_tickets))
+		for plane in plane_tickets:
+			self.tableItems.setItem(table_row, 0, QtWidgets.QTableWidgetItem(str(plane['id'])))
+			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(plane['origin']))
+			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(plane['destiny']))
+			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(plane['departureDate']))
+			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(plane['returnDate'] or ""))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{}".format(plane['price'] / 100, plane['price'] % 100)))
+			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(plane['numSeats']))
+			table_row += 1
 
 	def _update_Lodgings(self):
 		"""
@@ -254,19 +269,34 @@ class ItemList(object):
 		Uses _base_address + _get_all for a GET request
 		"""
 		lodgings = get(self._base_address + self._get_all).json()
-		tableRow = 0
+		table_row = 0
 		self.tableItems.setRowCount(len(lodgings))
 		for lodging in lodgings:
-			self.tableItems.setItem(tableRow, 0, QtWidgets.QTableWidgetItem(str(lodging['id'])))
-			self.tableItems.setItem(tableRow, 2, QtWidgets.QTableWidgetItem(lodging['location']))
-			self.tableItems.setItem(tableRow, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
-			self.tableItems.setItem(tableRow, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
-			self.tableItems.setItem(tableRow, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
-			self.tableItems.setItem(tableRow, 6, QtWidgets.QTableWidgetItem(str(lodging['numRooms'])))
-			tableRow += 1
+			self.tableItems.setItem(table_row, 0, QtWidgets.QTableWidgetItem(str(lodging['id'])))
+			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(lodging['location']))
+			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
+			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{}".format(lodging['price']/100, lodging['price']%100)))
+			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(str(lodging['numRooms'])))
+			table_row += 1
 	
 	def _update_TravelPackages(self):
-		pass
+		"""
+		Reads TravelPackages from the API
+		Uses _base_address + _get_all for a GET request
+		"""
+		travel_packages = get(self._base_address + self._get_all).json()
+		table_row = 0
+		self.tableItems.setRowCount(len(travel_packages))
+		for package in travel_packages:
+			self.tableItems.setItem(table_row, 0, QtWidgets.QTableWidgetItem(str(package['id'])))
+			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(package['planeTicket']['origin']))
+			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(package['planeTicket']['destiny']))
+			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(package['planeTicket']['departureDate']))
+			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(package['planeTicket']['returnDate'] or ""))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{}".format(package['price'] / 100, package['price'] % 100)))
+			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(package['numPackages']))
+			table_row += 1
 
 	def _set_PlaneTicket(self):
 		"""
