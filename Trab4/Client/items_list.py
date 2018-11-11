@@ -323,7 +323,7 @@ class ItemList(object):
 		self._update_items()
 
 	def _buy_Lodging(self, id, amount):
-		response = get(self._base_address + "/api/agencia/buylodgingt?&id={}&numRooms={}".format(id, amount))
+		response = get(self._base_address + "/api/agencia/buylodging?&id={}&numRooms={}".format(id, amount))
 		# Do some stuff here
 		self._update_items()
 
