@@ -13,18 +13,18 @@ public interface InterfaceServ {
 	 * Simple getter for the list of available lodgings
 	 * @return a List of ALL Lodging objects
 	 */
-	Response getLodgings();
+	//Response getLodgings();
 
 	/**
 	 * Getter for Lodgings with filters
 	 * @param location the desired location. null if doesn't matter
 	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
-	 * @param checkIn Date object for checkIn. null if doesn't matter
-	 * @param checkOut Date object for checkOut. null if doesn't matter
+	 * @param scheckIn Date object for checkIn. null if doesn't matter
+	 * @param scheckOut Date object for checkOut. null if doesn't matter
 	 * @param minimumRooms number of minimum rooms available. &lt;= 0 if doesn't matter
 	 * @return A list of Lodgings according to the filters
 	 */
-	List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms);
+	Response getLodgings(Location location, int maxPrice, String scheckIn, String scheckOut, int minimumRooms);
 
     /**
      * Method for buying a lodging using Date objects
@@ -38,20 +38,20 @@ public interface InterfaceServ {
 	 * Simple getter for the list of available plane tickets
 	 * @return a List of ALL PlaneTickets objects
 	 */
-    Response getPlaneTickets();
+    //Response getPlaneTickets();
 
 	/**
 	 * Getter for PlaneTickets with filters
 	 * @param origin the origin location. null if doesn't matter
 	 * @param destiny the destiny location. null if doesn't matter
 	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
-	 * @param departureDate the departure date. null if doesn't matter
-	 * @param returnDate the return date. null if doesn't matter. Note: having a return date implies a round-trip
+	 * @param sdepartureDate the departure date. null if doesn't matter
+	 * @param sreturnDate the return date. null if doesn't matter. Note: having a return date implies a round-trip
 	 * @param minimumSeats the minimum number of available seats. &lt;= 0 if doesn't matter
 	 * @return A list of PlaneTickets according to the filters
 	 */
-	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
-	                                  Date returnDate, int minimumSeats);
+	Response getPlaneTickets(Location origin, Location destiny, int maxPrice, String sdepartureDate,
+	                                  String sreturnDate, int minimumSeats);
 
     /**
      * Method for buying a PlaneTicket
@@ -66,20 +66,20 @@ public interface InterfaceServ {
      * Simple getter for the list of available plane tickets
      * @return a List of ALL Travel Packages objects
      */
-    Response getTravelPackages();
+    //Response getTravelPackages();
 
 	/**
 	 * Getter for TravelPackages with filters
 	 * @param origin the origin location. null if doesn't matter
 	 * @param destiny the destiny location. null if doesn't matter
 	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
-	 * @param departureDate the departure date. null if doesn't matter
-	 * @param returnDate the return date. null if doesn't matter
+	 * @param sdepartureDate the departure date. null if doesn't matter
+	 * @param sreturnDate the return date. null if doesn't matter
 	 * @param minimumAvailable the minimum number of available packages. &lt;= 0 if doesn't matter
 	 * @return List of TravelPackages according to the filters
 	 */
-	List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate,
-	                                      Date returnDate, int minimumAvailable);
+	Response getTravelPackages(Location origin, Location destiny, int maxPrice, String sdepartureDate,
+	                                      String sreturnDate, int minimumAvailable);
 
     /**
      *

@@ -5,16 +5,17 @@ import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
 
-import javax.ejb.Singleton;
-import javax.validation.constraints.AssertFalse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 
 @Path("/agencia")
@@ -24,6 +25,7 @@ public class ServImpl implements InterfaceServ {
 	private static ArrayList<PlaneTicket> listPlaneTickets;
 	private static ArrayList<Lodging> listLodgings;
 	private static ArrayList<TravelPackage> listTravelPackages;
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * Simple constructor for ServImpl with empty lists
@@ -75,10 +77,76 @@ public class ServImpl implements InterfaceServ {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Path("/lodgings")
+	/*@Path("/lodgings")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLodgings()  { return Response.status(Response.Status.OK).entity(listLodgings).build(); }
+	public Response getLodgings()  { return Response.status(Response.Status.OK).entity(listLodgings).build(); }*/
+
+    /**
+     * {@inheritDoc}
+     */
+    @Path("/lodgings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLodgings(@QueryParam("location") Location location, @QueryParam("maxPrice") int maxPrice, @QueryParam("ckeckIn") String scheckIn, @QueryParam("checkOut") String scheckOut, @QueryParam("minimumRooms") int minimumRooms) {
+        ArrayList<Lodging> filteredLodgings = new ArrayList<Lodging>();
+        Date checkIn = null;
+        Date checkOut = null;
+
+        if (scheckIn != null) {
+            try {
+                checkIn =  dateFormat.parse(scheckIn);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            checkIn = null;
+
+        if (scheckOut != null) {
+            try {
+                checkOut =  dateFormat.parse(scheckOut);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            checkOut = null;
+
+        for (Lodging lodging : listLodgings) {
+            // Check the location filter
+            if (location != null && lodging.getLocation() != location) {
+                continue;
+            }
+
+            // Check the price filter
+            if (maxPrice > 0 && lodging.getPrice() > maxPrice) {
+                continue;
+            }
+
+            // Check the checkIn filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (checkIn != null && lodging.getCheckIn().getTime() / MILLIS_IN_DAY != checkIn.getTime() / MILLIS_IN_DAY) {
+                continue;
+            }
+
+            // Check the checkOut filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (checkOut != null && lodging.getCheckOut().getTime() / MILLIS_IN_DAY != checkOut.getTime() / MILLIS_IN_DAY) {
+                continue;
+            }
+
+            // Check the minimum available rooms filter
+            if (minimumRooms > 0 && lodging.getNumRooms() < minimumRooms) {
+                continue;
+            }
+
+            // Passed all filters, add to return list
+            filteredLodgings.add(lodging);
+
+        }
+        return Response.status(Response.Status.OK).entity(filteredLodgings).build();
+    }
 
     /**
      * {@inheritDoc}
@@ -97,11 +165,80 @@ public class ServImpl implements InterfaceServ {
     /**
      * {@inheritDoc}
      */
+    /*@Path("/planetickets")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPlaneTickets()  { return Response.status(Response.Status.OK).entity(listPlaneTickets).build(); }*/
+
+    /**
+     * {@inheritDoc}
+     */
     @Path("/planetickets")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPlaneTickets()  {
-        return Response.status(Response.Status.OK).entity(listPlaneTickets).build();
+    public Response getPlaneTickets(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("sdepartureDate") String sdepartureDate, @QueryParam("sreturnDate") String sreturnDate, @QueryParam("minimumSeats") int minimumSeats) {
+        ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
+        Date departureDate = null;
+        Date returnDate = null;
+
+        if (sdepartureDate != null) {
+            try {
+                departureDate =  dateFormat.parse(sdepartureDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            departureDate = null;
+
+        if (sreturnDate != null) {
+            try {
+                returnDate =  dateFormat.parse(sreturnDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            returnDate = null;
+
+        for (PlaneTicket planeTicket : listPlaneTickets) {
+            // Check the origin filter
+            if (origin != null && planeTicket.getOrigin() != origin) {
+                continue;
+            }
+
+            // Check the destiny filter
+            if (destiny != null && planeTicket.getDestiny() != destiny) {
+                continue;
+            }
+
+            // Check the price filter
+            if (maxPrice > 0 && planeTicket.getPrice() > maxPrice) {
+                continue;
+            }
+
+            // Check the departure date filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (departureDate != null && planeTicket.getDepartureDate().getTime() / MILLIS_IN_DAY != (departureDate.getTime() / MILLIS_IN_DAY)) {
+                continue;
+            }
+
+            // Check the return date filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (returnDate != null && planeTicket.getReturnDate().getTime() / MILLIS_IN_DAY != returnDate.getTime() / MILLIS_IN_DAY) {
+                continue;
+            }
+
+            // Check the minimum available seats filter
+            if (minimumSeats > 0 && planeTicket.getNumSeats() < minimumSeats) {
+                continue;
+            }
+
+            // Passed all filters, add to return list
+            filteredPlaneTickets.add(planeTicket);
+        }
+
+        return Response.status(Response.Status.OK).entity(filteredPlaneTickets).build();
     }
 
     /**
@@ -121,10 +258,72 @@ public class ServImpl implements InterfaceServ {
     /**
      * {@inheritDoc}
      */
+    /*@Path("/travelpackages")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTravelPackages()  { return Response.status(Response.Status.OK).entity(listTravelPackages).build(); }*/
+
+    /**
+     * {@inheritDoc}
+     */
     @Path("/travelpackages")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTravelPackages()  { return Response.status(Response.Status.OK).entity(listTravelPackages).build(); }
+    public Response getTravelPackages(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("sdepartureDate") String sdepartureDate, @QueryParam("sreturnDate") String sreturnDate, @QueryParam("minimumAvailable") int minimumAvailable)  {
+        Date departureDate = null;
+        Date returnDate = null;
+
+        if (sdepartureDate != null) {
+            try {
+                departureDate =  dateFormat.parse(sdepartureDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            departureDate = null;
+
+        if (sreturnDate != null) {
+            try {
+                returnDate =  dateFormat.parse(sreturnDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            returnDate = null;
+
+        ArrayList<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
+
+        for (TravelPackage travelPackage : listTravelPackages) {
+            // Check the origin filter
+            if (origin != null && travelPackage.getPlaneTicket().getOrigin() != origin) { continue; }
+
+            // Check the destiny filter
+            if (destiny != null && travelPackage.getPlaneTicket().getDestiny() != destiny) { continue; }
+
+            // Check the price filter
+            if (maxPrice > 0 && travelPackage.getPrice() > maxPrice) { continue; }
+
+            // Check the departure date filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (departureDate != null && travelPackage.getPlaneTicket().getDepartureDate().getTime()/MILLIS_IN_DAY != (departureDate.getTime()/MILLIS_IN_DAY)) { continue; }
+
+            // Check the return date filter
+            // To check that it's the same day, calculates the Julian Day Number
+            if (returnDate != null && travelPackage.getPlaneTicket().getReturnDate().getTime()/MILLIS_IN_DAY != returnDate.getTime()/MILLIS_IN_DAY) { continue; }
+
+            // Check the minimum available filter
+            // Needs to check both the plane and the lodging
+            if (minimumAvailable > 0 &&
+                    (travelPackage.getPlaneTicket().getNumSeats() < minimumAvailable || travelPackage.getLodging().getNumRooms() < minimumAvailable)) { continue; }
+
+            // Passed all filters, add to return list
+            filteredTravelPackages.add(travelPackage);
+        }
+
+        return Response.status(Response.Status.OK).entity(filteredTravelPackages).build();
+    }
 
     /**
      * {@inheritDoc}
@@ -142,19 +341,21 @@ public class ServImpl implements InterfaceServ {
         return Response.status(Response.Status.OK).entity(true).build();
     }
 
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms)  {
+	/*public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms)  {
 		ArrayList<Lodging> filteredLodgings = new ArrayList<Lodging>();
-		
+
 		for (Lodging lodging : listLodgings) {
 			// Check the location filter
 			if (location != null && lodging.getLocation() != location) { continue; }
-			
+
 			// Check the price filter
 			if (maxPrice > 0 && lodging.getPrice() > maxPrice) { continue; }
-			
+
 			// Check the checkIn filter
 			// To check that it's the same day, calculates the Julian Day Number
 			if (checkIn != null && lodging.getCheckIn().getTime()/MILLIS_IN_DAY != checkIn.getTime()/MILLIS_IN_DAY) { continue; }
@@ -162,23 +363,23 @@ public class ServImpl implements InterfaceServ {
 			// Check the checkOut filter
 			// To check that it's the same day, calculates the Julian Day Number
 			if (checkOut != null && lodging.getCheckOut().getTime()/MILLIS_IN_DAY != checkOut.getTime()/MILLIS_IN_DAY) { continue; }
-			
+
 			// Check the minimum available rooms filter
 			if (minimumRooms > 0 && lodging.getNumRooms() < minimumRooms) { continue; }
-			
+
 			// Passed all filters, add to return list
 			filteredLodgings.add(lodging);
 		}
-		
-		return filteredLodgings;
-	}
-	
 
-	
+		return filteredLodgings;
+	}*/
+
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats)  {
+	/*public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats)  {
 		ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
 		
 		for (PlaneTicket planeTicket : listPlaneTickets) {
@@ -207,12 +408,12 @@ public class ServImpl implements InterfaceServ {
 		}
 		
 		return filteredPlaneTickets;
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	/*@Override
 	public ArrayList<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable)  {
 		ArrayList<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
 		
@@ -245,7 +446,7 @@ public class ServImpl implements InterfaceServ {
 		
 		return filteredTravelPackages;
 	}
-	
+	*/
 	/**
 	 * {@inheritDoc}
 	 */
