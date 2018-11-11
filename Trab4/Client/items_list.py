@@ -19,16 +19,16 @@ class ItemList(object):
 		# Set the appropriate URLs for the specified type
 		if self._formType == FormType.PLANE_TICKET:
 			self._update_items = self._update_PlaneTickets
-			self._buy_item = self._buy_PlaneTicket
+			self._buy_address = "/api/agencia/buyplaneticket?&id={}&numTickets={}"
 			
 		elif self._formType == FormType.LODGING:
 			self._update_items = self._update_Lodgings
-			self._buy_item = self._buy_Lodging
-			
-		elif self._formType == FormType.TRAVEL_PACKAGE:
+			self._buy_address = "/api/agencia/buylodging?&id={}&numRooms={}"
+
+		else:
 			self._update_items = self._update_TravelPackages
-			self._buy_item = self._buy_TravelPackage
-			
+			self._buy_address = "/api/agencia/buytravelpackage?&id={}&numPackages={}"
+
 
 	def setupUi(self):
 		"""
@@ -308,43 +308,26 @@ class ItemList(object):
 	def _buy(self):
 		# Check first if what is in the buy field is a positive number
 		if not self.editBuy.text().isdigit() or int(self.editBuy.text()) <= 0:
+			# Mostra uma janela de erro
 			return
 
 		# Check if there is a selected row
 		if not self.tableItems.selectionModel().selectedRows():
+			# Mostra uma janela de sucesso
 			return
 
-		self._buy_item(self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text(), int(self.editBuy.text()))
+		id = self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
+		amount = self.editBuy.text()
 
-	def _buy_PlaneTicket(self, id, amount):
-		response = get(self._base_address + "/api/agencia/buyplaneticket?&id={}&numTickets={}".format(id, amount))
+		response = get(self._base_address + self._buy_address.format(id, amount))
 		if response.text == "true":
-			# Mostra uma janela de sucesso
+		# Mostra uma janela de sucesso
 			pass
 		else:
-			# Mostra uma janela de fracasso
+		# Mostra uma janela de fracasso
 			pass
 		self._update_items()
 
-	def _buy_Lodging(self, id, amount):
-		response = get(self._base_address + "/api/agencia/buylodging?&id={}&numRooms={}".format(id, amount))
-		if response.text == "true":
-			# Mostra uma janela de sucesso
-			pass
-		else:
-			# Mostra uma janela de fracasso
-			pass
-		self._update_items()
-
-	def _buy_TravelPackage(self, id, amount):
-		response = get(self._base_address + "/api/agencia/buytravelpackage?&id={}&numPackages={}".format(id, amount))
-		if response.text == "true":
-			# Mostra uma janela de sucesso
-			pass
-		else:
-			# Mostra uma janela de fracasso
-			pass
-		self._update_items()
 
 	# ========================== #
 	# Translations methods below
