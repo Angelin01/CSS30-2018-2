@@ -29,6 +29,14 @@ class ItemList(object):
 			self._update_items = self._update_TravelPackages
 			self._buy_address = "/api/agencia/buytravelpackage?&id={}&numPackages={}"
 
+		self._filter_origin = None
+		self._filter_destiny = None
+		self._filter_max_price = None
+		self._filter_departure_date = None
+		self._filter_return_date = None
+		self._filter_minimum_available = None
+
+
 
 	def setupUi(self):
 		"""
@@ -209,10 +217,10 @@ class ItemList(object):
 		# ======================================== #
 		self.btnBuy.clicked.connect(self._buy)
 		self.editBuy.returnPressed.connect(self._buy)
-		self.calendarDeparture.clicked[QtCore.QDate].connect(self.echo_date)
-		self.calendarReturn.clicked[QtCore.QDate].connect(self.echo_date)
-		self.cmbOrigin.currentTextChanged.connect(self.echo_cmb)
-		self.cmbDestiny.currentTextChanged.connect(self.echo_cmb)
+		self.calendarDeparture.clicked[QtCore.QDate].connect(self._update_departure_filter)
+		self.calendarReturn.clicked[QtCore.QDate].connect(self._update_return_filter)
+		self.cmbOrigin.currentTextChanged.connect(self._update_origin_filter)
+		self.cmbDestiny.currentTextChanged.connect(self._update_destiny_filter)
 
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.PLANE_TICKET:
@@ -227,22 +235,31 @@ class ItemList(object):
 		# Reads the list of available ITEMS from the api
 		self._update_items()
 
+	# ============================ #
+	# Update Filters methods below
+	# ============================ #
 
-
-	# fixme REMOVE
-	def echo_cmb(self, value):
+	def _update_origin_filter(self, value):
 		if value == "Nenhum":
-			print("")
+			self._filter_origin = None
 		else:
-			print(Location(value).name)
+			self._filter_origin = Location(value).name
+		self._update_items(True)
 
-	# fixme REMOVE
-	def echo_date(self, date):
-		print(date.toString("yyyy-MM-dd"))
+	def _update_destiny_filter(self, value):
+		if value == "Nenhum":
+			self._filter_destiny = None
+		else:
+			self._filter_destiny = Location(value).name
+		self._update_items(True)
 
-	# fixme REMOVE
-	def echo_row(self):
-		print(self.tableItems.selectionModel().selectedRows()[0].row())
+	def _update_departure_filter(self, date):
+		self._filter_departure_date = date.toString("yyyy-MM-dd")
+		self._update_items(True)
+
+	def _update_return_filter(self, date):
+		self._filter_return_date = date.toString("yyyy-MM-dd")
+		self._update_items(True)
 
 	# ========================== #
 	# Update Items methods below
@@ -262,7 +279,7 @@ class ItemList(object):
 			url += self._filter_departure_date or ""
 			url += self._filter_return_date or ""
 			url += self._filter_minimum_available or ""
-			
+
 		try:
 			plane_tickets = get(url).json()
 		except ConnectionError:
@@ -297,7 +314,7 @@ class ItemList(object):
 		self.tableItems.setRowCount(len(lodgings))
 		for lodging in lodgings:
 			self.tableItems.setItem(table_row, 0, QtWidgets.QTableWidgetItem(str(lodging['id'])))
-			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(lodging['location']))
+			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(lodging['location']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
 			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
 			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(lodging['price']/100), lodging['price']%100)))
@@ -405,7 +422,7 @@ class ItemList(object):
 		self.labelReturn.setText(_translate("Form", "Data de Check Out:"))
 		item = self.tableItems.horizontalHeaderItem(0)
 		item.setText(_translate("Form", "ID"))
-		self.tableItems.setColumnHidden(1, True)
+		self.tableItems.setColumnHidden(2, True)
 		item = self.tableItems.horizontalHeaderItem(2)
 		item.setText(_translate("Form", "Localidade"))
 		item = self.tableItems.horizontalHeaderItem(3)
