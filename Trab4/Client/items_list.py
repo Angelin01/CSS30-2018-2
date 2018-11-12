@@ -282,7 +282,7 @@ class ItemList(object):
 			if self._filter_departure_date:
 				url += "departureDate=" + self._filter_departure_date + "&"
 			if self._filter_return_date:
-				url += "departureDate=" + self._filter_returndate + "&"
+				url += "returnDate=" + self._filter_return_date + "&"
 			if self._filter_minimum_available:
 				url += "minimumSeats=" + self._filter_minimum_available + "&"
 
@@ -310,8 +310,21 @@ class ItemList(object):
 		Uses _base_address + api_url + filters for a GET request
 		"""
 		url = self._base_address + "/api/agencia/lodgings"
+		if add_filters:
+			url += "?"
+			if self._filter_origin:
+				url += "location=" + self._filter_origin + "&"
+			if self._filter_max_price:
+				url += "maxPrice=" + self._filter_max_price + "&"
+			if self._filter_departure_date:
+				url += "checkIn=" + self._filter_departure_date + "&"
+			if self._filter_return_date:
+				url += "checkOut=" + self._filter_return_date + "&"
+			if self._filter_minimum_available:
+				url += "minimumRooms=" + self._filter_minimum_available + "&"
+
 		try:
-			lodgings = get().json()
+			lodgings = get(url).json()
 		except ConnectionError:
 			# Exibir msg de erro
 			return
@@ -333,8 +346,23 @@ class ItemList(object):
 		Uses _base_address + api_url + filters for a GET request
 		"""
 		url = self._base_address + "/api/agencia/travelpackages"
+		if add_filters:
+			url += "?"
+			if self._filter_origin:
+				url += "origin=" + self._filter_origin + "&"
+			if self._filter_destiny:
+				url += "destiny=" + self._filter_destiny + "&"
+			if self._filter_max_price:
+				url += "maxPrice=" + self._filter_max_price + "&"
+			if self._filter_departure_date:
+				url += "departureDate=" + self._filter_departure_date + "&"
+			if self._filter_return_date:
+				url += "returnDate=" + self._filter_return_date + "&"
+			if self._filter_minimum_available:
+				url += "minimumAvailable=" + self._filter_minimum_available + "&"
+
 		try:
-			travel_packages = get().json()
+			travel_packages = get(url).json()
 		except ConnectionError:
 			# Exibir msg de erro
 			return
