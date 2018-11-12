@@ -353,7 +353,7 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(plane['origin']))
 			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(plane['destiny']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(plane['departureDate']))
-			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(plane['returnDate'] or ""))
+			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(plane.get('returnDate') or "--"))
 			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(plane['price'] / 100), plane['price'] % 100)))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(plane['numSeats']))
 			table_row += 1
@@ -428,7 +428,7 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(package['planeTicket']['origin']))
 			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(package['planeTicket']['destiny']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(package['planeTicket']['departureDate']))
-			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(package['planeTicket']['returnDate'] or ""))
+			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(package['planeTicket'].get('returnDate') or "--"))
 			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(package['price'] / 100), package['price'] % 100)))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(package['numPackages']))
 			table_row += 1
@@ -502,7 +502,7 @@ class ItemList(object):
 		item = self.tableItems.horizontalHeaderItem(5)
 		item.setText(_translate("Form", "Preço"))
 		item = self.tableItems.horizontalHeaderItem(6)
-		item.setText(_translate("Form", "Quantidade Disponível"))
+		item.setText(_translate("Form", "Num. Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
@@ -534,7 +534,7 @@ class ItemList(object):
 		item = self.tableItems.horizontalHeaderItem(5)
 		item.setText(_translate("Form", "Preço"))
 		item = self.tableItems.horizontalHeaderItem(6)
-		item.setText(_translate("Form", "Quantidade Disponível"))
+		item.setText(_translate("Form", "Num. Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
