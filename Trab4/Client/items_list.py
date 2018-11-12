@@ -273,12 +273,18 @@ class ItemList(object):
 		url = self._base_address + "/api/agencia/planetickets"
 		if add_filters:
 			url += "?"
-			url += self._filter_origin or ""
-			url += self._filter_destiny or ""
-			url += self._filter_max_price or ""
-			url += self._filter_departure_date or ""
-			url += self._filter_return_date or ""
-			url += self._filter_minimum_available or ""
+			if self._filter_origin:
+				url += "origin=" + self._filter_origin + "&"
+			if self._filter_destiny:
+				url += "destiny=" + self._filter_destiny + "&"
+			if self._filter_max_price:
+				url += "maxPrice=" + self._filter_max_price + "&"
+			if self._filter_departure_date:
+				url += "departureDate=" + self._filter_departure_date + "&"
+			if self._filter_return_date:
+				url += "departureDate=" + self._filter_returndate + "&"
+			if self._filter_minimum_available:
+				url += "minimumSeats=" + self._filter_minimum_available + "&"
 
 		try:
 			plane_tickets = get(url).json()
