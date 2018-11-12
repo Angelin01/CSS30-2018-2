@@ -106,15 +106,11 @@ if __name__ == "__main__":
 	import sys
 
 	sys._excepthook = sys.excepthook
-
-
 	def my_exception_hook(exctype, value, traceback):
-		# Print the error and traceback
-		print(exctype, value, traceback)
-		# Call the normal Exception hook after
-		sys.exit(1)
-
-
+		# PyQt does some weird stuff with exceptions
+		# So I'm reading the default handler
+		sys._excepthook(exctype, value, traceback)
+		sys.exit(-1)
 	# Set the exception hook to our wrapping function
 	sys.excepthook = my_exception_hook
 

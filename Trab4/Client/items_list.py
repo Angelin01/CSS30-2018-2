@@ -271,13 +271,13 @@ class ItemList(object):
 	# ============================ #
 
 	def _update_minimum_available_filter(self, value):
-		if not value.isdigit() and int(value) > 0:
+		if value.isdigit() and int(value) > 0:
 			self._filter_minimum_available = value
 		else:
 			self._filter_minimum_available = None
 
 	def _update_max_price_filter(self, value):
-		if not value.isdigit() and int(value) > 0:
+		if value.isdigit() and int(value) > 0:
 			self._filter_max_price = value
 		else:
 			self._filter_max_price = None
