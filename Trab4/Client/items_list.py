@@ -217,6 +217,8 @@ class ItemList(object):
 		# ======================================== #
 		self.btnBuy.clicked.connect(self._buy)
 		self.editBuy.returnPressed.connect(self._buy)
+		self.editMinAvaiable.textChanged[str].connect(self._update_minimum_available_filter)
+		self.editMaxPrice.textChanged[str].connect(self._update_max_price_filter)
 		self.calendarDeparture.clicked[QtCore.QDate].connect(self._update_departure_filter)
 		self.calendarReturn.clicked[QtCore.QDate].connect(self._update_return_filter)
 		self.cmbOrigin.currentTextChanged.connect(self._update_origin_filter)
@@ -238,6 +240,18 @@ class ItemList(object):
 	# ============================ #
 	# Update Filters methods below
 	# ============================ #
+
+	def _update_minimum_available_filter(self, value):
+		if not value.isdigit() and int(value) > 0:
+			self._filter_minimum_available = value
+		else:
+			self._filter_minimum_available = None
+
+	def _update_max_price_filter(self, value):
+		if not value.isdigit() and int(value) > 0:
+			self._filter_max_price = value
+		else:
+			self._filter_max_price = None
 
 	def _update_origin_filter(self, value):
 		if value == "Nenhum":
@@ -475,7 +489,7 @@ class ItemList(object):
 		Modifies the UI for a TravelPackage style
 		Pretty much identical to PlaneTicket (even calls that method) except for the titles
 		"""
-		self._setPlaneTicket()
+		self._set_PlaneTicket()
 		_translate = QtCore.QCoreApplication.translate
 		self.form.setWindowTitle(_translate("Form", "Pacotes"))
 		self.label.setText(_translate("Form", "Pacotes"))
