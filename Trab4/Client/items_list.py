@@ -355,8 +355,7 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(plane['departureDate']))
 			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(plane.get('returnDate') or "--"))
 			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:02}".format(int(plane['price'] / 100), int(plane['price'] % 100))))
-			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(plane['numSeats']))
-			print(plane['numSeats'])
+			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(str(plane['numSeats'])))
 			table_row += 1
 
 	def _update_Lodgings(self, add_filters=False):
