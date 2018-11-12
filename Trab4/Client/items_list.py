@@ -221,6 +221,13 @@ class ItemList(object):
 		self.buyLayout.setObjectName("buyLayout")
 		spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
 		self.buyLayout.addItem(spacerItem7)
+		self.btnResetFilters = QtWidgets.QPushButton(self.verticalLayoutWidget)
+		font = QtGui.QFont()
+		font.setFamily("Arial")
+		font.setPointSize(12)
+		self.btnResetFilters.setFont(font)
+		self.btnResetFilters.setObjectName("btnResetFilters")
+		self.buyLayout.addWidget(self.btnResetFilters)
 		self.labelNumberBuy = QtWidgets.QLabel(self.verticalLayoutWidget)
 		font = QtGui.QFont()
 		font.setFamily("Arial")
@@ -256,6 +263,7 @@ class ItemList(object):
 		self.calendarReturn.clicked[QtCore.QDate].connect(self._update_return_filter)
 		self.cmbOrigin.currentTextChanged.connect(self._update_origin_filter)
 		self.cmbDestiny.currentTextChanged.connect(self._update_destiny_filter)
+		self.btnResetFilters.clicked.connect(self._reset_filters)
 
 		# Set the appropriate text for the specified type
 		if self._formType == FormType.PLANE_TICKET:
@@ -314,6 +322,19 @@ class ItemList(object):
 	def _update_return_filter(self, date):
 		self._filter_return_date = date.toString("yyyy-MM-dd")
 		self._update_items(True)
+
+	def _reset_filters(self):
+		self._filter_origin = None
+		self._filter_destiny = None
+		self._filter_max_price = None
+		self._filter_departure_date = None
+		self._filter_return_date = None
+		self._filter_minimum_available = None
+		self.editMaxPrice.setText("")
+		self.editMinAvailable.setText("")
+		self.cmbOrigin.setCurrentIndex(0)
+		self.cmbDestiny.setCurrentIndex(0)
+		self._update_items()
 
 	# ========================== #
 	# Update Items methods below
@@ -504,6 +525,7 @@ class ItemList(object):
 		item = self.tableItems.horizontalHeaderItem(6)
 		item.setText(_translate("Form", "Num. Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
+		self.btnResetFilters.setText(_translate("Form", "Limpar Filtros"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
 	def _set_Lodging(self):
@@ -536,6 +558,7 @@ class ItemList(object):
 		item = self.tableItems.horizontalHeaderItem(6)
 		item.setText(_translate("Form", "Num. Disponível"))
 		self.labelNumberBuy.setText(_translate("Form", "Quantidade para comprar:"))
+		self.btnResetFilters.setText(_translate("Form", "Limpar Filtros"))
 		self.btnBuy.setText(_translate("Form", "Comprar"))
 
 	def _set_TravelPackage(self):

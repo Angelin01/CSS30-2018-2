@@ -360,6 +360,19 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="btnResetFilters">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Limpar Filtros</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="labelNumberBuy">
         <property name="font">
          <font>
