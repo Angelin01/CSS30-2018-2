@@ -25,15 +25,15 @@ class ItemList(object):
 		# Set the appropriate URLs for the specified type
 		if self._formType == FormType.PLANE_TICKET:
 			self._update_items = self._update_PlaneTickets
-			self._buy_address = "/api/agencia/buyplaneticket?&id={}&numTickets={}"
+			self._buy_address = "/api/agencia/buyplaneticket?id={}&numTickets={}"
 			
 		elif self._formType == FormType.LODGING:
 			self._update_items = self._update_Lodgings
-			self._buy_address = "/api/agencia/buylodging?&id={}&numRooms={}"
+			self._buy_address = "/api/agencia/buylodging?id={}&numRooms={}"
 
 		else:
 			self._update_items = self._update_TravelPackages
-			self._buy_address = "/api/agencia/buytravelpackage?&id={}&numPackages={}"
+			self._buy_address = "/api/agencia/buytravelpackage?id={}&numPackages={}"
 
 		self._filter_origin = None
 		self._filter_destiny = None
@@ -452,7 +452,7 @@ class ItemList(object):
 			self._spawn_msg_dialog("Erro: Selecione um item para comprar")
 			return
 
-		id = self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
+		id = self.tableItems.item(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
 		amount = self.editBuy.text()
 
 		response = requests.get(self._base_address + self._buy_address.format(id, amount))
