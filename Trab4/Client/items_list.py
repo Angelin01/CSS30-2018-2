@@ -12,7 +12,12 @@ class FormType(Enum):
 
 class ItemList(object):
 	_base_address = "http://localhost:8080/SampleApp"
+	
 	def __init__(self, formType: FormType):
+		"""
+		Object that shows and allows one to buy plane tickets, reserve lodgings and travel packages
+		:param formType: A FormType which says what type of item will be shown
+		"""
 		self._formType = formType
 		self.form = QtWidgets.QWidget()
 
@@ -35,25 +40,6 @@ class ItemList(object):
 		self._filter_departure_date = None
 		self._filter_return_date = None
 		self._filter_minimum_available = None
-
-
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS
-	# ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS
-	# ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS ADD COMMENTS TO METHODS
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
-	# =============================================================================================== #
 
 	def setupUi(self):
 		"""
@@ -287,6 +273,13 @@ class ItemList(object):
 	# Update Filters methods below
 	# ============================ #
 
+	"""
+	Methods below update filters for whatever items are going to come from the server
+	None should ever be called manually, they are connected to clickables and pushables
+	Some receive parameters from those *-ables themselves, like a value
+	Most are self explanatory by looking at the connects above
+	"""
+
 	def _update_minimum_available_filter(self, value):
 		if value.isdigit() and int(value) > 0:
 			self._filter_minimum_available = value
@@ -444,6 +437,10 @@ class ItemList(object):
 	# ====================== #
 
 	def _buy(self):
+		"""
+		Called when the person wants to buy something
+		Checks for user shenanigans and if everything is correct, makes a get request
+		"""
 		# Check first if what is in the buy field is a positive number
 		if not self.editBuy.text().isdigit() or int(self.editBuy.text()) <= 0:
 			# Mostra uma janela de erro
@@ -457,7 +454,7 @@ class ItemList(object):
 		id = self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
 		amount = self.editBuy.text()
 
-		response = get(self._base_address + self._buy_address.format(id, amount))
+		response = requests.get(self._base_address + self._buy_address.format(id, amount))
 		if response.text == "true":
 		# Mostra uma janela de sucesso
 			pass
