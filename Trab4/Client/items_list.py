@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Enum
 from location import Location
+from msg import Msg
 import requests
 
 
@@ -12,7 +13,7 @@ class FormType(Enum):
 
 class ItemList(object):
 	_base_address = "http://localhost:8080/SampleApp"
-	
+
 	def __init__(self, formType: FormType):
 		"""
 		Object that shows and allows one to buy plane tickets, reserve lodgings and travel packages
@@ -342,7 +343,7 @@ class ItemList(object):
 		try:
 			plane_tickets = requests.get(url).json()
 		except requests.exceptions.ConnectionError:
-			# Exibir msg de erro
+			self._spawn_msg_dialog("Erro: Falha na conexão com servidor")
 			return
 
 		table_row = 0
@@ -379,7 +380,7 @@ class ItemList(object):
 		try:
 			lodgings = requests.get(url).json()
 		except requests.exceptions.ConnectionError:
-			# Exibir msg de erro
+			self._spawn_msg_dialog("Erro: Falha na conexão com servidor")
 			return
 
 		table_row = 0
@@ -417,7 +418,7 @@ class ItemList(object):
 		try:
 			travel_packages = requests.get(url).json()
 		except requests.exceptions.ConnectionError:
-			# Exibir msg de erro
+			self._spawn_msg_dialog("Erro: Falha na conexão com servidor")
 			return
 
 		table_row = 0
@@ -443,12 +444,12 @@ class ItemList(object):
 		"""
 		# Check first if what is in the buy field is a positive number
 		if not self.editBuy.text().isdigit() or int(self.editBuy.text()) <= 0:
-			# Mostra uma janela de erro
+			self._spawn_msg_dialog("Erro: Quantidade de compra inválida")
 			return
 
 		# Check if there is a selected row
 		if not self.tableItems.selectionModel().selectedRows():
-			# Mostra uma janela de erro
+			self._spawn_msg_dialog("Erro: Selecione um item para comprar")
 			return
 
 		id = self.tableItems.itemAt(self.tableItems.selectionModel().selectedRows()[0].row(), 0).text()
@@ -456,13 +457,19 @@ class ItemList(object):
 
 		response = requests.get(self._base_address + self._buy_address.format(id, amount))
 		if response.text == "true":
-		# Mostra uma janela de sucesso
-			pass
+			self._spawn_msg_dialog("Compra realizada com sucesso!")
 		else:
-		# Mostra uma janela de fracasso
-			pass
+			self._spawn_msg_dialog("Houve um erro na compra\nTente novamente")
 		self._update_items()
 
+	# ======================== #
+	# Generic spawn msg dialog
+	# ======================== #
+
+	def _spawn_msg_dialog(self, msg):
+		self._dialog_window = Msg(msg)
+		self._dialog_window.setupUi()
+		self._dialog_window.dialog.show()
 
 	# ========================== #
 	# Translations methods below
