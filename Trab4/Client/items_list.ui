@@ -185,7 +185,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="editMinAvailable">
+       <widget class="QLabel" name="labelMinAvailable">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -198,7 +198,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2"/>
+       <widget class="QLineEdit" name="editMinAvailable"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_8">

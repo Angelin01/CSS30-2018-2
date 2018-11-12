@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Enum
 from location import Location
-from requests import get
+import requests
 
 
 class FormType(Enum):
@@ -11,7 +11,7 @@ class FormType(Enum):
 
 
 class ItemList(object):
-	_base_address = "localhost:8080/SampleApp"
+	_base_address = "http://localhost:8080/SampleApp"
 	def __init__(self, formType: FormType):
 		self._formType = formType
 		self.form = QtWidgets.QWidget()
@@ -106,6 +106,35 @@ class ItemList(object):
 		spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
 		self.locationLayout.addItem(spacerItem2)
 		self.mainLayout.addLayout(self.locationLayout)
+		self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+		self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+		spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.horizontalLayout_3.addItem(spacerItem3)
+		self.labelMaxPrice = QtWidgets.QLabel(self.verticalLayoutWidget)
+		font = QtGui.QFont()
+		font.setFamily("Arial")
+		font.setPointSize(12)
+		self.labelMaxPrice.setFont(font)
+		self.labelMaxPrice.setObjectName("labelMaxPrice")
+		self.horizontalLayout_3.addWidget(self.labelMaxPrice)
+		self.editMaxPrice = QtWidgets.QLineEdit(self.verticalLayoutWidget)
+		self.editMaxPrice.setObjectName("editMaxPrice")
+		self.horizontalLayout_3.addWidget(self.editMaxPrice)
+		spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.horizontalLayout_3.addItem(spacerItem4)
+		self.labelMinAvailable = QtWidgets.QLabel(self.verticalLayoutWidget)
+		font = QtGui.QFont()
+		font.setFamily("Arial")
+		font.setPointSize(12)
+		self.labelMinAvailable.setFont(font)
+		self.labelMinAvailable.setObjectName("labelMinAvailable")
+		self.horizontalLayout_3.addWidget(self.labelMinAvailable)
+		self.editMinAvailable = QtWidgets.QLineEdit(self.verticalLayoutWidget)
+		self.editMinAvailable.setObjectName("editMinAvailable")
+		self.horizontalLayout_3.addWidget(self.editMinAvailable)
+		spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.horizontalLayout_3.addItem(spacerItem5)
+		self.mainLayout.addLayout(self.horizontalLayout_3)
 		self.dateLayout = QtWidgets.QHBoxLayout()
 		self.dateLayout.setObjectName("dateLayout")
 		self.departureLayout = QtWidgets.QVBoxLayout()
@@ -124,8 +153,8 @@ class ItemList(object):
 		self.calendarDeparture.setObjectName("calendarDeparture")
 		self.departureLayout.addWidget(self.calendarDeparture)
 		self.dateLayout.addLayout(self.departureLayout)
-		spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-		self.dateLayout.addItem(spacerItem3)
+		spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.dateLayout.addItem(spacerItem6)
 		self.returnLayout = QtWidgets.QVBoxLayout()
 		self.returnLayout.setObjectName("returnLayout")
 		self.labelReturn = QtWidgets.QLabel(self.verticalLayoutWidget)
@@ -186,8 +215,8 @@ class ItemList(object):
 		self.mainLayout.addWidget(self.tableItems)
 		self.buyLayout = QtWidgets.QHBoxLayout()
 		self.buyLayout.setObjectName("buyLayout")
-		spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-		self.buyLayout.addItem(spacerItem4)
+		spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.buyLayout.addItem(spacerItem7)
 		self.labelNumberBuy = QtWidgets.QLabel(self.verticalLayoutWidget)
 		font = QtGui.QFont()
 		font.setFamily("Arial")
@@ -207,8 +236,8 @@ class ItemList(object):
 		self.btnBuy.setFont(font)
 		self.btnBuy.setObjectName("btnBuy")
 		self.buyLayout.addWidget(self.btnBuy)
-		spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-		self.buyLayout.addItem(spacerItem5)
+		spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+		self.buyLayout.addItem(spacerItem8)
 		self.mainLayout.addLayout(self.buyLayout)
 
 		# ======================================== #
@@ -217,7 +246,7 @@ class ItemList(object):
 		# ======================================== #
 		self.btnBuy.clicked.connect(self._buy)
 		self.editBuy.returnPressed.connect(self._buy)
-		self.editMinAvaiable.textChanged[str].connect(self._update_minimum_available_filter)
+		self.editMinAvailable.textChanged[str].connect(self._update_minimum_available_filter)
 		self.editMaxPrice.textChanged[str].connect(self._update_max_price_filter)
 		self.calendarDeparture.clicked[QtCore.QDate].connect(self._update_departure_filter)
 		self.calendarReturn.clicked[QtCore.QDate].connect(self._update_return_filter)
@@ -301,8 +330,8 @@ class ItemList(object):
 				url += "minimumSeats=" + self._filter_minimum_available + "&"
 
 		try:
-			plane_tickets = get(url).json()
-		except ConnectionError:
+			plane_tickets = requests.get(url).json()
+		except requests.exceptions.ConnectionError:
 			# Exibir msg de erro
 			return
 
@@ -338,8 +367,8 @@ class ItemList(object):
 				url += "minimumRooms=" + self._filter_minimum_available + "&"
 
 		try:
-			lodgings = get(url).json()
-		except ConnectionError:
+			lodgings = requests.get(url).json()
+		except requests.exceptions.ConnectionError:
 			# Exibir msg de erro
 			return
 
@@ -376,8 +405,8 @@ class ItemList(object):
 				url += "minimumAvailable=" + self._filter_minimum_available + "&"
 
 		try:
-			travel_packages = get(url).json()
-		except ConnectionError:
+			travel_packages = requests.get(url).json()
+		except requests.exceptions.ConnectionError:
 			# Exibir msg de erro
 			return
 
@@ -435,6 +464,8 @@ class ItemList(object):
 		self.label.setText(_translate("Form", "Passagens"))
 		self.labelOrigin.setText(_translate("Form", "Origem:"))
 		self.labelDestiny.setText(_translate("Form", "Destino:"))
+		self.labelMaxPrice.setText(_translate("Form", "Preço Máximo:"))
+		self.labelMinAvailable.setText(_translate("Form", "Mínimo Disponível:"))
 		self.labelDeparture.setText(_translate("Form", "Data de Ida:"))
 		self.labelReturn.setText(_translate("Form", "Data de Volta:"))
 		item = self.tableItems.horizontalHeaderItem(0)
@@ -466,6 +497,8 @@ class ItemList(object):
 		self.labelDestiny.hide()
 		self.cmbDestiny.setEnabled(False)
 		self.cmbDestiny.hide()
+		self.labelMaxPrice.setText(_translate("Form", "Preço Máximo:"))
+		self.labelMinAvailable.setText(_translate("Form", "Mínimo Disponível:"))
 		self.labelDeparture.setText(_translate("Form", "Data de Check In:"))
 		self.labelReturn.setText(_translate("Form", "Data de Check Out:"))
 		item = self.tableItems.horizontalHeaderItem(0)
