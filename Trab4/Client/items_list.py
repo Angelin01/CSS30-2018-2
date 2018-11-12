@@ -354,8 +354,9 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(plane['destiny']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(plane['departureDate']))
 			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(plane.get('returnDate') or "--"))
-			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(plane['price'] / 100), plane['price'] % 100)))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:02}".format(int(plane['price'] / 100), int(plane['price'] % 100))))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(plane['numSeats']))
+			print(plane['numSeats'])
 			table_row += 1
 
 	def _update_Lodgings(self, add_filters=False):
@@ -390,7 +391,7 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 1, QtWidgets.QTableWidgetItem(lodging['location']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(lodging['checkIn']))
 			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(lodging['checkOut']))
-			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(lodging['price']/100), lodging['price']%100)))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:02}".format(int(lodging['price']/100), int(lodging['price']%100))))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(str(lodging['numRooms'])))
 			table_row += 1
 	
@@ -429,7 +430,7 @@ class ItemList(object):
 			self.tableItems.setItem(table_row, 2, QtWidgets.QTableWidgetItem(package['planeTicket']['destiny']))
 			self.tableItems.setItem(table_row, 3, QtWidgets.QTableWidgetItem(package['planeTicket']['departureDate']))
 			self.tableItems.setItem(table_row, 4, QtWidgets.QTableWidgetItem(package['planeTicket'].get('returnDate') or "--"))
-			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:.2f}".format(int(package['price'] / 100), package['price'] % 100)))
+			self.tableItems.setItem(table_row, 5, QtWidgets.QTableWidgetItem("R${},{:02}".format(int(package['price'] / 100), int(package['price'] % 100))))
 			self.tableItems.setItem(table_row, 6, QtWidgets.QTableWidgetItem(package['numPackages']))
 			table_row += 1
 
