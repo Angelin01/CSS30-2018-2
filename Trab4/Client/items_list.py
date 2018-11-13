@@ -294,12 +294,14 @@ class ItemList(object):
 			self._filter_minimum_available = value
 		else:
 			self._filter_minimum_available = None
+		self._update_items(True)
 
 	def _update_max_price_filter(self, value):
 		if value.isdigit() and int(value) > 0:
 			self._filter_max_price = value
 		else:
 			self._filter_max_price = None
+		self._update_items(True)
 
 	def _update_origin_filter(self, value):
 		if value == "Nenhum":
@@ -360,6 +362,9 @@ class ItemList(object):
 				url += "returnDate=" + self._filter_return_date + "&"
 			if self._filter_minimum_available:
 				url += "minimumSeats=" + self._filter_minimum_available + "&"
+
+			print("Sending request:")
+			print(url)
 
 		try:
 			plane_tickets = requests.get(url).json()
