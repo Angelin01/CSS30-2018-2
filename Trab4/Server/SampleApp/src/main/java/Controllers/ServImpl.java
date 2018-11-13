@@ -176,7 +176,7 @@ public class ServImpl implements InterfaceServ {
     @Path("/planetickets")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPlaneTickets(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("departureDate") String departureDate, @QueryParam("returnDate") String sreturnDate, @QueryParam("minimumSeats") int minimumSeats) {
+    public Response getPlaneTickets(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("departureDate") String sdepartureDate, @QueryParam("returnDate") String sreturnDate, @QueryParam("minimumSeats") int minimumSeats) {
         ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
         Date departureDate = null;
         Date returnDate = null;
@@ -269,7 +269,7 @@ public class ServImpl implements InterfaceServ {
     @Path("/travelpackages")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTravelPackages(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("sdepartureDate") String sdepartureDate, @QueryParam("sreturnDate") String sreturnDate, @QueryParam("minimumAvailable") int minimumAvailable)  {
+    public Response getTravelPackages(@QueryParam("origin") Location origin, @QueryParam("destiny") Location destiny, @QueryParam("maxPrice") int maxPrice, @QueryParam("departureDate") String sdepartureDate, @QueryParam("returnDate") String sreturnDate, @QueryParam("minimumAvailable") int minimumAvailable)  {
         Date departureDate = null;
         Date returnDate = null;
 
