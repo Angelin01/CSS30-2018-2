@@ -298,7 +298,7 @@ class ItemList(object):
 
 	def _update_max_price_filter(self, value):
 		if value.isdigit() and int(value) > 0:
-			self._filter_max_price = value
+			self._filter_max_price = value + "00"
 		else:
 			self._filter_max_price = None
 		self._update_items(True)
