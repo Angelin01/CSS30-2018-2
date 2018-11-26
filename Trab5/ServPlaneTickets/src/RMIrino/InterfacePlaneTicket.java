@@ -33,12 +33,12 @@ public interface InterfacePlaneTicket extends Remote {
 
 
 	/**
-	 * Method for buying a Travel Package using Date objects
-	 * @param travelPackageID the id for the desired travel package
-	 * @param numPackets the number of rooms desired for the lodging
-	 * @return true if the travel package was successfully bought, false if there was a problem
+	 * Method for buying a PlaneTicket
+	 * @param planeTicketID the id for the desired plane
+	 * @param numTickets the number of desired tickets
+	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyTravelPackage(int travelPackageID, int numPackets) throws RemoteException;
+	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
 }
 
