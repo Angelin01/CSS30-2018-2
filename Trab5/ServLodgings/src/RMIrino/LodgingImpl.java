@@ -56,7 +56,7 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
+	public boolean buyLodging(int lodgingID, int numRooms, boolean isPackage) throws RemoteException {
 		for (Lodging lodging : listLodgings) {
 			if (lodging.getId() == lodgingID) {
 				synchronized (lodging) {

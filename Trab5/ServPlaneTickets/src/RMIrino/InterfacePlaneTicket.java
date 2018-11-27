@@ -30,14 +30,14 @@ public interface InterfacePlaneTicket extends Remote {
 	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                  Date returnDate, int minimumSeats) throws RemoteException;
 
-
 	/**
 	 * Method for buying a PlaneTicket
 	 * @param planeTicketID the id for the desired plane
 	 * @param numTickets the number of desired tickets
+	 * @param isPackage true if the buy order is part of a package and needs transactions
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
+	boolean buyPlaneTicket(int planeTicketID, int numTickets, boolean isPackage) throws RemoteException;
 }
 

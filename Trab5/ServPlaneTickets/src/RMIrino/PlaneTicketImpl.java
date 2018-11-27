@@ -58,7 +58,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
+	public boolean buyPlaneTicket(int planeTicketID, int numTickets, boolean isPackage) throws RemoteException {
 		for (PlaneTicket planeTicket : listPlaneTickets) {
 			if (planeTicket.getId() == planeTicketID) {
 				synchronized (planeTicket) {
