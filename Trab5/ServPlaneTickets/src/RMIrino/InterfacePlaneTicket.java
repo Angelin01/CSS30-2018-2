@@ -1,7 +1,6 @@
 package RMIrino;
 
 import Travel.Location;
-import Travel.Lodging;
 import Travel.PlaneTicket;
 
 import java.rmi.Remote;
