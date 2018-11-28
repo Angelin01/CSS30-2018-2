@@ -42,7 +42,7 @@ public class PlaneTicket implements Serializable {
 		this.origin = origin;
 
 		if(departureDate == null) {
-			throw new NullPointerException("Parameter origin cannot be null");
+			throw new NullPointerException("Parameter departureDate cannot be null");
 		}
 		this.departureDate = departureDate;
 
