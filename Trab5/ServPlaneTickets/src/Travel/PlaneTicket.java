@@ -254,17 +254,15 @@ public class PlaneTicket implements Serializable {
 	
 	/**
 	 * Simple method that outputs the Lodging object in a csv comma separated format
-	 * @param separator the separator used between items, usually a comma
-	 * @param stringMarker the string "isolator", usually double quotes
 	 * @return A string in csv format: id,origin,destiny,departureDate,returnDate,price,numSeats
 	 */
-	public String toCsv(char separator, char stringMarker) {
-		return(id + separator +
-		       stringMarker + origin.name() + stringMarker + separator +
-		       stringMarker + destiny.name() + stringMarker + separator +
-		       stringMarker + format.format(departureDate) + stringMarker + separator +
-		       stringMarker + format.format(returnDate) + stringMarker + separator +
-		       price + separator +
+	public String toCsv() {
+		return(id + ',' +
+		       origin.name() + ',' +
+		       destiny.name() + ',' +
+		       format.format(departureDate) + ',' +
+		       format.format(returnDate) + ',' +
+		       price + ',' +
 		       numSeats);
 	}
 

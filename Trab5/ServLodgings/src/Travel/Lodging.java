@@ -220,16 +220,14 @@ public class Lodging implements Serializable {
 	
 	/**
 	 * Simple method that outputs the Lodging object in a csv comma separated format
-	 * @param separator the separator used between items, usually a comma
-	 * @param stringMarker the string "isolator", usually double quotes
 	 * @return A string in csv format: id,location,checkIn,checkOut,price,numRooms
 	 */
-	public String toCsv(char separator, char stringMarker) {
-		return(id + separator +
-		       stringMarker + location.name() + stringMarker + separator +
-		       stringMarker + format.format(checkIn) + stringMarker + separator +
-		       stringMarker + format.format(checkOut) + stringMarker + separator +
-		       price + separator +
+	public String toCsv() {
+		return(id + ',' +
+		       location.name() + ',' +
+		       format.format(checkIn) + ',' +
+		       format.format(checkOut) + ',' +
+		       price + ',' +
 		       numRooms);
 	}
 
