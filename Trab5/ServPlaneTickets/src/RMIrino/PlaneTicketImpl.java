@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePlaneTicket {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private ArrayList<PlaneTicket> listPlaneTickets;
+	private ArrayList<PlaneTicket> tmpPlaneTickets;
 	private Logger logger;
 	private BufferedReader mainReader;
 	private BufferedWriter mainWriter;
@@ -32,6 +33,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		this.tmpWriter = tmpWriter;
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
+		tmpPlaneTickets = new ArrayList<PlaneTicket>();
 		updatePlaneTickets();
 	}
 
@@ -42,7 +44,16 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		}
 	}
 
+	protected void commitUpdates() throws IOException, ParseException {
+		String toSave = "";
+		
+		for (PlaneTicket planeTicket : tmpPlaneTickets) {
+			toSave += planeTicket.toCsv() + "\n";
+		}
 
+		mainWriter.write(toSave);
+		updatePlaneTickets();
+	}
 
 	/**
 	 * {@inheritDoc}
