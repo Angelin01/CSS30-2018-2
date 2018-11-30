@@ -3,14 +3,34 @@ package RMIrino;
 import Travel.Location;
 import Travel.Lodging;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.logging.Logger;
 
 public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging {
 	private static final int MILLIS_IN_DAY = 86400000;
+	private ArrayList<Lodging> listLodgings;
+	private java.util.logging.Logger logger;
+	private BufferedReader br;
+
+	public LodgingImpl(BufferedReader br, Logger logger) throws IOException, ParseException {
+		this.br = br;
+		this.logger = logger;
+		listLodgings = new ArrayList<Lodging>();
+		updateLodgings();
+	}
+
+	protected void updateLodgings() throws IOException, ParseException {
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			listLodgings.add(Lodging.fromCsv(line));
+		}
+	}
 
 	/**
 	 * {@inheritDoc}

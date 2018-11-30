@@ -3,13 +3,34 @@ package RMIrino;
 import Travel.Location;
 import Travel.PlaneTicket;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePlaneTicket {
 	private static final int MILLIS_IN_DAY = 86400000;
+	private ArrayList<PlaneTicket> listPlaneTickets;
+	private Logger logger;
+	private BufferedReader br;
+
+	public PlaneTicketImpl(BufferedReader br, Logger logger) throws IOException, ParseException {
+		this.br = br;
+		this.logger = logger;
+		listPlaneTickets = new ArrayList<PlaneTicket>();
+		updatePlaneTickets();
+	}
+
+	protected void updatePlaneTickets() throws IOException, ParseException {
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			listPlaneTickets.add(PlaneTicket.fromCsv(line));
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
