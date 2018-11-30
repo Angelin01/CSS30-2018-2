@@ -4,6 +4,7 @@ import Travel.Location;
 import Travel.PlaneTicket;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,21 +17,32 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	private static final int MILLIS_IN_DAY = 86400000;
 	private ArrayList<PlaneTicket> listPlaneTickets;
 	private Logger logger;
-	private BufferedReader br;
+	private BufferedReader mainReader;
+	private BufferedWriter mainWriter;
+	private BufferedReader tmpReader;
+	private BufferedWriter tmpWriter;
 
-	public PlaneTicketImpl(BufferedReader br, Logger logger) throws IOException, ParseException {
-		this.br = br;
+	public PlaneTicketImpl(BufferedReader mainReader, BufferedWriter mainWriter,
+						   BufferedReader tmpReader, BufferedWriter tmpWriter,
+						   Logger logger) throws IOException, ParseException {
 		this.logger = logger;
+		this.mainReader = mainReader;
+		this.mainWriter = mainWriter;
+		this.tmpReader = tmpReader;
+		this.tmpWriter = tmpWriter;
+
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		updatePlaneTickets();
 	}
 
 	protected void updatePlaneTickets() throws IOException, ParseException {
 		String line = "";
-		while ((line = br.readLine()) != null) {
+		while ((line = mainReader.readLine()) != null) {
 			listPlaneTickets.add(PlaneTicket.fromCsv(line));
 		}
 	}
+
+
 
 	/**
 	 * {@inheritDoc}
