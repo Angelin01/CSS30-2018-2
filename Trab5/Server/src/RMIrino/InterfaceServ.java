@@ -55,21 +55,7 @@ public interface InterfaceServ extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<TravelPackage> getTravelPackages() throws RemoteException;
-
-	/**
-	 * Getter for TravelPackages with filters
-	 * @param origin the origin location. null if doesn't matter
-	 * @param destiny the destiny location. null if doesn't matter
-	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
-	 * @param departureDate the departure date. null if doesn't matter
-	 * @param returnDate the return date. null if doesn't matter
-	 * @param minimumAvailable the minimum number of available packages. &lt;= 0 if doesn't matter
-	 * @return List of TravelPackages according to the filters
-	 * @throws RemoteException if there's any problem with the remote connection
-	 */
-	List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate,
-	                                      Date returnDate, int minimumAvailable) throws RemoteException;
-
+	
 	/**
 	 * Method for buying a PlaneTicket
 	 * @param planeTicketID the id for the desired plane
