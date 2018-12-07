@@ -1,5 +1,8 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFile;
+import SimpleFileAccess.RecordsFileException;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,8 +14,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-	public static void main (String[] args) throws IOException {
+	public static void main (String[] args) throws IOException, RecordsFileException {
 		final int PORT = 1338;
+		final String dbName = "planeticket.db";
+
 		Logger logger = Logger.getLogger("PlaneTicketLog");
 		FileHandler logHandler = new FileHandler("./plane-ticket.log");
 		logHandler.setFormatter(new SimpleFormatter() {
@@ -29,6 +34,16 @@ public class Main {
 		});
 		logger.addHandler(logHandler);
 
+		RecordsFile planeTicketDB;
+
+		try {
+			planeTicketDB = new RecordsFile(dbName, 128);
+		}
+		catch (RecordsFileException e) {
+			planeTicketDB = new RecordsFile(dbName, "rw");
+		}
+
+		logger.info("Opened database " + dbName);
 		logger.info("Starting up Plane Ticket system");
 
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);

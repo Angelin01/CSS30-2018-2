@@ -1,5 +1,7 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFile;
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.PlaneTicket;
 
@@ -11,48 +13,34 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePlaneTicket {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private ArrayList<PlaneTicket> listPlaneTickets;
-	private ArrayList<PlaneTicket> tmpPlaneTickets;
+	//private ArrayList<PlaneTicket> tmpPlaneTickets;
 	private Logger logger;
-	private BufferedReader mainReader;
-	private BufferedWriter mainWriter;
-	private BufferedReader tmpReader;
-	private BufferedWriter tmpWriter;
+	private RecordsFile db;
 
-	public PlaneTicketImpl(BufferedReader mainReader, BufferedWriter mainWriter,
-						   BufferedReader tmpReader, BufferedWriter tmpWriter,
-						   Logger logger) throws IOException, ParseException {
+	public PlaneTicketImpl(RecordsFile db, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
-		this.mainReader = mainReader;
-		this.mainWriter = mainWriter;
-		this.tmpReader = tmpReader;
-		this.tmpWriter = tmpWriter;
+		this.db = db;
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
-		tmpPlaneTickets = new ArrayList<PlaneTicket>();
+		//tmpPlaneTickets = new ArrayList<PlaneTicket>();
 		updatePlaneTickets();
 	}
 
-	protected void updatePlaneTickets() throws IOException, ParseException {
-		String line = "";
-		while ((line = mainReader.readLine()) != null) {
-			listPlaneTickets.add(PlaneTicket.fromCsv(line));
+	protected void updatePlaneTickets() throws IOException, RecordsFileException, ClassNotFoundException {
+		listPlaneTickets.clear();
+		for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements();) {
+			listPlaneTickets.add((PlaneTicket) db.readRecord(e.nextElement()).readObject());
 		}
 	}
 
 	protected void commitUpdates() throws IOException, ParseException {
-		String toSave = "";
-		
-		for (PlaneTicket planeTicket : tmpPlaneTickets) {
-			toSave += planeTicket.toCsv() + "\n";
-		}
 
-		mainWriter.write(toSave);
-		updatePlaneTickets();
 	}
 
 	/**
