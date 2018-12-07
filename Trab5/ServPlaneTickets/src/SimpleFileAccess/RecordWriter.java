@@ -7,16 +7,16 @@ import java.io.OutputStream;
 
 
 public class RecordWriter {
-	String key;
+	Integer key;
 	DbByteArrayOutputStream out;
 	ObjectOutputStream objOut;
 
-	public RecordWriter(String key) {
+	public RecordWriter(Integer key) {
 		this.key = key;
 		out = new DbByteArrayOutputStream();
 	}
 
-	public String getKey() {
+	public Integer getKey() {
 		return key;
 	}
 

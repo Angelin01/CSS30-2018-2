@@ -55,14 +55,14 @@ public class RecordsFile extends BaseRecordsFile {
 	/**
 	 * Checks if there is a record belonging to the given key.
 	 */
-	public synchronized boolean recordExists(String key) {
+	public synchronized boolean recordExists(Integer key) {
 		return memIndex.containsKey(key);
 	}
 
 	/**
 	 * Maps a key to a record header by looking it up in the in-memory index.
 	 */
-	protected RecordHeader keyToRecordHeader(String key) throws RecordsFileException {
+	protected RecordHeader keyToRecordHeader(Integer key) throws RecordsFileException {
 		RecordHeader h = (RecordHeader) memIndex.get(key);
 		if (h == null) {
 			throw new RecordsFileException("Key not found: " + key);
@@ -74,7 +74,7 @@ public class RecordsFile extends BaseRecordsFile {
 	 * This method searches the file for free space and then returns a RecordHeader
 	 * which uses the space. (O(n) memory accesses)
 	 */
-	protected RecordHeader allocateRecord(String key, int dataLength) throws RecordsFileException, IOException {
+	protected RecordHeader allocateRecord(Integer key, int dataLength) throws RecordsFileException, IOException {
 		// search for empty space
 		RecordHeader newRecord = null;
 		Enumeration e = memIndex.elements();
@@ -129,7 +129,7 @@ public class RecordsFile extends BaseRecordsFile {
 	 * Adds the new record to the in-memory index and calls the super class add
 	 * the index entry to the file.
 	 */
-	protected void addEntryToIndex(String key, RecordHeader newRecord, int currentNumRecords) throws IOException, RecordsFileException {
+	protected void addEntryToIndex(Integer key, RecordHeader newRecord, int currentNumRecords) throws IOException, RecordsFileException {
 		super.addEntryToIndex(key, newRecord, currentNumRecords);
 		memIndex.put(key, newRecord);
 	}
@@ -138,7 +138,7 @@ public class RecordsFile extends BaseRecordsFile {
 	 * Removes the record from the index. Replaces the target with the entry at the
 	 * end of the index.
 	 */
-	protected void deleteEntryFromIndex(String key, RecordHeader header, int currentNumRecords) throws IOException, RecordsFileException {
+	protected void deleteEntryFromIndex(Integer key, RecordHeader header, int currentNumRecords) throws IOException, RecordsFileException {
 		super.deleteEntryFromIndex(key, header, currentNumRecords);
 		RecordHeader deleted = (RecordHeader) memIndex.remove(key);
 	}

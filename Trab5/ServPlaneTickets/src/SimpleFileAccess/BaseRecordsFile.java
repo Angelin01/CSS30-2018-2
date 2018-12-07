@@ -63,17 +63,17 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Checks there is a record with the given key.
 	 */
-	public abstract boolean recordExists(String key);
+	public abstract boolean recordExists(Integer key);
 
 	/**
 	 * Maps a key to a record header.
 	 */
-	protected abstract RecordHeader keyToRecordHeader(String key) throws RecordsFileException;
+	protected abstract RecordHeader keyToRecordHeader(Integer key) throws RecordsFileException;
 
 	/**
 	 * Locates space for a new record of dataLength size and initializes a RecordHeader.
 	 */
-	protected abstract RecordHeader allocateRecord(String key, int dataLength) throws RecordsFileException, IOException;
+	protected abstract RecordHeader allocateRecord(Integer key, int dataLength) throws RecordsFileException, IOException;
 
 	/**
 	 * Returns the record to which the target file pointer belongs - meaning the specified location
@@ -141,9 +141,9 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Reads the ith key from the index.
 	 */
-	String readKeyFromIndex(int position) throws IOException {
+	Integer readKeyFromIndex(int position) throws IOException {
 		file.seek(indexPositionToKeyFp(position));
-		return file.readUTF();
+		return file.readInt();
 	}
 
 	/**
@@ -165,9 +165,9 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Appends an entry to end of index. Assumes that insureIndexSpace() has already been called.
 	 */
-	protected void addEntryToIndex(String key, RecordHeader newRecord, int currentNumRecords) throws IOException, RecordsFileException {
+	protected void addEntryToIndex(Integer key, RecordHeader newRecord, int currentNumRecords) throws IOException, RecordsFileException {
 		DbByteArrayOutputStream temp = new DbByteArrayOutputStream(MAX_KEY_LENGTH);
-		(new DataOutputStream(temp)).writeUTF(key);
+		(new DataOutputStream(temp)).writeInt(key);
 		if (temp.size() > MAX_KEY_LENGTH) {
 			throw new RecordsFileException("Key is larger than permitted size of " + MAX_KEY_LENGTH + " bytes");
 		}
@@ -183,13 +183,13 @@ public abstract class BaseRecordsFile {
 	 * Removes the record from the index. Replaces the target with the entry at the
 	 * end of the index.
 	 */
-	protected void deleteEntryFromIndex(String key, RecordHeader header, int currentNumRecords) throws IOException, RecordsFileException {
+	protected void deleteEntryFromIndex(Integer key, RecordHeader header, int currentNumRecords) throws IOException, RecordsFileException {
 		if (header.indexPosition != currentNumRecords - 1) {
-			String lastKey = readKeyFromIndex(currentNumRecords - 1);
+			Integer lastKey = readKeyFromIndex(currentNumRecords - 1);
 			RecordHeader last = keyToRecordHeader(lastKey);
 			last.setIndexPosition(header.indexPosition);
 			file.seek(indexPositionToKeyFp(last.indexPosition));
-			file.writeUTF(lastKey);
+			file.writeInt(lastKey);
 			file.seek(indexPositionToRecordHeaderFp(last.indexPosition));
 			last.write(file);
 		}
@@ -200,7 +200,7 @@ public abstract class BaseRecordsFile {
 	 * Adds the given record to the database.
 	 */
 	public synchronized void insertRecord(RecordWriter rw) throws RecordsFileException, IOException {
-		String key = rw.getKey();
+		Integer key = rw.getKey();
 		if (recordExists(key)) {
 			throw new RecordsFileException("Key exists: " + key);
 		}
@@ -228,7 +228,7 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Reads a record.
 	 */
-	public synchronized RecordReader readRecord(String key) throws RecordsFileException, IOException {
+	public synchronized RecordReader readRecord(Integer key) throws RecordsFileException, IOException {
 		byte[] data = readRecordData(key);
 		return new RecordReader(key, data);
 	}
@@ -236,7 +236,7 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Reads the data for the record with the given key.
 	 */
-	protected byte[] readRecordData(String key) throws IOException, RecordsFileException {
+	protected byte[] readRecordData(Integer key) throws IOException, RecordsFileException {
 		return readRecordData(keyToRecordHeader(key));
 	}
 
@@ -281,7 +281,7 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Deletes a record.
 	 */
-	public synchronized void deleteRecord(String key) throws RecordsFileException, IOException {
+	public synchronized void deleteRecord(Integer key) throws RecordsFileException, IOException {
 		RecordHeader delRec = keyToRecordHeader(key);
 		int currentNumRecords = getNumRecords();
 		if (getFileLength() == delRec.dataPointer + delRec.dataCapacity) {

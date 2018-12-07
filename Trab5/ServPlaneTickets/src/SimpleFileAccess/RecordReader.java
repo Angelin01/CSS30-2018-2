@@ -3,18 +3,18 @@ package SimpleFileAccess;
 import java.io.*;
 
 public class RecordReader {
-	String key;
+	Integer key;
 	byte[] data;
 	ByteArrayInputStream in;
 	ObjectInputStream objIn;
 
-	public RecordReader(String key, byte[] data) {
+	public RecordReader(Integer key, byte[] data) {
 		this.key = key;
 		this.data = data;
 		in = new ByteArrayInputStream(data);
 	}
 
-	public String getKey() {
+	public Integer getKey() {
 		return key;
 	}
 
