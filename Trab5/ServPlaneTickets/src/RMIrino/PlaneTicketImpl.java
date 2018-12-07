@@ -29,14 +29,39 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		//tmpPlaneTickets = new ArrayList<PlaneTicket>();
-		updatePlaneTickets();
+		readPlaneTickets();
 	}
 
-	protected void updatePlaneTickets() throws IOException, RecordsFileException, ClassNotFoundException {
-		listPlaneTickets.clear();
-		for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements();) {
-			listPlaneTickets.add((PlaneTicket) db.readRecord(e.nextElement()).readObject());
+	/**
+	 * Reads all plane tickets from the database and adds them to the memory listPlaneTickets
+	 * Will also check the ID on the PlaneTickets to avoid collisions
+	 */
+	protected void readPlaneTickets() throws IOException, ClassNotFoundException {
+		logger.info("Reading plane tickets from database...");
+		PlaneTicket planeTicket = null;
+		synchronized (listPlaneTickets) {
+			listPlaneTickets.clear();
 		}
+
+		for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements();) {
+			try {
+				planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
+			} catch (RecordsFileException e1) {
+				logger.severe("Error reading from database. Something bad happened, oh no...");
+				System.exit(1);
+			}
+
+			// Checks the ids to avoid duplicates
+			// KINDA DUMB, but it works for the most part
+			if (PlaneTicket.nextId <= planeTicket.getId()) {
+				PlaneTicket.nextId = planeTicket.getId() + 1;
+			}
+
+			synchronized (listPlaneTickets) {
+				listPlaneTickets.add(planeTicket);
+			}
+		}
+		logger.info("Successfully read database");
 	}
 
 	protected void commitUpdates() throws IOException, ParseException {

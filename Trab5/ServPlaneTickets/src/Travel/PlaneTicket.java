@@ -17,7 +17,7 @@ public class PlaneTicket implements Serializable {
 	private int price;
 	private int numSeats;
 	private int id;
-	private static int nextId = 0;
+	public static int nextId = 0;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
@@ -31,6 +31,7 @@ public class PlaneTicket implements Serializable {
 	 * @throws NullPointerException if null is passed to destiny, origin or departure date
 	 * @throws IllegalArgumentException if price is negative
 	 */
+	@Deprecated
 	public PlaneTicket(Location destiny, Location origin, Date departureDate, Date returnDate, int price, int numSeats) {
 		if(destiny == null) {
 			throw new NullPointerException("Parameter destiny cannot be null");
