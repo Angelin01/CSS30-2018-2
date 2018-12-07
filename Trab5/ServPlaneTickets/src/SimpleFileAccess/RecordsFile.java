@@ -31,7 +31,7 @@ public class RecordsFile extends BaseRecordsFile {
 		int numRecords = readNumRecordsHeader();
 		memIndex = new Hashtable(numRecords);
 		for (int i = 0; i < numRecords; i++) {
-			String key = readKeyFromIndex(i);
+			Integer key = readKeyFromIndex(i);
 			RecordHeader header = readRecordHeaderFromIndex(i);
 			header.setIndexPosition(i);
 			memIndex.put(key, header);
