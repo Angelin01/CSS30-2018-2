@@ -22,9 +22,9 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	private static final int MILLIS_IN_DAY = 86400000;
 	private final ArrayList<PlaneTicket> listPlaneTickets;
 	private ArrayList<PlaneTicket> tmpPlaneTickets;
-	private Logger logger;
-	private RecordsFile db;
-	private RecordsFile tmpDb;
+	private final Logger logger;
+	private final RecordsFile db;
+	private final RecordsFile tmpDb;
 
 	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
