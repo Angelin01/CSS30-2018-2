@@ -127,19 +127,21 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 */
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException {
-		PlaneTicket planeTicket;
-		try {
-			planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
-		} catch (RecordsFileException e) {
-			return false;
-		}
+		synchronized (db) {
+			PlaneTicket planeTicket;
+			try {
+				planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
+			} catch (RecordsFileException e) {
+				return false;
+			}
 
-		if (planeTicket.getNumSeats() >= numTickets) {
-			RecordWriter rw = new RecordWriter(planeTicketID);
-			planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-			rw.writeObject(planeTicket);
-			db.insertRecord(rw);
-			return true
+			if (planeTicket.getNumSeats() >= numTickets) {
+				RecordWriter rw = new RecordWriter(planeTicketID);
+				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+				rw.writeObject(planeTicket);
+				db.insertRecord(rw);
+				return true
+			}
 		}
 
 		return false;
