@@ -14,7 +14,6 @@ import java.nio.channels.FileChannel;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.logging.Logger;
@@ -47,22 +46,24 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 			listPlaneTickets.clear();
 		}
 
-		for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements();) {
-			try {
-				planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
-			} catch (RecordsFileException e1) {
-				logger.severe("Error reading from database. Something bad happened, oh no...");
-				System.exit(1);
-			}
+		synchronized (db) {
+			for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements(); ) {
+				try {
+					planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
+				} catch (RecordsFileException e1) {
+					logger.severe("Error reading from database. Something bad happened, oh no...");
+					System.exit(1);
+				}
 
-			// Checks the ids to avoid duplicates
-			// KINDA DUMB, but it works for the most part
-			if (PlaneTicket.nextId <= planeTicket.getId()) {
-				PlaneTicket.nextId = planeTicket.getId() + 1;
-			}
+				// Checks the ids to avoid duplicates
+				// KINDA DUMB, but it works for the most part
+				if (PlaneTicket.nextId <= planeTicket.getId()) {
+					PlaneTicket.nextId = planeTicket.getId() + 1;
+				}
 
-			synchronized (listPlaneTickets) {
-				listPlaneTickets.add(planeTicket);
+				synchronized (listPlaneTickets) {
+					listPlaneTickets.add(planeTicket);
+				}
 			}
 		}
 		logger.info("Successfully read database");
@@ -74,6 +75,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 * Makes a re read on the database and updates memory
 	 */
 	protected void commitUpdates() throws IOException, ClassNotFoundException {
+		logger.info("Commiting updates to main database");
 		synchronized (db, tmpDb){
 			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
 			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
@@ -87,6 +89,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		synchronized (tmpPlaneTickets) {
 			tmpPlaneTickets.add(planeTicket);
 		}
+		logger.info("New planeticket added: " + planeTicket);
 	}
 
 	/**
@@ -150,7 +153,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
 				rw.writeObject(planeTicket);
 				db.insertRecord(rw);
-				return true
+				return true;
 			}
 		}
 
@@ -162,6 +165,6 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 */
 	@Override
 	public boolean buyPackagePlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
-
+		return false;
 	}
 }
