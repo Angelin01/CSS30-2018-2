@@ -76,10 +76,12 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 */
 	protected void commitUpdates() throws IOException, ClassNotFoundException {
 		logger.info("Commiting updates to main database");
-		synchronized (db, tmpDb){
-			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
-			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
-			dest.transferFrom(src, 0, src.size());
+		synchronized (db) {
+			synchronized (tmpDb) {
+				FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
+				FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
+				dest.transferFrom(src, 0, src.size());
+			}
 		}
 
 		readPlaneTickets();
