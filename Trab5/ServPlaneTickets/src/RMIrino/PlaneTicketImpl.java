@@ -1,5 +1,7 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordReader;
+import SimpleFileAccess.RecordWriter;
 import SimpleFileAccess.RecordsFile;
 import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
@@ -19,16 +21,18 @@ import java.util.logging.Logger;
 public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePlaneTicket {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private final ArrayList<PlaneTicket> listPlaneTickets;
-	//private ArrayList<PlaneTicket> tmpPlaneTickets;
+	private final ArrayList<PlaneTicket> tmpPlaneTickets;
 	private Logger logger;
 	private RecordsFile db;
+	private RecordsFile tmpDb;
 
-	public PlaneTicketImpl(RecordsFile db, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
+	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
 		this.db = db;
+		this.tmpDb = tmpDb;
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
-		//tmpPlaneTickets = new ArrayList<PlaneTicket>();
+		tmpPlaneTickets = new ArrayList<PlaneTicket>();
 		readPlaneTickets();
 	}
 
@@ -64,13 +68,14 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		logger.info("Successfully read database");
 	}
 
-	protected void commitUpdates() throws IOException, ParseException {
+	protected void commitUpdates() throws IOException, ClassNotFoundException {
 
+		readPlaneTickets();
 	}
 
 	public void addPlaneTicket(PlaneTicket planeTicket) {
-		synchronized (listPlaneTickets) {
-			listPlaneTickets.add(planeTicket);
+		synchronized (tmpPlaneTickets) {
+			tmpPlaneTickets.add(planeTicket);
 		}
 	}
 
@@ -121,21 +126,30 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean buyPlaneTicket(int planeTicketID, int numTickets, boolean isPackage) throws RemoteException {
-		for (PlaneTicket planeTicket : listPlaneTickets) {
-			if (planeTicket.getId() == planeTicketID) {
-				synchronized (planeTicket) {
-					if (planeTicket.getNumSeats() < numTickets) {
-						return false;
-					}
-
-					System.out.println("Client just successfully bought " + numTickets + " tickets:\n" +
-							planeTicket);
-					planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-					return true;
-				}
-			}
+	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException {
+		PlaneTicket planeTicket;
+		try {
+			planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
+		} catch (RecordsFileException e) {
+			return false;
 		}
+
+		if (planeTicket.getNumSeats() >= numTickets) {
+			RecordWriter rw = new RecordWriter(planeTicketID);
+			planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+			rw.writeObject(planeTicket);
+			db.insertRecord(rw);
+			return true
+		}
+
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean buyPackagePlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
+
 	}
 }

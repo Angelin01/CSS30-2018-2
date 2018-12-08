@@ -1,8 +1,10 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.PlaneTicket;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -34,10 +36,18 @@ public interface InterfacePlaneTicket extends Remote {
 	 * Method for buying a PlaneTicket
 	 * @param planeTicketID the id for the desired plane
 	 * @param numTickets the number of desired tickets
-	 * @param isPackage true if the buy order is part of a package and needs transactions
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPlaneTicket(int planeTicketID, int numTickets, boolean isPackage) throws RemoteException;
+	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException, ClassNotFoundException, RecordsFileException, IOException;
+
+	/**
+	 * Method for buying a PlaneTicket in a package
+	 * @param planeTicketID the id for the desired plane
+	 * @param numTickets the number of desired tickets
+	 * @return true if the ticket was successfully bought, false if there was a problem
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	boolean buyPackagePlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
 }
 
