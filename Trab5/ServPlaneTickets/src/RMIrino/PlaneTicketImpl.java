@@ -7,13 +7,14 @@ import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.PlaneTicket;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.logging.Logger;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePlaneTicket {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private final ArrayList<PlaneTicket> listPlaneTickets;
-	private final ArrayList<PlaneTicket> tmpPlaneTickets;
+	private ArrayList<PlaneTicket> tmpPlaneTickets;
 	private Logger logger;
 	private RecordsFile db;
 	private RecordsFile tmpDb;
@@ -32,7 +33,6 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		this.tmpDb = tmpDb;
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
-		tmpPlaneTickets = new ArrayList<PlaneTicket>();
 		readPlaneTickets();
 	}
 
@@ -66,9 +66,19 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 			}
 		}
 		logger.info("Successfully read database");
+		tmpPlaneTickets =  new ArrayList<>(listPlaneTickets);
 	}
 
+	/**
+	 * Copies the contents from the temporary db to the main db
+	 * Makes a re read on the database and updates memory
+	 */
 	protected void commitUpdates() throws IOException, ClassNotFoundException {
+		synchronized (db, tmpDb){
+			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
+			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
+			dest.transferFrom(src, 0, src.size());
+		}
 
 		readPlaneTickets();
 	}

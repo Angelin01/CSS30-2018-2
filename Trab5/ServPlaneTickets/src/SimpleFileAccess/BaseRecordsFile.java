@@ -21,6 +21,8 @@ public abstract class BaseRecordsFile {
 	// The database file.
 	private RandomAccessFile file;
 
+	private String dbPath;
+
 	/**
 	 * Creates a new database file, initializing the appropriate headers. Enough space is allocated in
 	 * the index for the specified initial size.
@@ -35,6 +37,15 @@ public abstract class BaseRecordsFile {
 		setFileLength(dataStartPtr);                       // (i+1)th index entry would start.
 		writeNumRecordsHeader(0);
 		writeDataStartPtrHeader(dataStartPtr);
+		this.dbPath = dbPath;
+	}
+
+	/**
+	 * Basic getter for the dbPath
+	 * @return the dbPath
+	 */
+	public String getDbPath() {
+		return dbPath;
 	}
 
 	/**
