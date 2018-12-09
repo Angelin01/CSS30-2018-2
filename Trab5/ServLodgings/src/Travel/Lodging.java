@@ -15,7 +15,7 @@ public class Lodging implements Serializable {
 	private Date checkIn;
 	private Date checkOut;
 	private int numRooms;
-	private static int nextId = 0;
+	public static int nextId = 0;
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 	

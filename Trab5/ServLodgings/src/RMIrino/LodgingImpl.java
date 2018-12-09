@@ -1,5 +1,7 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFile;
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.Lodging;
 
@@ -10,26 +12,57 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging {
 	private static final int MILLIS_IN_DAY = 86400000;
-	private ArrayList<Lodging> listLodgings;
-	private java.util.logging.Logger logger;
-	private BufferedReader br;
+	private final ArrayList<Lodging> listLodgings;
+	private ArrayList<Lodging> tmpPlaneTickets;
+	private final Logger logger;
+	private final RecordsFile db;
+	private final RecordsFile tmpDb;
+	private final RecordsFile transactionLog;
 
-	public LodgingImpl(BufferedReader br, Logger logger) throws IOException, ParseException {
-		this.br = br;
+	public LodgingImpl(RecordsFile db, RecordsFile tmpDb, RecordsFile transactionLog, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
+		this.db = db;
+		this.tmpDb = tmpDb;
+		this.transactionLog = transactionLog;
+
 		listLodgings = new ArrayList<Lodging>();
-		updateLodgings();
+		readLodgings();
 	}
 
-	protected void updateLodgings() throws IOException, ParseException {
-		String line = "";
-		while ((line = br.readLine()) != null) {
-			listLodgings.add(Lodging.fromCsv(line));
+	protected void readLodgings() throws IOException, ClassNotFoundException {
+		logger.info("Reading plane tickets from database...");
+		Lodging planeTicket = null;
+		synchronized (listLodgings) {
+			listLodgings.clear();
 		}
+
+		synchronized (db) {
+			for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements(); ) {
+				try {
+					planeTicket = (Lodging) db.readRecord(e.nextElement()).readObject();
+				} catch (RecordsFileException e1) {
+					logger.severe("Error reading from database. Something bad happened, oh no...");
+					System.exit(1);
+				}
+
+				// Checks the ids to avoid duplicates
+				// KINDA DUMB, but it works for the most part
+				if (Lodging.nextId <= planeTicket.getId()) {
+					Lodging.nextId = planeTicket.getId() + 1;
+				}
+
+				synchronized (listLodgings) {
+					listLodgings.add(planeTicket);
+				}
+			}
+		}
+		logger.info("Successfully read database");
+		tmpPlaneTickets =  new ArrayList<>(listLodgings);
 	}
 
 	/**
