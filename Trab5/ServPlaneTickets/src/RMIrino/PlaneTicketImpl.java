@@ -25,11 +25,13 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	private final Logger logger;
 	private final RecordsFile db;
 	private final RecordsFile tmpDb;
+	private final RecordsFile transactionLog;
 
-	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
+	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, RecordsFile transactionLog, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
 		this.db = db;
 		this.tmpDb = tmpDb;
+		this.transactionLog = transactionLog;
 
 		listPlaneTickets = new ArrayList<PlaneTicket>();
 		readPlaneTickets();
@@ -142,8 +144,8 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 */
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException {
+		PlaneTicket planeTicket;
 		synchronized (db) {
-			PlaneTicket planeTicket;
 			try {
 				planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
 			} catch (RecordsFileException e) {
@@ -166,7 +168,51 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean buyPackagePlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
+	public boolean buyPackagePlaneTicket(int planeTicketID, int numTickets, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException {
+		RecordWriter transactionWriter = new RecordWriter(idTransaction);
+		transactionWriter.writeObject("STARTING");
+		transactionLog.insertRecord(transactionWriter);
+
+		synchronized (db) {
+			synchronized (tmpDb) {
+				FileChannel src = new FileInputStream(db.getDbPath()).getChannel();
+				FileChannel dest = new FileOutputStream(tmpDb.getDbPath()).getChannel();
+				dest.transferFrom(src, 0, src.size());
+			}
+		}
+
+		PlaneTicket planeTicket;
+		synchronized (tmpDb) {
+			try {
+				planeTicket = (PlaneTicket) tmpDb.readRecord(planeTicketID).readObject();
+			} catch (RecordsFileException e) {
+				transactionWriter.writeObject("FAILED");
+				transactionLog.insertRecord(transactionWriter);
+				return false;
+			}
+
+			if (planeTicket.getNumSeats() >= numTickets) {
+				transactionWriter.writeObject("IN-PROGRESS");
+				transactionLog.insertRecord(transactionWriter);
+
+				RecordWriter rw = new RecordWriter(planeTicketID);
+				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+				rw.writeObject(planeTicket);
+				tmpDb.insertRecord(rw);
+
+				transactionWriter.writeObject("WAIT-COMMIT");
+				transactionLog.insertRecord(transactionWriter);
+				// Do something here?
+
+				commitUpdates();
+				transactionWriter.writeObject("SUCCESS");
+				transactionLog.insertRecord(transactionWriter);
+				return true;
+			}
+		}
+		
+		transactionWriter.writeObject("FAILED");
+		transactionLog.insertRecord(transactionWriter);
 		return false;
 	}
 }

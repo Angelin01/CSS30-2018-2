@@ -45,9 +45,10 @@ public interface InterfacePlaneTicket extends Remote {
 	 * Method for buying a PlaneTicket in a package
 	 * @param planeTicketID the id for the desired plane
 	 * @param numTickets the number of desired tickets
+	 * @param idTransaction The ID for the transaction, only used on crashes. If it's not unique, there will be problems
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPackagePlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
+	boolean buyPackagePlaneTicket(int planeTicketID, int numTickets, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException;
 }
 
