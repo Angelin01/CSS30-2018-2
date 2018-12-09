@@ -1,8 +1,10 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.Lodging;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -32,9 +34,18 @@ public interface InterfaceLodging extends Remote {
 	 * Method for buying a lodging using Date objects
 	 * @param lodgingID the id for the desired Lodging
 	 * @param numRooms the number of rooms desired
-	 * @param isPackage true if the buy order is part of a package and needs transactions
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyLodging(int lodgingID, int numRooms, boolean isPackage) throws RemoteException;
+	boolean buyLodging(int lodgingID, int numRooms) throws RemoteException;
+
+	/**
+	 * Method for buying a Lodging in a package
+	 * @param lodgingID the id for the desired plane
+	 * @param numRooms the number of desired tickets
+	 * @param idTransaction The ID for the transaction, only used on crashes. If it's not unique, there will be problems
+	 * @return true if the lodging was successfully bought, false if there was a problem
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	boolean buyPackageLodging(int lodgingID, int numRooms, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException;
 }
