@@ -33,7 +33,7 @@ public class TravelPackage implements Serializable {
 		}
 		this.price = price;
 
-		this.id = nextId++;
+		this.id = 10000*planeTicket.getId() + lodging.getId();//nextId++;
 	}
 	
 	/**

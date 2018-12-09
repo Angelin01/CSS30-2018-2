@@ -1,9 +1,19 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
@@ -83,7 +93,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
-		return servTicket.getPlaneTickets();
+		return (ArrayList<PlaneTicket>) servTicket.getPlaneTickets();
 	}
 
 	/**
@@ -155,8 +165,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
-		return servTicket.buyPlaneTicket(planeTicketID, numTickets, false);
+	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws ClassNotFoundException, IOException, RecordsFileException {
+		return servTicket.buyPlaneTicket(planeTicketID, numTickets);
 	}
 
 	/**
@@ -164,7 +174,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
-		return servLodging.buyLodging(lodgingID, numRooms, false);
+		return servLodging.buyLodging(lodgingID, numRooms);
 	}
 
 	/**
@@ -172,7 +182,87 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
+		ArrayList<TravelPackage> travelPackage = null;
+		travelPackage = getTravelPackages();
 
+		for (TravelPackage pack : travelPackage){
+			if (pack.getId() == travelPackageID){
+				// Create log file
+				//PrintWriter ticketLog = null;
+				//PrintWriter lodgingLog = null;
+				List<String> read = null;
+				List<String> readTicket = null;
+				List<String> readLodging = null;
+				Path ticketLog = Paths.get(String.format("ticket_%s.txt", pack.getId()));
+				Path lodgingLog = Paths.get(String.format("lodging_%s.txt", pack.getId()));
+				try {
+					read = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (!read.contains("OK")) {
+					// Starting ticket buying
+					if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages)) {
+						// Ticket buying complete
+						//ticketLog.print("OK");
+						List<String> lines = Arrays.asList("OK");
+						try {
+							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						// Ticket buying failed
+						// ticketLog.print("FAIL");
+						List<String> lines = Arrays.asList("FAIL");
+						try {
+							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				try {
+					read = Files.readAllLines(lodgingLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (!read.contains("OK")) {
+					// Starting lodging buying
+					if (servLodging.buyPackageLodging(pack.getLodging().getId(), numPackages)) {
+						// Lodging buying complete
+						//lodgingLog.print("OK");
+						List<String> lines = Arrays.asList("OK");
+						try {
+							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						// Lodging buying failed
+						//lodgingLog.print("FAIL");
+						List<String> lines = Arrays.asList("FAIL");
+						try {
+							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				try {
+					readTicket = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
+					readLodging = Files.readAllLines(lodgingLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (readTicket.contains("OK") && readLodging.contains("OK")){
+					readTicket.clear();
+					readLodging.clear();
+				}
+
+			}
+		}
 		return false;
 	}
 

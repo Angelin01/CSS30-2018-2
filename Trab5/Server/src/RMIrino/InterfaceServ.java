@@ -1,6 +1,9 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.*;
+
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -63,7 +66,7 @@ public interface InterfaceServ extends Remote {
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
+	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws IOException, RecordsFileException, ClassNotFoundException;
 
 	/**
 	 * Method for buying a lodging using Date objects

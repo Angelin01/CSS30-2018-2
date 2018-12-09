@@ -33,9 +33,17 @@ public interface InterfaceLodging extends Remote {
 	 * Method for buying a lodging using Date objects
 	 * @param lodgingID the id for the desired Lodging
 	 * @param numRooms the number of rooms desired
-	 * @param isPackage true if the buy order is part of a package and needs transactions
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyLodging(int lodgingID, int numRooms, boolean isPackage) throws RemoteException;
+	boolean buyLodging(int lodgingID, int numRooms) throws RemoteException;
+
+	/**
+	 * Method for buying a PlaneTicket in a package
+	 * @param lodgingID the id for the desired Lodging
+	 * @param numRooms the number of rooms desired
+	 * @return true if the ticket was successfully bought, false if there was a problem
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	boolean buyPackageLodging(int lodgingID, int numRooms) throws RemoteException;
 }
