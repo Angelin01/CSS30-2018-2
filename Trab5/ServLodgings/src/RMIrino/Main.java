@@ -1,5 +1,8 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFile;
+import SimpleFileAccess.RecordsFileException;
+
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,8 +14,12 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, RecordsFileException, ClassNotFoundException {
 		final int PORT = 1339;
+		final String dbName = "lodging.db";
+		final String tmpDbName = "tmp_lodging.db";
+		final String transactionName = "lodging_transaction.db";
+
 		Logger logger = Logger.getLogger("LodgingLog");
 		FileHandler logHandler = new FileHandler("./lodging.log");
 		logHandler.setFormatter(new SimpleFormatter() {
@@ -29,9 +36,39 @@ public class Main {
 		});
 		logger.addHandler(logHandler);
 
+		// Main DB
+
+		RecordsFile lodgingDB;
+		try {
+			lodgingDB = new RecordsFile(dbName, 128);
+		}
+		catch (RecordsFileException e) {
+			lodgingDB = new RecordsFile(dbName, "rw");
+		}
+
+		// Tmp DB
+
+		RecordsFile lodgingTmpDB;
+		try {
+			lodgingTmpDB = new RecordsFile(tmpDbName, 128);
+		}
+		catch (RecordsFileException e) {
+			lodgingTmpDB = new RecordsFile(tmpDbName, "rw");
+		}
+
+		// Transcation log
+
+		RecordsFile lodgingTransaction;
+		try {
+			lodgingTransaction = new RecordsFile(transactionName, 128);
+		}
+		catch (RecordsFileException e) {
+			lodgingTransaction = new RecordsFile(transactionName, "rw");
+		}
 
 		logger.info("Starting up Lodging system");
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		// Implementar serviço
+		LodgingImpl lodgingService = new LodgingImpl(lodgingDB, lodgingTmpDB, lodgingTransaction, logger);
+		referenciaServicoNomes.rebind("lodging", lodgingService);
 	}
 }
