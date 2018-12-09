@@ -37,7 +37,7 @@ public interface InterfaceLodging extends Remote {
 	 * @return true if the lodging was successfully reserved, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyLodging(int lodgingID, int numRooms) throws RemoteException;
+	boolean buyLodging(int lodgingID, int numRooms) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException;
 
 	/**
 	 * Method for buying a Lodging in a package
@@ -47,5 +47,5 @@ public interface InterfaceLodging extends Remote {
 	 * @return true if the lodging was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPackageLodging(int lodgingID, int numRooms, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException;
+	boolean buyPackageLodging(int lodgingID, int numRooms, int idTransaction) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException;
 }

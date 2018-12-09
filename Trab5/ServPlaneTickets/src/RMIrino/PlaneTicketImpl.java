@@ -89,6 +89,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		readPlaneTickets();
 	}
 
+	// FIXME STILL BROKEN
 	public void addPlaneTicket(PlaneTicket planeTicket) {
 		synchronized (tmpPlaneTickets) {
 			tmpPlaneTickets.add(planeTicket);
@@ -101,13 +102,13 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
-		return listPlaneTickets;
+		return listPlaneTickets; // FIXME STILL BROKEN
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	@Override // FIXME STILL BROKEN
 	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
 		ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
 
