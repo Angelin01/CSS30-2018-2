@@ -14,9 +14,11 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-	public static void main (String[] args) throws IOException, RecordsFileException {
+	public static void main (String[] args) throws IOException, RecordsFileException, ClassNotFoundException {
 		final int PORT = 1338;
 		final String dbName = "planeticket.db";
+		final String tmpDbName = "tmp_planeticket.db";
+		final String transactionName = "planeticket_transaction.db";
 
 		Logger logger = Logger.getLogger("PlaneTicketLog");
 		FileHandler logHandler = new FileHandler("./plane-ticket.log");
@@ -34,8 +36,9 @@ public class Main {
 		});
 		logger.addHandler(logHandler);
 
-		RecordsFile planeTicketDB;
+		// Main DB
 
+		RecordsFile planeTicketDB;
 		try {
 			planeTicketDB = new RecordsFile(dbName, 128);
 		}
@@ -43,10 +46,31 @@ public class Main {
 			planeTicketDB = new RecordsFile(dbName, "rw");
 		}
 
+		// Tmp DB
+
+		RecordsFile planeTicketTmpDB;
+		try {
+			planeTicketTmpDB = new RecordsFile(tmpDbName, 128);
+		}
+		catch (RecordsFileException e) {
+			planeTicketTmpDB = new RecordsFile(tmpDbName, "rw");
+		}
+
+		// Transcation log
+
+		RecordsFile planeTicketTransaction;
+		try {
+			planeTicketTransaction = new RecordsFile(transactionName, 128);
+		}
+		catch (RecordsFileException e) {
+			planeTicketTransaction = new RecordsFile(transactionName, "rw");
+		}
+
 		logger.info("Opened database " + dbName);
 		logger.info("Starting up Plane Ticket system");
 
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		// Implementar serviço
+		PlaneTicketImpl planeTicketService = new PlaneTicketImpl(planeTicketDB, planeTicketTmpDB, planeTicketTransaction, logger);
+		referenciaServicoNomes.rebind("planeticket", planeTicketService);
 	}
 }
