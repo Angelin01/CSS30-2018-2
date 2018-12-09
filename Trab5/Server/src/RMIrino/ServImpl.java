@@ -27,6 +27,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final int MILLIS_IN_DAY = 86400000;
 	private InterfacePlaneTicket servTicket;
 	private InterfaceLodging servLodging;
+	private int idTransaction;
+	private static int nextId = 0;
 
 	/**
 	 * Simple constructor for ServImpl with pre existing lists
@@ -187,14 +189,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 
 		for (TravelPackage pack : travelPackage){
 			if (pack.getId() == travelPackageID){
+				this.idTransaction = nextId++;
 				// Create log file
-				//PrintWriter ticketLog = null;
-				//PrintWriter lodgingLog = null;
 				List<String> read = null;
 				List<String> readTicket = null;
 				List<String> readLodging = null;
-				Path ticketLog = Paths.get(String.format("ticket_%s.txt", pack.getId()));
-				Path lodgingLog = Paths.get(String.format("lodging_%s.txt", pack.getId()));
+				Path ticketLog = Paths.get(String.format("%s_ticket_%s.txt", idTransaction, pack.getId()));
+				Path lodgingLog = Paths.get(String.format("%s_lodging_%s.txt", idTransaction, pack.getId()));
 				try {
 					read = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
 				} catch (IOException e) {
@@ -204,7 +205,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 					// Starting ticket buying
 					if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages)) {
 						// Ticket buying complete
-						//ticketLog.print("OK");
 						List<String> lines = Arrays.asList("OK");
 						try {
 							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
@@ -213,7 +213,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 						}
 					} else {
 						// Ticket buying failed
-						// ticketLog.print("FAIL");
 						List<String> lines = Arrays.asList("FAIL");
 						try {
 							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
@@ -232,7 +231,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 					// Starting lodging buying
 					if (servLodging.buyPackageLodging(pack.getLodging().getId(), numPackages)) {
 						// Lodging buying complete
-						//lodgingLog.print("OK");
 						List<String> lines = Arrays.asList("OK");
 						try {
 							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
@@ -241,7 +239,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 						}
 					} else {
 						// Lodging buying failed
-						//lodgingLog.print("FAIL");
 						List<String> lines = Arrays.asList("FAIL");
 						try {
 							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
@@ -257,8 +254,24 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 					e.printStackTrace();
 				}
 				if (readTicket.contains("OK") && readLodging.contains("OK")){
-					readTicket.clear();
-					readLodging.clear();
+					// Lodging and ticket buying completed
+					List<String> lines = Arrays.asList("COMPLETED");
+					try {
+						Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				else{
+					// Lodging and ticket buying uncompleted
+					List<String> lines = Arrays.asList("UNCOMPLETED");
+					try {
+						Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 
 			}
