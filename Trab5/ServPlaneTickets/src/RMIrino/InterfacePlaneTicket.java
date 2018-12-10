@@ -29,6 +29,7 @@ public interface InterfacePlaneTicket extends Remote {
 	 * @return A list of PlaneTickets according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
+	@Deprecated
 	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                  Date returnDate, int minimumSeats) throws RemoteException;
 
@@ -50,5 +51,12 @@ public interface InterfacePlaneTicket extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyPackagePlaneTicket(int planeTicketID, int numTickets, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException;
+
+	/**
+	 * Method for the coordenator to call to commit a transaction
+	 * @param complete If true, will commit the transaction. If false, will abort and return to previous state
+	 * @throws RemoteException if there's any problem with the remote connection
+	 */
+	void commitTransaction(boolean complete) throws  RemoteException;
 }
 
