@@ -64,24 +64,24 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		synchronized (listPlaneTickets) {
 			listPlaneTickets.clear();
 
-				for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements(); ) {
-					try {
-						planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
-					} catch (RecordsFileException e1) {
-						logger.severe("Error reading from database. Something bad happened, oh no...");
-						System.exit(1);
-					}
-
-					// Checks the ids to avoid duplicates
-					// KINDA DUMB, but it works for the most part
-					if (PlaneTicket.nextId <= planeTicket.getId()) {
-						PlaneTicket.nextId = planeTicket.getId() + 1;
-					}
-
-					synchronized (listPlaneTickets) {
-						listPlaneTickets.add(planeTicket);
-					}
+			for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements(); ) {
+				try {
+					planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
+				} catch (RecordsFileException e1) {
+					logger.severe("Error reading from database. Something bad happened, oh no...");
+					System.exit(1);
 				}
+
+				// Checks the ids to avoid duplicates
+				// KINDA DUMB, but it works for the most part
+				if (PlaneTicket.nextId <= planeTicket.getId()) {
+					PlaneTicket.nextId = planeTicket.getId() + 1;
+				}
+
+				synchronized (listPlaneTickets) {
+					listPlaneTickets.add(planeTicket);
+				}
+			}
 		}
 		logger.info("Successfully read database");
 	}
@@ -177,25 +177,25 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		logger.info("Request to buy plane ticket " + planeTicketID + ", " + " tickets");
 		PlaneTicket planeTicket;
 		rrwlMain.readLock().lock();
-			try {
-				planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
-			} catch (RecordsFileException e) {
-				rrwlMain.readLock().unlock();
-				return false;
-			}
+		try {
+			planeTicket = (PlaneTicket) db.readRecord(planeTicketID).readObject();
+		} catch (RecordsFileException e) {
+			rrwlMain.readLock().unlock();
+			return false;
+		}
 
-			if (planeTicket.getNumSeats() >= numTickets) {
-				rrwlMain.writeLock().lock();
+		if (planeTicket.getNumSeats() >= numTickets) {
+			rrwlMain.writeLock().lock();
 
-				RecordWriter rw = new RecordWriter(planeTicketID);
-				planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-				rw.writeObject(planeTicket);
-				db.insertRecord(rw);
+			RecordWriter rw = new RecordWriter(planeTicketID);
+			planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+			rw.writeObject(planeTicket);
+			db.insertRecord(rw);
 
-				rrwlMain.writeLock().unlock();
-				rrwlMain.readLock().unlock();
-				return true;
-			}
+			rrwlMain.writeLock().unlock();
+			rrwlMain.readLock().unlock();
+			return true;
+		}
 
 		rrwlMain.readLock().unlock();
 
@@ -209,57 +209,54 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	public boolean buyPackagePlaneTicket(int planeTicketID, int numTickets, int idTransaction) throws RemoteException, RecordsFileException, IOException, ClassNotFoundException {
 		logger.info("Received transaction request from coordenator");
 		PlaneTicket planeTicket;
+
 		RecordWriter transactionIdWriter = new RecordWriter(KEY_ID); // Key -1 always stores the ID
 		RecordWriter transactionNumTicketsWriter = new RecordWriter(KEY_NUM); //
 		RecordWriter transactionObjectWriter = new RecordWriter(KEY_OBJECT);
 		RecordWriter transactionStatusWriter = new RecordWriter(KEY_STATUS);
 
-
 		rrwlMain.writeLock().lock();
 		rrwlTmp.writeLock().lock();
-				FileChannel src = new FileInputStream(db.getDbPath()).getChannel();
-				FileChannel dest = new FileOutputStream(tmpDb.getDbPath()).getChannel();
-				dest.transferFrom(src, 0, src.size());
 
-				try {
-					planeTicket = (PlaneTicket) tmpDb.readRecord(planeTicketID).readObject();
-				} catch (RecordsFileException e) {
-					logger.info("Invalid ID on transaction, aborting.");
-					rrwlTmp.writeLock().unlock();
-					rrwlMain.writeLock().unlock();
-					return false;
-				}
+		FileChannel src = new FileInputStream(db.getDbPath()).getChannel();
+		FileChannel dest = new FileOutputStream(tmpDb.getDbPath()).getChannel();
+		dest.transferFrom(src, 0, src.size());
 
-				logger.info("Found relevant plane ticket, starting");
+		try {
+			planeTicket = (PlaneTicket) tmpDb.readRecord(planeTicketID).readObject();
+		} catch (RecordsFileException e) {
+			logger.info("Invalid ID on transaction, aborting.");
+			rrwlTmp.writeLock().unlock();
+			rrwlMain.writeLock().unlock();
+			return false;
+		}
 
-				transactionStatusWriter.writeObject("STARTING");
-				transactionLog.insertRecord(transactionStatusWriter);
+		logger.info("Found relevant plane ticket, starting");
 
-				transactionObjectWriter.writeObject(planeTicket);
-				transactionLog.insertRecord(transactionObjectWriter);
+		transactionStatusWriter.writeObject("STARTING");
+		transactionObjectWriter.writeObject(planeTicket);
+		transactionIdWriter.writeObject(idTransaction);
+		transactionNumTicketsWriter.writeObject(numTickets);
 
-				transactionIdWriter.writeObject(idTransaction);
-				transactionLog.insertRecord(transactionIdWriter);
+		transactionLog.insertRecord(transactionStatusWriter);
+		transactionLog.insertRecord(transactionObjectWriter);
+		transactionLog.insertRecord(transactionIdWriter);
+		transactionLog.insertRecord(transactionNumTicketsWriter);
 
-				transactionNumTicketsWriter.writeObject(numTickets);
-				transactionLog.insertRecord(transactionNumTicketsWriter);
+		if (planeTicket.getNumSeats() >= numTickets) {
 
-				if (planeTicket.getNumSeats() >= numTickets) {
+			RecordWriter rw = new RecordWriter(planeTicketID);
+			planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
+			rw.writeObject(planeTicket);
+			tmpDb.insertRecord(rw);
 
-					RecordWriter rw = new RecordWriter(planeTicketID);
-					planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-					rw.writeObject(planeTicket);
-					tmpDb.insertRecord(rw);
+			this.transactionWriter = transactionStatusWriter;
 
-					this.transactionWriter = transactionStatusWriter;
+			logger.info("Operations done, waiting on commit from coordenator");
 
-					logger.info("Operations done, waiting on commit from coordenator");
+			return true;
+		}
 
-					return true;
-				}
-
-
-		
 		transactionStatusWriter.writeObject("FAILED");
 		transactionLog.insertRecord(transactionStatusWriter);
 		return false;
