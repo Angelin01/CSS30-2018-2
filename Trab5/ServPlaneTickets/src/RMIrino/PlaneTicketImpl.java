@@ -56,6 +56,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 	/**
 	 * Reads all plane tickets from the database and adds them to the memory listPlaneTickets
 	 * Will also check the ID on the PlaneTickets to avoid collisions
+	 * Does NOT call locks on the database, must be done outside of this method if needed
 	 */
 	protected void readPlaneTickets() throws IOException, ClassNotFoundException {
 		logger.info("Reading plane tickets from database...");
@@ -63,7 +64,6 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		synchronized (listPlaneTickets) {
 			listPlaneTickets.clear();
 
-			rrwlMain.readLock().lock();
 				for (Enumeration<Integer> e = db.enumerateKeys(); e.hasMoreElements(); ) {
 					try {
 						planeTicket = (PlaneTicket) db.readRecord(e.nextElement()).readObject();
@@ -82,40 +82,47 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 						listPlaneTickets.add(planeTicket);
 					}
 				}
-			rrwlMain.readLock().unlock();
 		}
 		logger.info("Successfully read database");
-	}
-
-	/**
-	 * Copies the contents from the temporary db to the main db
-	 * Makes a re read on the database and updates memory
-	 */
-	protected void commitUpdates() throws IOException, ClassNotFoundException {
-		logger.info("Commiting updates to main database");
-
-		rrwlMain.writeLock().lock();
-			rrwlTmp.writeLock().lock();
-				FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
-				FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
-				dest.transferFrom(src, 0, src.size());
-			rrwlTmp.writeLock().unlock();
-		rrwlMain.writeLock().unlock();
-
-		readPlaneTickets();
 	}
 
 	public void addPlaneTicket(PlaneTicket planeTicket) throws IOException, RecordsFileException {
 		RecordWriter rw = new RecordWriter(planeTicket.getId());
 		rw.writeObject(planeTicket);
 		logger.info("New planeticket added: " + planeTicket);
+
 		rrwlMain.writeLock().lock();
-			db.insertRecord(rw);
+		db.insertRecord(rw);
 		rrwlMain.writeLock().unlock();
 
 		synchronized (listPlaneTickets) {
 			listPlaneTickets.add(planeTicket);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void commitTransaction(boolean complete) throws RemoteException, IOException, ClassNotFoundException, RecordsFileException {
+		if (complete) {
+			logger.info("Commiting updates to main database");
+
+			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
+			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
+			dest.transferFrom(src, 0, src.size());
+
+			readPlaneTickets();
+			transactionWriter.writeObject("SUCCESS");
+		}
+		else {
+			logger.info("Aborting updates");
+			transactionWriter.writeObject("FAILED");
+
+		}
+		transactionLog.insertRecord(transactionWriter);
+		rrwlTmp.writeLock().unlock();
+		rrwlMain.writeLock().unlock();
 	}
 
 	/**
@@ -248,9 +255,6 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 
 					logger.info("Operations done, waiting on commit from coordenator");
 
-					/*commitUpdates();
-					transactionStatusWriter.writeObject("SUCCESS");
-					transactionLog.insertRecord(transactionStatusWriter);*/
 					return true;
 				}
 

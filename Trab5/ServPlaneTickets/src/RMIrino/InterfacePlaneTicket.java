@@ -55,8 +55,7 @@ public interface InterfacePlaneTicket extends Remote {
 	/**
 	 * Method for the coordenator to call to commit a transaction
 	 * @param complete If true, will commit the transaction. If false, will abort and return to previous state
-	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	void commitTransaction(boolean complete) throws  RemoteException;
+	void commitTransaction(boolean complete) throws RemoteException, IOException, ClassNotFoundException, RecordsFileException;
 }
 
