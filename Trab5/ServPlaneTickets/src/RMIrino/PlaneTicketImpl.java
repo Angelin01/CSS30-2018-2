@@ -46,7 +46,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		rrwlTmp = new ReentrantReadWriteLock();
 
 		// Check if there is a pending transaction
-		if (transactionLog.readRecord(KEY_STATUS).readObject().equals("STARTING")) {
+		if (transactionLog.recordExists(KEY_STATUS) && transactionLog.readRecord(KEY_STATUS).readObject().equals("STARTING")) {
 			rrwlTmp.writeLock().lock();
 			rrwlMain.writeLock().lock();
 
