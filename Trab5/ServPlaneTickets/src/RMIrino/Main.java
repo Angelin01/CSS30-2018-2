@@ -4,6 +4,7 @@ import SimpleFileAccess.RecordsFile;
 import SimpleFileAccess.RecordsFileException;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,8 +15,9 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-	public static void main (String[] args) throws IOException, RecordsFileException, ClassNotFoundException {
+	public static void main (String[] args) throws IOException, RecordsFileException, ClassNotFoundException, NotBoundException {
 		final int PORT = 1338;
+		final int COORD_PORT = 1337;
 		final String dbName = "planeticket.db";
 		final String tmpDbName = "tmp_planeticket.db";
 		final String transactionName = "planeticket_transaction.db";
@@ -70,7 +72,10 @@ public class Main {
 		logger.info("Starting up Plane Ticket system");
 
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		PlaneTicketImpl planeTicketService = new PlaneTicketImpl(planeTicketDB, planeTicketTmpDB, planeTicketTransaction, logger);
+		Registry referenciaCoord = LocateRegistry.getRegistry(COORD_PORT);
+
+		PlaneTicketImpl planeTicketService = new PlaneTicketImpl(planeTicketDB, planeTicketTmpDB, planeTicketTransaction,
+		                                                         (InterfaceCoord) referenciaCoord.lookup("coordenador"), logger);
 		referenciaServicoNomes.rebind("planeticket", planeTicketService);
 	}
 }

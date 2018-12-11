@@ -38,7 +38,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 
 	private RecordWriter transactionWriter;
 
-	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, RecordsFile transactionLog, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
+	public PlaneTicketImpl(RecordsFile db, RecordsFile tmpDb, RecordsFile transactionLog, InterfaceCoord interfaceCoord, Logger logger) throws IOException, RecordsFileException, ClassNotFoundException {
 		this.logger = logger;
 		this.db = db;
 		this.tmpDb = tmpDb;
@@ -46,6 +46,13 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 
 		rrwlMain = new ReentrantReadWriteLock();
 		rrwlTmp = new ReentrantReadWriteLock();
+
+		if (transactionLog.readRecord(KEY_STATUS).readObject().equals("STARTING")) {
+			rrwlTmp.writeLock().lock();
+			rrwlMain.writeLock().lock();
+
+			commitTransaction(interfaceCoord.continueTransaction((int) transactionLog.readRecord(KEY_ID).readObject()));
+		}
 
 		transactionWriter = null;
 
