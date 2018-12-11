@@ -6,22 +6,18 @@ import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Predicate;
+
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final int MILLIS_IN_DAY = 86400000;
@@ -29,6 +25,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private InterfaceLodging servLodging;
 	private int idTransaction;
 	private static int nextId = 0;
+	private static final int PORT_TICKET = 1338;
+	private static final int PORT_LODGING = 1339;
 
 	/**
 	 * Simple constructor for ServImpl with pre existing lists
@@ -46,6 +44,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	@Override
 	public ArrayList<Lodging> getLodgings() throws RemoteException {
 		return servLodging.getLodgings();
+	}
+
+	/**
+	 * Rebind
+	 */
+	public void rebind() throws RemoteException, NotBoundException {
+		Registry nameServiceReferenceTicket = LocateRegistry.createRegistry(PORT_TICKET);
+		Registry nameServiceReferenceLodging = LocateRegistry.createRegistry(PORT_LODGING);
+		this.servTicket = (InterfacePlaneTicket) nameServiceReferenceTicket.lookup("planeticket");
+		this.servLodging = (InterfaceLodging) nameServiceReferenceLodging.lookup("lodging");
 	}
 
 	/**
@@ -151,6 +159,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	@Override
 	public ArrayList<TravelPackage> getTravelPackages() throws RemoteException {
 		ArrayList<TravelPackage> travelPackage = new ArrayList<>();
+		try {
+			rebind();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		for (PlaneTicket ticket: this.getPlaneTickets()) {
 			for (Lodging lodging : this.getLodgings()) {
 				if (lodging.getCheckIn().getTime() / MILLIS_IN_DAY == ticket.getDepartureDate().getTime() / MILLIS_IN_DAY &&
@@ -168,6 +181,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws ClassNotFoundException, IOException, RecordsFileException {
+		try {
+			rebind();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		return servTicket.buyPlaneTicket(planeTicketID, numTickets);
 	}
 
@@ -176,6 +194,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
+		try {
+			rebind();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		return servLodging.buyLodging(lodgingID, numRooms);
 	}
 
@@ -184,6 +207,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
+		try {
+			rebind();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		ArrayList<TravelPackage> travelPackage = null;
 		travelPackage = getTravelPackages();
 
