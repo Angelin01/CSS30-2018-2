@@ -23,11 +23,11 @@ public class Main {
 
 	public static void main (String[] args) throws RemoteException, NotBoundException {
 		final int PORT = 1337;
-		Registry nameServiceReferenceTicket = LocateRegistry.createRegistry(PORT_TICKET);
-		Registry nameServiceReferenceLodging = LocateRegistry.createRegistry(PORT_LODGING);
+		Registry nameServiceReferenceTicket = LocateRegistry.getRegistry(PORT_TICKET);
+		Registry nameServiceReferenceLodging = LocateRegistry.getRegistry(PORT_LODGING);
 
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		ServImpl servico = new ServImpl(referenciaServicoNomes, (InterfaceLodging) nameServiceReferenceLodging.lookup("lodging"));
+		ServImpl servico = new ServImpl(nameServiceReferenceTicket, nameServiceReferenceLodging);
 		referenciaServicoNomes.rebind("coordenador", servico);
 	}
 }
