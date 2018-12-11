@@ -29,6 +29,7 @@ public interface InterfaceServ extends Remote {
 	 * @return A list of Lodgings according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
+	@Deprecated
 	List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException;
 
 	/**
@@ -49,6 +50,7 @@ public interface InterfaceServ extends Remote {
 	 * @return A list of PlaneTickets according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
+	@Deprecated
 	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
 	                                  Date returnDate, int minimumSeats) throws RemoteException;
 

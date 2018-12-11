@@ -27,7 +27,7 @@ public class Main {
 		Registry nameServiceReferenceLodging = LocateRegistry.createRegistry(PORT_LODGING);
 
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		ServImpl servico = new ServImpl((InterfacePlaneTicket) nameServiceReferenceTicket.lookup("planeticket"), (InterfaceLodging) nameServiceReferenceLodging.lookup("lodging"));
+		ServImpl servico = new ServImpl(referenciaServicoNomes, (InterfaceLodging) nameServiceReferenceLodging.lookup("lodging"));
 		referenciaServicoNomes.rebind("coordenador", servico);
 	}
 }

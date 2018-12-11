@@ -21,20 +21,20 @@ import java.util.*;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final int MILLIS_IN_DAY = 86400000;
-	private InterfacePlaneTicket servTicket;
-	private InterfaceLodging servLodging;
+	private Registry servTicketLookup;
+	private Registry servLodgingLookup;
 	private int idTransaction;
 	private static int nextId = 0;
-	private static final int PORT_TICKET = 1338;
-	private static final int PORT_LODGING = 1339;
+/*	private static final int PORT_TICKET = 1338;
+	private static final int PORT_LODGING = 1339;*/
 
 	/**
 	 * Simple constructor for ServImpl with pre existing lists
 	 *
 	 */
-	public ServImpl(InterfacePlaneTicket servTicket, InterfaceLodging servLodging) throws RemoteException {
-		this.servTicket = servTicket;
-		this.servLodging = servLodging;
+	public ServImpl(Registry servTicketLookup, Registry servLodgingLookup) throws RemoteException {
+		this.servTicketLookup = servTicketLookup;
+		this.servLodgingLookup = servLodgingLookup;
 	}
 
 
@@ -43,22 +43,27 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public ArrayList<Lodging> getLodgings() throws RemoteException {
-		return servLodging.getLodgings();
+		try {
+			return ((InterfaceLodging) servLodgingLookup.lookup("lodging")).getLodgings();
+		} catch (NotBoundException e) {
+			return new ArrayList<Lodging>();
+		}
 	}
 
 	/**
 	 * Rebind
 	 */
-	public void rebind() throws RemoteException, NotBoundException {
+	/*public void rebind() throws RemoteException, NotBoundException {
 		Registry nameServiceReferenceTicket = LocateRegistry.createRegistry(PORT_TICKET);
 		Registry nameServiceReferenceLodging = LocateRegistry.createRegistry(PORT_LODGING);
 		this.servTicket = (InterfacePlaneTicket) nameServiceReferenceTicket.lookup("planeticket");
 		this.servLodging = (InterfaceLodging) nameServiceReferenceLodging.lookup("lodging");
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Deprecated
 	@Override
 	public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
 		ArrayList<Lodging> filteredLodgings = new ArrayList<Lodging>();
@@ -103,12 +108,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
-		return (ArrayList<PlaneTicket>) servTicket.getPlaneTickets();
+		try {
+			return ((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).getPlaneTickets();
+		} catch (NotBoundException e) {
+			return new ArrayList<PlaneTicket>();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Deprecated
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
 		ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
@@ -159,15 +169,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	@Override
 	public ArrayList<TravelPackage> getTravelPackages() throws RemoteException {
 		ArrayList<TravelPackage> travelPackage = new ArrayList<>();
-		try {
-			rebind();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
+		
 		for (PlaneTicket ticket: this.getPlaneTickets()) {
 			for (Lodging lodging : this.getLodgings()) {
 				if (lodging.getCheckIn().getTime() / MILLIS_IN_DAY == ticket.getDepartureDate().getTime() / MILLIS_IN_DAY &&
-						lodging.getLocation() == ticket.getDestiny()) {
+				    lodging.getLocation() == ticket.getDestiny()) {
 					travelPackage.add(new TravelPackage(ticket, lodging, ticket.getPrice() + lodging.getPrice()));
 				}
 			}
@@ -182,11 +188,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	@Override
 	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws ClassNotFoundException, IOException, RecordsFileException {
 		try {
-			rebind();
+			return ((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).buyPlaneTicket(planeTicketID, numTickets);
 		} catch (NotBoundException e) {
-			e.printStackTrace();
+			return false;
 		}
-		return servTicket.buyPlaneTicket(planeTicketID, numTickets);
 	}
 
 	/**
@@ -195,11 +200,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
 		try {
-			rebind();
+			return ((InterfaceLodging) servLodgingLookup.lookup("lodging")).buyLodging(lodgingID, numRooms);
 		} catch (NotBoundException e) {
-			e.printStackTrace();
+			return false;
 		}
-		return servLodging.buyLodging(lodgingID, numRooms);
 	}
 
 	/**
@@ -207,11 +211,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
-		try {
-			rebind();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
 		ArrayList<TravelPackage> travelPackage = null;
 		travelPackage = getTravelPackages();
 
@@ -233,22 +232,26 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				if (!read.contains("OK")) {
 					// Starting ticket buying
 					try {
-						if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages, idTransaction)) {
-							// Ticket buying complete
-							List<String> lines = Arrays.asList("OK");
-							try {
-								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
-							} catch (IOException e) {
-								e.printStackTrace();
+						try {
+							if (((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages, idTransaction)) {
+								// Ticket buying complete
+								List<String> lines = Arrays.asList("OK");
+								try {
+									Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							} else {
+								// Ticket buying failed
+								List<String> lines = Arrays.asList("FAIL");
+								try {
+									Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
-						} else {
-							// Ticket buying failed
-							List<String> lines = Arrays.asList("FAIL");
-							try {
-								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+						} catch (NotBoundException e) {
+							DO SOME STUFF HERE
 						}
 					} catch (RecordsFileException e) {
 						e.printStackTrace();
@@ -266,22 +269,26 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				}
 				if (!read.contains("OK")) {
 					// Starting lodging buying
-					if (servLodging.buyPackageLodging(pack.getLodging().getId(), numPackages)) {
-						// Lodging buying complete
-						List<String> lines = Arrays.asList("OK");
-						try {
-							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
-						} catch (IOException e) {
-							e.printStackTrace();
+					try {
+						if (((InterfaceLodging) servLodgingLookup.lookup("lodging")).buyPackageLodging(pack.getLodging().getId(), numPackages)) {
+							// Lodging buying complete
+							List<String> lines = Arrays.asList("OK");
+							try {
+								Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						} else {
+							// Lodging buying failed
+							List<String> lines = Arrays.asList("FAIL");
+							try {
+								Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
-					} else {
-						// Lodging buying failed
-						List<String> lines = Arrays.asList("FAIL");
-						try {
-							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					} catch (NotBoundException e) {
+						DO SOME STUFF HERE
 					}
 				}
 				try {
@@ -306,8 +313,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 						e.printStackTrace();
 					}
 					try {
-						servTicket.commitTransaction(true);
-						servLodging.commitTransaction(true);
+						try {
+							((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).commitTransaction(true);
+						} catch (NotBoundException e) {
+							DO SOME STUFF HERE
+						}
+						try {
+							((InterfaceLodging) servLodgingLookup.lookup("lodging")).commitTransaction(true);
+						} catch (NotBoundException e) {
+							DO SOME STUFF HERE
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (ClassNotFoundException e) {
@@ -332,8 +347,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 						e.printStackTrace();
 					}
 					try {
-						servTicket.commitTransaction(false);
-						servLodging.commitTransaction(false);
+						try {
+							((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).commitTransaction(false);
+						} catch (NotBoundException e) {
+							DO SOME STUFF HERE
+						}
+						try {
+							((InterfaceLodging) servLodgingLookup.lookup("lodging")).commitTransaction(false);
+						} catch (NotBoundException e) {
+							DO SOME STUFF HERE
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (ClassNotFoundException e) {

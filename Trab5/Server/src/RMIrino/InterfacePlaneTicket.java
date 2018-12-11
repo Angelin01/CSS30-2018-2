@@ -7,8 +7,8 @@ import Travel.PlaneTicket;
 import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public interface InterfacePlaneTicket extends Remote {
 	/**
@@ -16,7 +16,7 @@ public interface InterfacePlaneTicket extends Remote {
 	 * @return a List of ALL PlaneTickets objects
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	List<PlaneTicket> getPlaneTickets() throws RemoteException;
+	ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException;
 
 	/**
 	 * Getter for PlaneTickets with filters
@@ -29,8 +29,8 @@ public interface InterfacePlaneTicket extends Remote {
 	 * @return A list of PlaneTickets according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	List<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
-									  Date returnDate, int minimumSeats) throws RemoteException;
+	ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate,
+	                                       Date returnDate, int minimumSeats) throws RemoteException;
 
 	/**
 	 * Method for buying a PlaneTicket
