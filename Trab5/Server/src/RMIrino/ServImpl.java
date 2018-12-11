@@ -194,8 +194,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				List<String> read = null;
 				List<String> readTicket = null;
 				List<String> readLodging = null;
-				Path ticketLog = Paths.get(String.format("%s_ticket_%s.txt", idTransaction, pack.getId()));
-				Path lodgingLog = Paths.get(String.format("%s_lodging_%s.txt", idTransaction, pack.getId()));
+				Path ticketLog = Paths.get(String.format("%s_ticket.txt", idTransaction));
+				Path lodgingLog = Paths.get(String.format("%s_lodging.txt", idTransaction));
+				Path transaction = Paths.get(String.format("%s_transaction.txt", idTransaction));
 				try {
 					read = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
 				} catch (IOException e) {
@@ -203,22 +204,30 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				}
 				if (!read.contains("OK")) {
 					// Starting ticket buying
-					if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages)) {
-						// Ticket buying complete
-						List<String> lines = Arrays.asList("OK");
-						try {
-							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
-						} catch (IOException e) {
-							e.printStackTrace();
+					try {
+						if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages, idTransaction)) {
+							// Ticket buying complete
+							List<String> lines = Arrays.asList("OK");
+							try {
+								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						} else {
+							// Ticket buying failed
+							List<String> lines = Arrays.asList("FAIL");
+							try {
+								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
-					} else {
-						// Ticket buying failed
-						List<String> lines = Arrays.asList("FAIL");
-						try {
-							Files.write(ticketLog, lines, Charset.forName("UTF-8"));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
 					}
 				}
 
@@ -262,6 +271,22 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					lines = Arrays.asList("OK");
+					try {
+						Files.write(transaction, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					try {
+						servTicket.commitTransaction(true);
+						servLodging.commitTransaction(true);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					}
 				}
 				else{
 					// Lodging and ticket buying uncompleted
@@ -272,6 +297,22 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					lines = Arrays.asList("FAIL");
+					try {
+						Files.write(transaction, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					try {
+						servTicket.commitTransaction(false);
+						servLodging.commitTransaction(false);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					}
 				}
 
 			}
@@ -279,5 +320,14 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		return false;
 	}
 
+	Boolean continueTransaction(int idTransaction) throws IOException {
+		Path transaction = Paths.get(String.format("%s_transaction.txt", idTransaction));
+		List<String> readTrans;
+		readTrans = Files.readAllLines(transaction, Charset.forName("UTF-8"));
 
+		if (readTrans.contains("OK"))
+			return true;
+		else
+			return false;
+	}
 }

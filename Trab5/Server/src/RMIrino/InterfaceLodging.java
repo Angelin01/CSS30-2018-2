@@ -1,8 +1,10 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.Lodging;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -46,4 +48,10 @@ public interface InterfaceLodging extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyPackageLodging(int lodgingID, int numRooms) throws RemoteException;
+
+	/**
+	 * Method for the coordenator to call to commit a transaction
+	 * @param complete If true, will commit the transaction. If false, will abort and return to previous state
+	 */
+	void commitTransaction(boolean complete) throws RemoteException, IOException, ClassNotFoundException, RecordsFileException;
 }

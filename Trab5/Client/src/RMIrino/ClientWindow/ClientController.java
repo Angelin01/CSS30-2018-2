@@ -37,7 +37,7 @@ public class ClientController extends VBox {
         this.nameServiceReference = LocateRegistry.getRegistry(PORT);
 
         try {
-            this.server = (InterfaceServ) nameServiceReference.lookup("servico");
+            this.server = (InterfaceServ) nameServiceReference.lookup("coordenador");
         } catch (NotBoundException e) {
             e.printStackTrace();
         }
