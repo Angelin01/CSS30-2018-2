@@ -28,6 +28,7 @@ public interface InterfaceLodging extends Remote {
 	 * @return A list of Lodgings according to the filters
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
+	@Deprecated
 	List<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException;
 
 	/**
@@ -48,4 +49,10 @@ public interface InterfaceLodging extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	boolean buyPackageLodging(int lodgingID, int numRooms, int idTransaction) throws RemoteException, RecordsFileException, ClassNotFoundException, IOException;
+
+	/**
+	 * Method for the coordenator to call to commit a transaction
+	 * @param complete If true, will commit the transaction. If false, will abort and return to previous state
+	 */
+	void commitTransaction(boolean complete) throws RemoteException, IOException, ClassNotFoundException, RecordsFileException;
 }

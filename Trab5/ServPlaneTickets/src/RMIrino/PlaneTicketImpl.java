@@ -1,12 +1,10 @@
 package RMIrino;
 
-import SimpleFileAccess.RecordReader;
 import SimpleFileAccess.RecordWriter;
 import SimpleFileAccess.RecordsFile;
 import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.PlaneTicket;
-import com.sun.prism.impl.Disposer;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

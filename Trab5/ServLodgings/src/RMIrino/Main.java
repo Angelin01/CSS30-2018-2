@@ -4,7 +4,7 @@ import SimpleFileAccess.RecordsFile;
 import SimpleFileAccess.RecordsFileException;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
+import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Date;
@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Main {
-	public static void main(String[] args) throws IOException, RecordsFileException, ClassNotFoundException {
+	public static void main(String[] args) throws IOException, RecordsFileException, ClassNotFoundException, NotBoundException {
 		final int PORT = 1339;
+		final int COORD_PORT = 1337;
 		final String dbName = "lodging.db";
 		final String tmpDbName = "tmp_lodging.db";
 		final String transactionName = "lodging_transaction.db";
@@ -68,7 +69,10 @@ public class Main {
 
 		logger.info("Starting up Lodging system");
 		Registry referenciaServicoNomes = LocateRegistry.createRegistry(PORT);
-		LodgingImpl lodgingService = new LodgingImpl(lodgingDB, lodgingTmpDB, lodgingTransaction, logger);
+		Registry referenciaCoord = LocateRegistry.getRegistry(COORD_PORT);
+
+		LodgingImpl lodgingService = new LodgingImpl(lodgingDB, lodgingTmpDB, lodgingTransaction,
+		                                             (InterfaceCoord) referenciaCoord.lookup("coordenador"),logger);
 		referenciaServicoNomes.rebind("lodging", lodgingService);
 	}
 }
