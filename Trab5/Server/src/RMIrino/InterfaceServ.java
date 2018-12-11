@@ -1,6 +1,9 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.*;
+
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -55,21 +58,7 @@ public interface InterfaceServ extends Remote {
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
 	List<TravelPackage> getTravelPackages() throws RemoteException;
-
-	/**
-	 * Getter for TravelPackages with filters
-	 * @param origin the origin location. null if doesn't matter
-	 * @param destiny the destiny location. null if doesn't matter
-	 * @param maxPrice the maximum price. &lt;= 0 if doesn't matter
-	 * @param departureDate the departure date. null if doesn't matter
-	 * @param returnDate the return date. null if doesn't matter
-	 * @param minimumAvailable the minimum number of available packages. &lt;= 0 if doesn't matter
-	 * @return List of TravelPackages according to the filters
-	 * @throws RemoteException if there's any problem with the remote connection
-	 */
-	List<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate,
-	                                      Date returnDate, int minimumAvailable) throws RemoteException;
-
+	
 	/**
 	 * Method for buying a PlaneTicket
 	 * @param planeTicketID the id for the desired plane
@@ -77,7 +66,7 @@ public interface InterfaceServ extends Remote {
 	 * @return true if the ticket was successfully bought, false if there was a problem
 	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException;
+	boolean buyPlaneTicket(int planeTicketID, int numTickets) throws IOException, RecordsFileException, ClassNotFoundException;
 
 	/**
 	 * Method for buying a lodging using Date objects

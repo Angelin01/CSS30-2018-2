@@ -1,9 +1,19 @@
 package RMIrino;
 
+import SimpleFileAccess.RecordsFileException;
 import Travel.Location;
 import Travel.Lodging;
 import Travel.PlaneTicket;
 import Travel.TravelPackage;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
@@ -15,84 +25,27 @@ import java.util.function.Predicate;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	private static final int MILLIS_IN_DAY = 86400000;
-	private ArrayList<PlaneTicket> listPlaneTickets;
-	private ArrayList<Lodging> listLodgings;
-	private ArrayList<TravelPackage> listTravelPackages;
-
-	/**
-	 * Simple constructor for ServImpl with empty lists
-	 *
-	 * @throws RemoteException if there's any problem with the remote connection
-	 */
-	public ServImpl() throws RemoteException {
-		listPlaneTickets = new ArrayList<PlaneTicket>();
-		listLodgings = new ArrayList<Lodging>();
-		listTravelPackages = new ArrayList<TravelPackage>();
-	}
+	private InterfacePlaneTicket servTicket;
+	private InterfaceLodging servLodging;
+	private int idTransaction;
+	private static int nextId = 0;
 
 	/**
 	 * Simple constructor for ServImpl with pre existing lists
 	 *
-	 * @param listPlaneTickets   list of plane tickets
-	 * @param listLodgings       list of lodgings
-	 * @param listTravelPackages list of travel packages
-	 * @throws RemoteException if there's any problem with the remote connection
 	 */
-	public ServImpl(ArrayList<PlaneTicket> listPlaneTickets, ArrayList<Lodging> listLodgings, ArrayList<TravelPackage> listTravelPackages) throws RemoteException {
-		if (listPlaneTickets == null) {
-			throw new NullPointerException("Parameter listPlaneTickets cannot be null");
-		}
-		if (listLodgings == null) {
-			throw new NullPointerException("Parameter listLodgings cannot be null");
-		}
-		if (listTravelPackages == null) {
-			throw new NullPointerException("Parameter listTravelPackages cannot be null");
-		}
-
-		this.listPlaneTickets = listPlaneTickets;
-		this.listLodgings = listLodgings;
-		this.listTravelPackages = listTravelPackages;
+	public ServImpl(InterfacePlaneTicket servTicket, InterfaceLodging servLodging) throws RemoteException {
+		this.servTicket = servTicket;
+		this.servLodging = servLodging;
 	}
 
-	/**
-	 * Adds a new plane ticket to the system and notifies any clients that registered interest and matched
-	 *
-	 * @param planeTicket the PlaneTicket to add
-	 */
-	public void addPlaneTicket(PlaneTicket planeTicket) {
-		synchronized (listPlaneTickets) {
-			listPlaneTickets.add(planeTicket);
-		}
-	}
-
-	/**
-	 * Adds a new lodging to the system and notifies any clients that registered interest and matched
-	 *
-	 * @param lodging the Lodging to add
-	 */
-	public void addLodging(Lodging lodging) {
-		synchronized (listLodgings) {
-			listLodgings.add(lodging);
-		}
-	}
-
-	/**
-	 * Adds a new travel package to the system and notifies any clients that registered interest and matched
-	 *
-	 * @param travelPackage the TravelPackage to add
-	 */
-	public void addTravelPackage(TravelPackage travelPackage) {
-		synchronized (listTravelPackages) {
-			listTravelPackages.add(travelPackage);
-		}
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public ArrayList<Lodging> getLodgings() throws RemoteException {
-		return listLodgings;
+		return servLodging.getLodgings();
 	}
 
 	/**
@@ -102,7 +55,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public ArrayList<Lodging> getLodgings(Location location, int maxPrice, Date checkIn, Date checkOut, int minimumRooms) throws RemoteException {
 		ArrayList<Lodging> filteredLodgings = new ArrayList<Lodging>();
 
-		for (Lodging lodging : listLodgings) {
+		for (Lodging lodging : this.getLodgings()) {
 			// Check the location filter
 			if (location != null && lodging.getLocation() != location) {
 				continue;
@@ -142,7 +95,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public ArrayList<PlaneTicket> getPlaneTickets() throws RemoteException {
-		return listPlaneTickets;
+		return (ArrayList<PlaneTicket>) servTicket.getPlaneTickets();
 	}
 
 	/**
@@ -152,7 +105,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	public ArrayList<PlaneTicket> getPlaneTickets(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumSeats) throws RemoteException {
 		ArrayList<PlaneTicket> filteredPlaneTickets = new ArrayList<PlaneTicket>();
 
-		for (PlaneTicket planeTicket : listPlaneTickets) {
+		for (PlaneTicket planeTicket : this.getPlaneTickets()) {
 			// Check the origin filter
 			if (origin != null && planeTicket.getOrigin() != origin) {
 				continue;
@@ -197,78 +150,25 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public ArrayList<TravelPackage> getTravelPackages() throws RemoteException {
-		return listTravelPackages;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ArrayList<TravelPackage> getTravelPackages(Location origin, Location destiny, int maxPrice, Date departureDate, Date returnDate, int minimumAvailable) throws RemoteException {
-		ArrayList<TravelPackage> filteredTravelPackages = new ArrayList<TravelPackage>();
-
-		for (TravelPackage travelPackage : listTravelPackages) {
-			// Check the origin filter
-			if (origin != null && travelPackage.getPlaneTicket().getOrigin() != origin) {
-				continue;
-			}
-
-			// Check the destiny filter
-			if (destiny != null && travelPackage.getPlaneTicket().getDestiny() != destiny) {
-				continue;
-			}
-
-			// Check the price filter
-			if (maxPrice > 0 && travelPackage.getPrice() > maxPrice) {
-				continue;
-			}
-
-			// Check the departure date filter
-			// To check that it's the same day, calculates the Julian Day Number
-			if (departureDate != null && travelPackage.getPlaneTicket().getDepartureDate().getTime() / MILLIS_IN_DAY != (departureDate.getTime() / MILLIS_IN_DAY)) {
-				continue;
-			}
-
-			// Check the return date filter
-			// To check that it's the same day, calculates the Julian Day Number
-			if (returnDate != null && travelPackage.getPlaneTicket().getReturnDate().getTime() / MILLIS_IN_DAY != returnDate.getTime() / MILLIS_IN_DAY) {
-				continue;
-			}
-
-			// Check the minimum available filter
-			// Needs to check both the plane and the lodging
-			if (minimumAvailable > 0 &&
-					(travelPackage.getPlaneTicket().getNumSeats() < minimumAvailable || travelPackage.getLodging().getNumRooms() < minimumAvailable)) {
-				continue;
-			}
-
-			// Passed all filters, add to return list
-			filteredTravelPackages.add(travelPackage);
-		}
-
-		return filteredTravelPackages;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws RemoteException {
-		for (PlaneTicket planeTicket : listPlaneTickets) {
-			if (planeTicket.getId() == planeTicketID) {
-				synchronized (planeTicket) {
-					if (planeTicket.getNumSeats() < numTickets) {
-						return false;
-					}
-
-					System.out.println("Client just successfully bought " + numTickets + " tickets:\n" +
-							planeTicket);
-					planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
-					return true;
+		ArrayList<TravelPackage> travelPackage = new ArrayList<>();
+		for (PlaneTicket ticket: this.getPlaneTickets()) {
+			for (Lodging lodging : this.getLodgings()) {
+				if (lodging.getCheckIn().getTime() / MILLIS_IN_DAY == ticket.getDepartureDate().getTime() / MILLIS_IN_DAY &&
+						lodging.getLocation() == ticket.getDestiny()) {
+					travelPackage.add(new TravelPackage(ticket, lodging, ticket.getPrice() + lodging.getPrice()));
 				}
 			}
 		}
-		return false;
+		return travelPackage;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean buyPlaneTicket(int planeTicketID, int numTickets) throws ClassNotFoundException, IOException, RecordsFileException {
+		return servTicket.buyPlaneTicket(planeTicketID, numTickets);
 	}
 
 	/**
@@ -276,22 +176,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyLodging(int lodgingID, int numRooms) throws RemoteException {
-		for (Lodging lodging : listLodgings) {
-			if (lodging.getId() == lodgingID) {
-				synchronized (lodging) {
-					if (lodging.getNumRooms() < numRooms) {
-						return false;
-					}
-
-					System.out.println("Client just successfully bought:\n" +
-							lodging + "\n" +
-							"Number of rooms: " + numRooms);
-					lodging.setNumRooms(lodging.getNumRooms() - numRooms);
-					return true;
-				}
-			}
-		}
-		return false;
+		return servLodging.buyLodging(lodgingID, numRooms);
 	}
 
 	/**
@@ -299,20 +184,150 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 	 */
 	@Override
 	public boolean buyTravelPackage(int travelPackageID, int numPackages) throws RemoteException {
-		for (TravelPackage travelPackage : listTravelPackages) {
-			if (travelPackage.getId() == travelPackageID) {
-				synchronized (travelPackage) {
-					if (travelPackage.getAvailable() < numPackages) {
-						return false;
-					}
+		ArrayList<TravelPackage> travelPackage = null;
+		travelPackage = getTravelPackages();
 
-					System.out.println("Client just successfully bought " + numPackages + " travel packages:\n" +
-							travelPackage);
-					travelPackage.decreaseAvailable(numPackages);
-					return true;
+		for (TravelPackage pack : travelPackage){
+			if (pack.getId() == travelPackageID){
+				this.idTransaction = nextId++;
+				// Create log file
+				List<String> read = null;
+				List<String> readTicket = null;
+				List<String> readLodging = null;
+				Path ticketLog = Paths.get(String.format("%s_ticket.txt", idTransaction));
+				Path lodgingLog = Paths.get(String.format("%s_lodging.txt", idTransaction));
+				Path transaction = Paths.get(String.format("%s_transaction.txt", idTransaction));
+				try {
+					read = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+				if (!read.contains("OK")) {
+					// Starting ticket buying
+					try {
+						if (servTicket.buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages, idTransaction)) {
+							// Ticket buying complete
+							List<String> lines = Arrays.asList("OK");
+							try {
+								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						} else {
+							// Ticket buying failed
+							List<String> lines = Arrays.asList("FAIL");
+							try {
+								Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					read = Files.readAllLines(lodgingLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (!read.contains("OK")) {
+					// Starting lodging buying
+					if (servLodging.buyPackageLodging(pack.getLodging().getId(), numPackages)) {
+						// Lodging buying complete
+						List<String> lines = Arrays.asList("OK");
+						try {
+							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						// Lodging buying failed
+						List<String> lines = Arrays.asList("FAIL");
+						try {
+							Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				try {
+					readTicket = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
+					readLodging = Files.readAllLines(lodgingLog, Charset.forName("UTF-8"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (readTicket.contains("OK") && readLodging.contains("OK")){
+					// Lodging and ticket buying completed
+					List<String> lines = Arrays.asList("COMPLETED");
+					try {
+						Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					lines = Arrays.asList("OK");
+					try {
+						Files.write(transaction, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					try {
+						servTicket.commitTransaction(true);
+						servLodging.commitTransaction(true);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					}
+				}
+				else{
+					// Lodging and ticket buying uncompleted
+					List<String> lines = Arrays.asList("UNCOMPLETED");
+					try {
+						Files.write(lodgingLog, lines, Charset.forName("UTF-8"));
+						Files.write(ticketLog, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					lines = Arrays.asList("FAIL");
+					try {
+						Files.write(transaction, lines, Charset.forName("UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					try {
+						servTicket.commitTransaction(false);
+						servLodging.commitTransaction(false);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (RecordsFileException e) {
+						e.printStackTrace();
+					}
+				}
+
 			}
 		}
 		return false;
+	}
+
+	Boolean continueTransaction(int idTransaction) throws IOException {
+		Path transaction = Paths.get(String.format("%s_transaction.txt", idTransaction));
+		List<String> readTrans;
+		readTrans = Files.readAllLines(transaction, Charset.forName("UTF-8"));
+
+		if (readTrans.contains("OK"))
+			return true;
+		else
+			return false;
 	}
 }
