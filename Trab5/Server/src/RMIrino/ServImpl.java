@@ -217,6 +217,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 		for (TravelPackage pack : travelPackage){
 			if (pack.getId() == travelPackageID){
 				this.idTransaction = nextId++;
+				
 				// Create log file
 				List<String> read = null;
 				List<String> readTicket = null;
@@ -224,6 +225,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				Path ticketLog = Paths.get(String.format("%s_ticket.txt", idTransaction));
 				Path lodgingLog = Paths.get(String.format("%s_lodging.txt", idTransaction));
 				Path transaction = Paths.get(String.format("%s_transaction.txt", idTransaction));
+				
 				try {
 					read = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
 				} catch (IOException e) {
@@ -231,10 +233,14 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				}
 				if (!read.contains("OK")) {
 					// Starting ticket buying
-					try {
+						
+						/* ==============================================
+						   ============ PLANE TICKET PHASE 1 ============
+						   ============================================== */
+						
 						try {
 							if (((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).buyPackagePlaneTicket(pack.getPlaneTicket().getId(), numPackages, idTransaction)) {
-								// Ticket buying complete
+								// Ticket buying phase1
 								List<String> lines = Arrays.asList("OK");
 								try {
 									Files.write(ticketLog, lines, Charset.forName("UTF-8"));
@@ -250,16 +256,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 									e.printStackTrace();
 								}
 							}
-						} catch (NotBoundException e) {
-							DO SOME STUFF HERE
+						} catch (Exception e) {
+							//Something bad happened while buying Plane Ticket, just abort everything
+							return false;
 						}
-					} catch (RecordsFileException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
 				}
 
 				try {
@@ -269,6 +269,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 				}
 				if (!read.contains("OK")) {
 					// Starting lodging buying
+					
+					/* =============================================
+					   ============== LODGING PHASE 1 ==============
+					   ============================================= */
 					try {
 						if (((InterfaceLodging) servLodgingLookup.lookup("lodging")).buyPackageLodging(pack.getLodging().getId(), numPackages)) {
 							// Lodging buying complete
@@ -287,16 +291,21 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ {
 								e.printStackTrace();
 							}
 						}
-					} catch (NotBoundException e) {
-						DO SOME STUFF HERE
+					} catch (Exception e) {
+						// Something bad happened while buying the Lodging, must abort PlaneTicket buy
+						((InterfacePlaneTicket) servTicketLookup.lookup("planeticket")).commitTransaction(false);
+						return false;
 					}
 				}
+				
 				try {
 					readTicket = Files.readAllLines(ticketLog, Charset.forName("UTF-8"));
 					readLodging = Files.readAllLines(lodgingLog, Charset.forName("UTF-8"));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+				
 				if (readTicket.contains("OK") && readLodging.contains("OK")){
 					// Lodging and ticket buying completed
 					List<String> lines = Arrays.asList("COMPLETED");
