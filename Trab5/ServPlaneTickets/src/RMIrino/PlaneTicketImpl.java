@@ -45,10 +45,12 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		rrwlMain = new ReentrantReadWriteLock();
 		rrwlTmp = new ReentrantReadWriteLock();
 
+		// Check if there is a pending transaction
 		if (transactionLog.readRecord(KEY_STATUS).readObject().equals("STARTING")) {
 			rrwlTmp.writeLock().lock();
 			rrwlMain.writeLock().lock();
 
+			// The return from the coordinator will be a boolean, just pass it as an argument to commit
 			commitTransaction(interfaceCoord.continueTransaction((int) transactionLog.readRecord(KEY_ID).readObject()));
 		}
 
@@ -113,6 +115,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		if (complete) {
 			logger.info("Commiting updates to main database");
 
+			// Copy from tmpDb to db
 			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
 			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
 			dest.transferFrom(src, 0, src.size());
@@ -123,8 +126,8 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		else {
 			logger.info("Aborting updates");
 			transactionWriter.writeObject("FAILED");
-
 		}
+
 		transactionLog.insertRecord(transactionWriter);
 		rrwlTmp.writeLock().unlock();
 		rrwlMain.writeLock().unlock();
@@ -223,6 +226,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 		rrwlMain.writeLock().lock();
 		rrwlTmp.writeLock().lock();
 
+		// Copy from db to tmpDb
 		FileChannel src = new FileInputStream(db.getDbPath()).getChannel();
 		FileChannel dest = new FileOutputStream(tmpDb.getDbPath()).getChannel();
 		dest.transferFrom(src, 0, src.size());
@@ -238,18 +242,18 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 
 		logger.info("Found relevant plane ticket, starting");
 
+		// Save transaction stuffs in case of failure
 		transactionStatusWriter.writeObject("STARTING");
 		transactionObjectWriter.writeObject(planeTicket);
 		transactionIdWriter.writeObject(idTransaction);
 		transactionNumTicketsWriter.writeObject(numTickets);
 
-		transactionLog.insertRecord(transactionStatusWriter);
 		transactionLog.insertRecord(transactionObjectWriter);
 		transactionLog.insertRecord(transactionIdWriter);
 		transactionLog.insertRecord(transactionNumTicketsWriter);
+		transactionLog.insertRecord(transactionStatusWriter); // Write status LAST to be sure all relevant data was saved
 
 		if (planeTicket.getNumSeats() >= numTickets) {
-
 			RecordWriter rw = new RecordWriter(planeTicketID);
 			planeTicket.setNumSeats(planeTicket.getNumSeats() - numTickets);
 			rw.writeObject(planeTicket);
@@ -262,7 +266,7 @@ public class PlaneTicketImpl extends UnicastRemoteObject implements InterfacePla
 			return true;
 		}
 
-		transactionStatusWriter.writeObject("FAILED");
+		transactionStatusWriter.writeObject("FAILED"); // FAILED isn't bad, just means it was aborted
 		transactionLog.insertRecord(transactionStatusWriter);
 		return false;
 	}

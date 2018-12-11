@@ -47,10 +47,12 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 		rrwlMain = new ReentrantReadWriteLock();
 		rrwlTmp = new ReentrantReadWriteLock();
 
+		// Check if there is a pending transaction
 		if (transactionLog.readRecord(KEY_STATUS).readObject().equals("STARTING")) {
 			rrwlTmp.writeLock().lock();
 			rrwlMain.writeLock().lock();
 
+			// The return from the coordinator will be a boolean, just pass it as an argument to commit
 			commitTransaction(interfaceCoord.continueTransaction((int) transactionLog.readRecord(KEY_ID).readObject()));
 		}
 
@@ -115,6 +117,7 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 		if (complete) {
 			logger.info("Commiting updates to main database");
 
+			// Copy from tmpDb to db
 			FileChannel src = new FileInputStream(tmpDb.getDbPath()).getChannel();
 			FileChannel dest = new FileOutputStream(db.getDbPath()).getChannel();
 			dest.transferFrom(src, 0, src.size());
@@ -222,6 +225,7 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 		rrwlMain.writeLock().lock();
 		rrwlTmp.writeLock().lock();
 
+		// Copy from db to tmpDb
 		FileChannel src = new FileInputStream(db.getDbPath()).getChannel();
 		FileChannel dest = new FileOutputStream(tmpDb.getDbPath()).getChannel();
 		dest.transferFrom(src, 0, src.size());
@@ -237,18 +241,18 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 
 		logger.info("Found relevant plane ticket, starting");
 
+		// Save transaction stuffs in case of failure
 		transactionStatusWriter.writeObject("STARTING");
 		transactionObjectWriter.writeObject(planeTicket);
 		transactionIdWriter.writeObject(idTransaction);
 		transactionNumTicketsWriter.writeObject(numRooms);
 
-		transactionLog.insertRecord(transactionStatusWriter);
 		transactionLog.insertRecord(transactionObjectWriter);
 		transactionLog.insertRecord(transactionIdWriter);
 		transactionLog.insertRecord(transactionNumTicketsWriter);
+		transactionLog.insertRecord(transactionStatusWriter); // Write status LAST to be sure all relevant data was saved
 
 		if (planeTicket.getNumRooms() >= numRooms) {
-
 			RecordWriter rw = new RecordWriter(lodgingID);
 			planeTicket.setNumRooms(planeTicket.getNumRooms() - numRooms);
 			rw.writeObject(planeTicket);
@@ -261,7 +265,7 @@ public class LodgingImpl extends UnicastRemoteObject implements InterfaceLodging
 			return true;
 		}
 
-		transactionStatusWriter.writeObject("FAILED");
+		transactionStatusWriter.writeObject("FAILED"); // FAILED isn't bad, just means it was aborted
 		transactionLog.insertRecord(transactionStatusWriter);
 		return false;
 	}
